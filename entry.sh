@@ -35,7 +35,7 @@ do
         fi
       ;;
     "sd-webui")
-      # Execute script3
+      bash sd-webui/main.sh
       ;;
     "sd-volta")
       # Execute script3

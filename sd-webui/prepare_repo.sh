@@ -1,8 +1,8 @@
 #!/bin/bash
 
-repo_storage_dir="/storage/stable-diffusion"
-model_storage_dir="/tmp/stable-diffusion-models"
-stable_diffusion_webui_path="$repo_storage_dir/stable-diffusion-webui"
+repo_storage_dir=$REPO_DIR
+model_storage_dir=$MODEL_DIR
+stable_diffusion_webui_path=$WEBUI_DIR
 
 if [ ! -d "$stable_diffusion_webui_path/.git" ]; then
   # It's possible that the stable_diffusion_webui_path already exists but the repo has not been downloaded.
