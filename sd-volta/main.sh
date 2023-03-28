@@ -1,6 +1,7 @@
 #!/bin/bash
-REPO_DIR="/storage/stable-diffusion-volta"
-
+export MODEL_DIR="/tmp/stable-diffusion-models"
+export REPO_DIR="/storage/stable-diffusion-volta"
+current_dir="$PWD"
 # apt-get install -qq aria2 -y > /dev/null
 
 # Install Python 3.10
@@ -31,6 +32,7 @@ elif [ "${UPDATE_REPO}" = "commit" ]; then
   git checkout "${UPDATE_REPO_COMMIT}"
 fi
 
+cd $current_dir
 python link_models.py
 
 export HUGGINGFACE_TOKEN=$HF_TOKEN

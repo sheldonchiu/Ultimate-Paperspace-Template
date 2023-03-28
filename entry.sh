@@ -40,6 +40,7 @@ do
       ;;
     "sd-volta")
       cd $SCRIPT_ROOT_DIR/sd-volta
+      bash main.sh
       ;;
     "kohya-ss")
         cd $SCRIPT_ROOT_DIR/kohya-ss
