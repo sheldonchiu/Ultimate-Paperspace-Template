@@ -15,7 +15,7 @@ bash prepare_repo.sh
 python download_model.py
 
 cd $WEBUI_DIR
-python preinstall.py
+python $SCRIPT_ROOT_DIR/sd-webui/preinstall.py
 
 if [ -n "${ACTIVATE_XFORMERS}" ]; then
     pip install xformers==0.0.17rc482 triton==2.0.0
