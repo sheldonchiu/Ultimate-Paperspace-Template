@@ -9,10 +9,15 @@ if [ ! -d "$WEBUI_DIR/.git" ]; then
   git remote add origin https://github.com/AUTOMATIC1111/stable-diffusion-webui
   git fetch
   git checkout -t origin/master -f
-else
+elif [ "${UPDATE_REPO}" = "auto" ]; then
   echo "stable-diffusion-webui already downloaded, updating..."
   cd "$WEBUI_DIR"
   git pull
+elif [ "${UPDATE_REPO}" = "commit" ]; then
+  echo "stable-diffusion-webui already downloaded, updating to commit ${UPDATE_REPO_COMMIT}..."
+  cd "$WEBUI_DIR"
+  git fetch
+  git checkout "${UPDATE_REPO_COMMIT}"
 fi
 
 mkdir -p "$WEBUI_DIR/outputs"

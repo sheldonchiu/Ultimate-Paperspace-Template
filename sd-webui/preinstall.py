@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 repo_storage_dir = os.environ['REPO_DIR']
-model_storage_dir = os.environ['MODEL_DIR']
+model_storage_dir = Path(os.environ['MODEL_DIR'])
 stable_diffusion_webui_path = os.environ['WEBUI_DIR']
 
 # Import launch.py which will automatically run the install script but not launch the WebUI.
