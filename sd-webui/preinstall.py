@@ -5,8 +5,6 @@ repo_storage_dir="/storage/stable-diffusion"
 model_storage_dir="/tmp/stable-diffusion-models"
 stable_diffusion_webui_path=f"{repo_storage_dir}/stable-diffusion-webui"
 
-os.chdir(stable_diffusion_webui_path)
-
 # Import launch.py which will automatically run the install script but not launch the WebUI.
 import launch
 launch.prepare_environment()

@@ -6,6 +6,8 @@ run_script="$RUN_SCRIPT"
 # Separate the variable by commas
 IFS=',' read -ra scripts <<< "$run_script"
 
+export SCRIPT_ROOT_DIR="$PWD"
+
 # Check if curl is installed
 if ! command -v curl &> /dev/null; then
     echo "curl is not installed, installing now..."

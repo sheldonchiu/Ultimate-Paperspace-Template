@@ -1,5 +1,5 @@
 #!/bin/bash
-cd sd-webui
+cd $SCRIPT_ROOT_DIR/sd-webui
 export MODEL_DIR="/tmp/stable-diffusion-models"
 export REPO_DIR="/storage/stable-diffusion"
 export WEBUI_DIR="$REPO_DIR/stable-diffusion-webui"
@@ -13,6 +13,8 @@ pip uninstall -y torch torchvision torchaudio protobuf lxml
 
 bash prepare_repo.sh
 python download_model.py
+
+cd $WEBUI_DIR
 python preinstall.py
 
 if [ -n "${ACTIVATE_XFORMERS}" ]; then
@@ -21,4 +23,4 @@ fi
 
 bash start.sh
 
-cd ..
+cd $SCRIPT_ROOT_DIR
