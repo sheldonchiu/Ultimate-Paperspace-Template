@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 import os
 
-model_storage_dir = '/tmp/stable-diffusion-models'
+model_storage_dir = os.environ['MODEL_DIR']
 hf_token = os.environ.get('HF_TOKEN', None)
 user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
 
@@ -116,22 +116,26 @@ os.makedirs(model_storage_dir,exist_ok=True)
 os.chdir(model_storage_dir)
 model_list = os.environ.get('MODEL_LIST', "").split(',')
 for uri in model_list:
-    downlaod_model(uri)
+    if uri != '':
+        downlaod_model(uri)
 
 os.makedirs(f"{model_storage_dir}/lora",exist_ok=True)
 os.chdir(f"{model_storage_dir}/lora")    
 lora_list = os.environ.get('LORA_LIST', "").split(',')
 for uri in lora_list:
-    downlaod_model(uri)
+    if uri != '':
+        downlaod_model(uri)
 
 os.makedirs(f"{model_storage_dir}/controlnet",exist_ok=True)
 os.chdir(f"{model_storage_dir}/controlnet")    
 controlnet_list = os.environ.get('CONTROLNET_LIST', "").split(',')
 for uri in controlnet_list:
-    downlaod_model(uri)
+    if uri != '':
+        downlaod_model(uri)
 
 os.makedirs(f"{model_storage_dir}/vae",exist_ok=True)
 os.chdir(f"{model_storage_dir}/vae")    
 vae_list = os.environ.get('VAE_LIST', "").split(',')
 for uri in vae_list:
-    downlaod_model(uri)
+    if uri != '':
+        downlaod_model(uri)

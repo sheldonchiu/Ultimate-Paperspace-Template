@@ -1,33 +1,29 @@
 #!/bin/bash
 
-repo_storage_dir=$REPO_DIR
-model_storage_dir=$MODEL_DIR
-stable_diffusion_webui_path=$WEBUI_DIR
-
-if [ ! -d "$stable_diffusion_webui_path/.git" ]; then
+if [ ! -d "$WEBUI_DIR/.git" ]; then
   # It's possible that the stable_diffusion_webui_path already exists but the repo has not been downloaded.
   # We will init the repo manually.
-  mkdir -p "$stable_diffusion_webui_path"
-  cd "$stable_diffusion_webui_path"
+  mkdir -p "$WEBUI_DIR"
+  cd "$WEBUI_DIR"
   git init
   git remote add origin https://github.com/AUTOMATIC1111/stable-diffusion-webui
   git fetch
   git checkout -t origin/master -f
 else
   echo "stable-diffusion-webui already downloaded, updating..."
-  cd "$stable_diffusion_webui_path"
+  cd "$WEBUI_DIR"
   git pull
 fi
 
-mkdir -p "$stable_diffusion_webui_path/outputs"
-mkdir -p "$stable_diffusion_webui_path/log"
+mkdir -p "$WEBUI_DIR/outputs"
+mkdir -p "$WEBUI_DIR/log"
 
 symlinks=(
-  "$stable_diffusion_webui_path:/notebooks/stable-diffusion-webui"
-  "$stable_diffusion_webui_path/outputs:/notebooks/outputs"
-  "$stable_diffusion_webui_path/log:$stable_diffusion_webui_path/outputs/log"
+  "$WEBUI_DIR:/notebooks/stable-diffusion-webui"
+  "$WEBUI_DIR/outputs:/notebooks/outputs"
+  "$WEBUI_DIR/log:$WEBUI_DIR/outputs/log"
   "/storage:/notebooks/storage"
-  "$model_storage_dir:/notebooks/models"
+  "$MODEL_DIR:/notebooks/models"
 )
 
 echo -e "\nCreating Symlinks..."

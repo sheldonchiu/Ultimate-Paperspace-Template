@@ -1,5 +1,4 @@
 #!/bin/bash
-cd $SCRIPT_ROOT_DIR/sd-webui
 export MODEL_DIR="/tmp/stable-diffusion-models"
 export REPO_DIR="/storage/stable-diffusion"
 export WEBUI_DIR="$REPO_DIR/stable-diffusion-webui"
@@ -22,5 +21,3 @@ if [ -n "${ACTIVATE_XFORMERS}" ]; then
 fi
 
 bash start.sh
-
-cd $SCRIPT_ROOT_DIR

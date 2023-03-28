@@ -8,24 +8,21 @@ IFS=',' read -ra scripts <<< "$run_script"
 
 export SCRIPT_ROOT_DIR="$PWD"
 
-# Check if curl is installed
-if ! command -v curl &> /dev/null; then
-    echo "curl is not installed, installing now..."
-    apt-get update -qq
-    apt-get install -qq curl -y > /dev/null
-else
-    echo "curl is already installed"
-fi
+
+apt-get update -qq
+apt-get install -qq curl -y > /dev/null
 
 # Loop through each script and execute the corresponding case
 for script in "${scripts[@]}"
 do
+  cd $SCRIPT_ROOT_DIR
   case $script in
     "cloudflared")
         if [ -z "${CF_TOKEN}" ]; then
            echo "ENV CF_TOKEN not provided, skipping cloudflared installation"
         else
-            bash cloudflared/main.sh
+            cd $SCRIPT_ROOT_DIR/cloudflared
+            bash main.sh
         fi
       ;;
     "minio")
@@ -33,17 +30,20 @@ do
         then
            echo "ENV One of S3_HOST_URL, S3_ACCESS_KEY, or S3_SECRET_KEY not provided, skipping minio installation"
         else
-            bash minio/main.sh
+            cd $SCRIPT_ROOT_DIR/minio
+            bash main.sh
         fi
       ;;
     "sd-webui")
-      bash sd-webui/main.sh
+      cd $SCRIPT_ROOT_DIR/sd-webui
+      bash main.sh
       ;;
     "sd-volta")
-      # Execute script3
+      cd $SCRIPT_ROOT_DIR/sd-volta
       ;;
     "kohya-ss")
-        bash kohya-ss/main.sh
+        cd $SCRIPT_ROOT_DIR/kohya-ss
+        bash main.sh
       ;;
     *)
       # Unknown script, do nothing

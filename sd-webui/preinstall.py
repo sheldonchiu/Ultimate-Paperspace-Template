@@ -1,9 +1,9 @@
 import os
 from pathlib import Path
 
-repo_storage_dir="/storage/stable-diffusion"
-model_storage_dir="/tmp/stable-diffusion-models"
-stable_diffusion_webui_path=f"{repo_storage_dir}/stable-diffusion-webui"
+repo_storage_dir = os.environ['REPO_DIR']
+model_storage_dir = os.environ['MODEL_DIR']
+stable_diffusion_webui_path = os.environ['WEBUI_DIR']
 
 # Import launch.py which will automatically run the install script but not launch the WebUI.
 import launch
