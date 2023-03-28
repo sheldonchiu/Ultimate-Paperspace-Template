@@ -14,8 +14,8 @@ pip uninstall -y torch torchvision torchaudio protobuf lxml
 bash prepare_repo.sh
 python download_model.py
 
-cd $WEBUI_DIR
-python $SCRIPT_ROOT_DIR/sd-webui/preinstall.py
+export PYTHONPATH="$PYTHONPATH:$WEBUI_DIR"
+python preinstall.py
 
 if [ -n "${ACTIVATE_XFORMERS}" ]; then
     pip install xformers==0.0.17rc482 triton==2.0.0
