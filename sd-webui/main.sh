@@ -1,7 +1,4 @@
 #!/bin/bash
-export MODEL_DIR="/tmp/stable-diffusion-models"
-export REPO_DIR="/storage/stable-diffusion"
-export WEBUI_DIR="$REPO_DIR/stable-diffusion-webui"
 
 apt-get install -qq aria2 -y > /dev/null
 
