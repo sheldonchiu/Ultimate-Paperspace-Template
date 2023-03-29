@@ -3,14 +3,18 @@
 apt-get install -qq aria2 -y > /dev/null
 
 # Install Python 3.10
-apt-get install -y python3.10 python3.10-venv
-python3.10 -m venv /tmp/sd-webui-env
-source /tmp/sd-webui-env/bin/activate
+if [ -z "${SD_WEBUI_PREPARED}" ]; then
+    apt-get install -y python3.10 python3.10-venv
+    python3.10 -m venv /tmp/sd-webui-env
+    source /tmp/sd-webui-env/bin/activate
 
-pip install --upgrade pip
-pip install --upgrade wheel setuptools
-pip install requests gdown bs4
-pip uninstall -y torch torchvision torchaudio protobuf lxml
+    pip install --upgrade pip
+    pip install --upgrade wheel setuptools
+    pip install requests gdown bs4
+    pip uninstall -y torch torchvision torchaudio protobuf lxml
+else
+    source /tmp/sd-webui-env/bin/activate
+fi
 
 bash prepare_repo.sh
 python download_model.py
@@ -26,4 +30,5 @@ if [ -n "${ACTIVATE_XFORMERS}" ]; then
     pip install xformers==0.0.16
 fi
 
+export SD_WEBUI_PREPARED=1
 bash start.sh
