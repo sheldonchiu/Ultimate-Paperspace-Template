@@ -86,7 +86,7 @@ if lora_source_path.is_dir():
         create_symlink(lora_source_path / file, webui_lora_path
                       )
 else:
-    print('VAE storage directory not found:', lora_source_path)
+    print('Lora storage directory not found:', lora_source_path)
 
 # Link control net
 print('\nLinking control net...')
@@ -96,5 +96,5 @@ if cn_source_path.is_dir():
         create_symlink(cn_source_path / file, webui_controlnet_path
                       )
 else:
-    print('VAE storage directory not found:', lora_source_path)
+    print('Controlnet storage directory not found:', webui_controlnet_path)
 
