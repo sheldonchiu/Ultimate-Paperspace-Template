@@ -7,6 +7,7 @@ run_script="$RUN_SCRIPT"
 IFS=',' read -ra scripts <<< "$run_script"
 
 export SCRIPT_ROOT_DIR="$PWD"
+export EXPOSE_PORTS=""
 
 function source_env_file() {
   if [ -e "$1/.env" ]; then
