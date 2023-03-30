@@ -19,6 +19,7 @@ if [ "${CF_TOKEN}" = "quick" ]; then
         # Generate PID file and log file names using a different delimiter
         pidfile="/tmp/cloudflared_${var}.pid"
         logfile="/tmp/cloudflared_${var}.log"
+        hostfile="/tmp/cloudflared_${var}.host"
 
         # Start cloudflared tunnel in the background
         nohup cloudflared tunnel --url http://localhost:${var} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
@@ -31,6 +32,7 @@ if [ "${CF_TOKEN}" = "quick" ]; then
             if [ $? -eq 0 ] && [ "$(echo "$response" | jq -r '.hostname')" != "" ]; then
                 hostname=$(echo "$response" | jq -r '.hostname')
                 echo "Success! Hostname is $hostname"
+                echo $hostname > $hostfile
                 break
             fi
             retries=$((retries+1))
