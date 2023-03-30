@@ -11,6 +11,9 @@ if [ "${CF_TOKEN}" = "quick" ]; then
 
     # Loop over the ports array
     for var in "${ports[@]}"; do
+        if [ "$var" = "" ]; then
+            continue
+        fi
         metrics_port=$((var+1))
 
         # Generate PID file and log file names using a different delimiter
@@ -24,7 +27,7 @@ if [ "${CF_TOKEN}" = "quick" ]; then
         retries=0
         max_retries=10
         while true; do
-            response=$(curl -s http://localhost:${metrics_port}/quicktunnel || true)
+            response=$(curl  http://localhost:${metrics_port}/quicktunnel || true)
             if [ $? -eq 0 ] && [ "$(echo "$response" | jq -r '.hostname')" != "null" ]; then
                 hostname=$(echo "$response" | jq -r '.hostname')
                 echo "Success! Hostname is $hostname"
