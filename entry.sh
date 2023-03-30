@@ -10,8 +10,8 @@ export SCRIPT_ROOT_DIR="$PWD"
 export EXPOSE_PORTS=""
 
 function source_env_file() {
-  if [ -e "$1/.env" ]; then
-    source "$1/.env"
+  if [ -e .env ]; then
+    source .env
   fi
 }
 
@@ -43,7 +43,7 @@ do
   fi
 
   cd $script
-  source_env_file .
+  source_env_file
   if ! check_required_env_vars; then
     echo "One or more required environment variables are missing."
     continue

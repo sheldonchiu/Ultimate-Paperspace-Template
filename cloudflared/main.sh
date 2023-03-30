@@ -6,22 +6,39 @@ curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/relea
 dpkg -i cloudflared.deb
 
 if [ "${CF_TOKEN}" = "quick" ]; then
-    local ports=($(echo "$EXPOSE_PORTS" | tr ':' '\n'))
+    # Split EXPOSE_PORTS into an array using ':' as the delimiter
+    IFS=':' read -ra ports <<< "$EXPOSE_PORTS"
+
+    # Loop over the ports array
     for var in "${ports[@]}"; do
-        local metrics_port=$((var+1))
-        nohup cloudflared tunnel --url http://localhost:$var --metrics localhost:$metrics_port --pidfile /tmp/cloudflared_$var.pid > /tmp/cloudflared_$var.log 2>&1 &
+        metrics_port=$((var+1))
+
+        # Generate PID file and log file names using a different delimiter
+        pidfile="/tmp/cloudflared_${var}.pid"
+        logfile="/tmp/cloudflared_${var}.log"
+
+        # Start cloudflared tunnel in the background
+        nohup cloudflared tunnel --url http://localhost:${var} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
+
+        # Wait for the tunnel to become available
+        retries=0
+        max_retries=10
         while true; do
-            response=$(curl -s http://localhost:$metrics_port/quicktunnel)
-            if [ $? -eq 0 ]; then
+            response=$(curl -s http://localhost:${metrics_port}/quicktunnel || true)
+            if [ $? -eq 0 ] && [ "$(echo "$response" | jq -r '.hostname')" != "null" ]; then
                 hostname=$(echo "$response" | jq -r '.hostname')
                 echo "Success! Hostname is $hostname"
                 break
             fi
+            retries=$((retries+1))
+            if [ $retries -ge $max_retries ]; then
+                echo "Error: Failed to get response after $max_retries attempts"
+                exit 1
+            fi
             echo "Failed to get response. Retrying in 5 seconds..."
             sleep 5
         done
-        echo $mhostname
     done
 else
-    cloudflared service install $CF_TOKEN
+    cloudflared service install "$CF_TOKEN"
 fi
