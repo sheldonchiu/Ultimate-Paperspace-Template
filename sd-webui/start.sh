@@ -21,7 +21,7 @@ if [ -n "${GRADIO_LINK}" ]; then
   gradio_link="--share"
 fi
 
-port="--share"
+port=""
 if [ -n "${GRADIO_PORT}" ]; then
   port="--port ${GRADIO_PORT}"
 fi
@@ -46,5 +46,5 @@ if [ -n "${GRADIO_QUEUE}" ]; then
   queue="--gradio-queue"
 fi
 
-nohup python webui.py ${x_arg} ${dd_arg} ${mvram_arg} ${pickled} ${port} ${auth} ${theme} ${insecure_extension_access} ${queue} ${gradio_link} --enable-insecure-extension-access > /tmp/sd-webui.log 2>&1 &
+nohup python webui.py ${x_arg} ${dd_arg} ${mvram_arg} ${pickled} ${port} ${auth} ${theme} ${queue} ${gradio_link} --enable-insecure-extension-access > /tmp/sd-webui.log 2>&1 &
 echo $! > /tmp/sd-webui.pid

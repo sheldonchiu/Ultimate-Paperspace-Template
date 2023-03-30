@@ -9,8 +9,8 @@ IFS=',' read -ra scripts <<< "$run_script"
 export SCRIPT_ROOT_DIR="$PWD"
 
 function source_env_file() {
-  if [ -e .env ]; then
-    source .env
+  if [ -e ".env" ]; then
+    source ".env"
   fi
 }
 

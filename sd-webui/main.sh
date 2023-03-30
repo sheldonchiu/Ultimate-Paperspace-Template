@@ -3,7 +3,7 @@
 apt-get install -qq aria2 -y > /dev/null
 
 # Install Python 3.10
-if [ -z "${SD_WEBUI_PREPARED}" ]; then
+if ! [ -e "/tmp/sd-webui.prepared" ]; then
     apt-get install -y python3.10 python3.10-venv
     python3.10 -m venv /tmp/sd-webui-env
     source /tmp/sd-webui-env/bin/activate
@@ -30,5 +30,5 @@ if [ -n "${ACTIVATE_XFORMERS}" ]; then
     pip install xformers==0.0.16
 fi
 
-export SD_WEBUI_PREPARED=1
+touch /tmp/sd-webui.prepared
 bash start.sh
