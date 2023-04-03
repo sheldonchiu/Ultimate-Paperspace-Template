@@ -17,6 +17,7 @@ webui_sd_model_path = Path(webui_root_model_path, 'Stable-diffusion')
 webui_hypernetwork_path = Path(webui_root_model_path, 'hypernetworks')
 webui_vae_path = Path(webui_root_model_path, 'VAE')
 webui_lora_path =Path(repo_storage_dir, 'stable-diffusion-webui/extensions/sd-webui-additional-networks/models/lora')
+webui_lora_path_2 =Path(repo_storage_dir, 'stable-diffusion-webui/models/Lora')
 webui_controlnet_path = Path(repo_storage_dir, 'stable-diffusion-webui/extensions/sd-webui-controlnet/models')
 
 def delete_broken_symlinks(dir):
@@ -83,8 +84,8 @@ print('\nLinking Loras...')
 lora_source_path = Path(model_storage_dir, 'lora')
 if lora_source_path.is_dir():
     for file in lora_source_path.iterdir():
-        create_symlink(lora_source_path / file, webui_lora_path
-                      )
+        create_symlink(lora_source_path / file, webui_lora_path)
+        create_symlink(lora_source_path / file, webui_lora_path_2)
 else:
     print('Lora storage directory not found:', lora_source_path)
 
