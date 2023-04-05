@@ -33,7 +33,7 @@ def create_symlink(source, dest):
 def link_ckpts(source_path, target_path):
     # Link .ckpt and .safetensor/.st files (recursive)
     print('\nLinking .ckpt and .safetensor/.safetensors/.st files in', source_path)
-    delete_broken_symlinks(webui_sd_model_path)
+    delete_broken_symlinks(target_path)
     source_path = Path(source_path)
     target_path = Path(target_path)
     for file in [p for p in source_path.rglob('*') if p.suffix in ['.ckpt', '.safetensor', '.safetensors', '.st']]:
@@ -65,24 +65,24 @@ if webui_sd_model_path:
 if webui_hypernetwork_path:
     webui_hypernetwork_path = webui_hypernetwork_path.split(',')
     for path in webui_hypernetwork_path:
-        link_other('hypernetworks', model_storage_dir, webui_hypernetwork_path)
+        link_other('hypernetworks', model_storage_dir, path)
 # Link VAEs
 if webui_vae_path:
     webui_vae_path = webui_vae_path.split(',')
     for path in webui_vae_path:
-        link_other('vae', model_storage_dir, webui_vae_path)
+        link_other('vae', model_storage_dir, path)
 # Link Loras
 if webui_lora_path:
     webui_lora_path = webui_lora_path.split(',')
     for path in webui_lora_path:
-        link_other('lora', model_storage_dir, webui_lora_path)
+        link_other('lora', model_storage_dir, path)
 # Link control net
 if webui_controlnet_path:
     webui_controlnet_path = webui_controlnet_path.split(',')
     for path in webui_controlnet_path:
-        link_other('cn', model_storage_dir, webui_controlnet_path)
+        link_other('cn', model_storage_dir, path)
         
 if webui_embedding_path:
     webui_embedding_path = webui_embedding_path.split(',')
     for path in webui_embedding_path:
-        link_other('embedding', model_storage_dir, webui_embedding_path)
+        link_other('embedding', model_storage_dir, path)
