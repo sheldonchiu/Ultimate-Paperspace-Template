@@ -28,7 +28,7 @@ else
     source /tmp/sd-webui-env/bin/activate
 fi
 
-bash $SCRIPT_ROOT_DIR/utils/model_download/main.sh
-python $SCRIPT_ROOT_DIR/utils/model_download/link_model.py
+bash ../utils/model_download/main.sh
+python ../utils/model_download/link_model.py
 
 bash start.sh
