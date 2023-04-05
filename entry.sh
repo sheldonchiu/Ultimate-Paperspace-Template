@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# Read the RUN_SCRIPT environment variable
-run_script="$RUN_SCRIPT"
-
-# Separate the variable by commas
-IFS=',' read -ra scripts <<< "$run_script"
-
-export SCRIPT_ROOT_DIR="$PWD"
-
 function source_env_file() {
   if [ -e ".env" ]; then
     source ".env"
@@ -29,6 +21,14 @@ function check_required_env_vars() {
   return 0
 }
 
+# Read the RUN_SCRIPT environment variable
+run_script="$RUN_SCRIPT"
+
+# Separate the variable by commas
+IFS=',' read -ra scripts <<< "$run_script"
+
+export SCRIPT_ROOT_DIR=$(dirname "$(realpath "$0")")
+
 apt-get update -qq
 apt-get install -qq curl -y > /dev/null
 
@@ -48,6 +48,6 @@ do
     continue
   fi
 
-  bash main.sh
+  bash main.sh $@
 
 done
