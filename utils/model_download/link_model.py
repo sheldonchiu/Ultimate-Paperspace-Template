@@ -48,6 +48,9 @@ def link_ckpts(source_path, target_path):
         
 def link_other(name, source_path, target_path):
     print(f'\nLinking {name}...')
+    if not os.path.isdir(target_path):
+        print(f'{name} storage directory not found:', target_path)
+        return
     delete_broken_symlinks(target_path)
     source_path = Path(model_storage_dir, name)
     if source_path.is_dir():

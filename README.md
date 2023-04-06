@@ -4,6 +4,7 @@
 **A Swiss knife for Paperspace notebooks**
 
 <div align="left">
+
 This repository contains scripts to automatically configure your Paperspace notebook with the following features:
 
 1. Stable diffusion Webui (Feature-rich inference)
@@ -32,54 +33,53 @@ bash entry.sh
 ```
 
 ## Configuration
-* Stable diffusion Webui
+### **Stable diffusion Webui**
 
-    **Function name:** sd-webui
+**Function name:** sd-webui
 
-    **Default Port:** 7860
+**Default Port:** 7860
 
-    | ENV | Description | Default |
-    | --- | --- | --- |
-    | MODEL_DIR | Directory to store models | /tmp/stable-diffusion-models |
-    | REPO_DIR | Directory to store WebUI repository | /storage/stable-diffusion |
-    | MODEL_LIST| comma separated list of models to download |  |
-    | VAE_LIST | comma separated list of vae models to download |  |
-    | LORA_LIST | comma separated list of lora models to download |  |
-    | EMBEDDING_LIST | comma separated list of embedding models to download |  |
-    | CONTROLNET_LIST | comma separated list of controlnet models to download |  |
+| ENV | Description | Default |
+| --- | --- | --- |
+| MODEL_DIR | Directory to store models | /tmp/stable-diffusion-models |
+| REPO_DIR | Directory to store WebUI repository | /storage/stable-diffusion |
+| MODEL_LIST| comma separated list of models to download |  |
+| VAE_LIST | comma separated list of vae models to download |  |
+| LORA_LIST | comma separated list of lora models to download |  |
+| EMBEDDING_LIST | comma separated list of embedding models to download |  |
+| CONTROLNET_LIST | comma separated list of controlnet models to download |  |
 **Currnetly support downloading models from Huggingface, Google drive, CivitAI, Magnet Link, normal URL**
 
-* Stable Diffusion Volta
+### **Stable Diffusion Volta**
     
-    **Function name:** sd-volta
+**Function name:** sd-volta
 
-    **Default Port:** 5003
-    | ENV | Description | Default |
-    | --- | --- | --- |
-    | MODEL_DIR | Directory to store models | /tmp/stable-diffusion-models |
-    | REPO_DIR | Directory to store Volta repository | /storage/stable-diffusion-volta |
-    | MODEL_LIST| comma separated list of models to download |  |
+**Default Port:** 5003
+| ENV | Description | Default |
+| --- | --- | --- |
+| MODEL_DIR | Directory to store models | /tmp/stable-diffusion-models |
+| REPO_DIR | Directory to store Volta repository | /storage/stable-diffusion-volta |
+| MODEL_LIST| comma separated list of models to download |  |
 
-* Cloudflare tunnel
-    
-    **Function name:** cloudflared
-    | ENV | Description | Default |
-    | --- | --- | --- |
-    | CF_TOKEN | Cloudflare API token |  |
+### **Cloudflare tunnel** 
+**Function name:** cloudflared
+| ENV | Description | Default |
+| --- | --- | --- |
+| CF_TOKEN | Cloudflare API token |  |
 **If CF_TOKEN = "quick" a free tunnel with a tempeory URL will be created**
 
 **URL will be stored inside /tmp/cloudflared_\<port number\>.host** 
 
-* Sync to Minio Storage
+### **Sync to Minio Storage**
     
-    **Function name:** minio
-    | ENV | Description | Default |
-    | --- | --- | --- |
-    | S3_HOST_URL | Minio URL |  |
-    | S3_ACCESS_KEY | Minio Access Key |  |
-    | S3_SECRET_KEY | Minio Secret Key |  |
-    | S3_MIRROR_PATH | Directory to sync to Minio |  |
-    | S3_MIRROR_TO_BUCKET | Minio target bucket | |
+**Function name:** minio
+| ENV | Description | Default |
+| --- | --- | --- |
+| S3_HOST_URL | Minio URL |  |
+| S3_ACCESS_KEY | Minio Access Key |  |
+| S3_SECRET_KEY | Minio Secret Key |  |
+| S3_MIRROR_PATH | Directory to sync to Minio |  |
+| S3_MIRROR_TO_BUCKET | Minio target bucket | |
 
 **If S3_MIRROR_PATH and S3_MIRROR_TO_BUCKET is not given, the script will only setup the Minio client**
 

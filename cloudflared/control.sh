@@ -28,7 +28,7 @@ cd $DIR
 #             bash main.sh
 #         done
 #     fi 
-elif [ "$1" == "reload" ]; then
+if [ "$1" == "reload" ]; then
     if [ -n "$2" ]; then
         echo "Reloading Cloudflare tunnel with port $2..."
         pid=$(cat /tmp/cloudflared_{$2}.pid)
