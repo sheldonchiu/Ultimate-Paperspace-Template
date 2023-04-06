@@ -66,6 +66,7 @@ bash entry.sh
 | ENV | Description | Default |
 | --- | --- | --- |
 | CF_TOKEN | Cloudflare API token |  |
+
 **If CF_TOKEN = "quick" a free tunnel with a tempeory URL will be created**
 
 **URL will be stored inside /tmp/cloudflared_\<port number\>.host** 
