@@ -48,6 +48,7 @@ bash entry.sh
 | LORA_LIST | comma separated list of lora models to download |  |
 | EMBEDDING_LIST | comma separated list of embedding models to download |  |
 | CONTROLNET_LIST | comma separated list of controlnet models to download |  |
+
 **Currnetly support downloading models from Huggingface, Google drive, CivitAI, Magnet Link, normal URL**
 
 ### **Stable Diffusion Volta**
