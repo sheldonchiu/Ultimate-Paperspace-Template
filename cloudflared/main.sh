@@ -13,7 +13,7 @@ function send_discord_message() {
   local webhook_url="$DISCORD_WEBHOOK_URL"
 
   # Message to send
-  local message="$2"
+  local message="$1"
 
   # Send the message using curl
   curl -H "Content-Type: application/json" \
@@ -24,22 +24,24 @@ function send_discord_message() {
 
 if [ "${CF_TOKEN}" = "quick" ]; then
     # Split EXPOSE_PORTS into an array using ':' as the delimiter
+    IFS=':' read -ra names <<< "$PORT_MAPPING"
     IFS=':' read -ra ports <<< "$EXPOSE_PORTS"
 
     # Loop over the ports array
-    for var in "${ports[@]}"; do
-        if [ "$var" = "" ]; then
+    paste <(printf '%s\n' "${names[@]}") <(printf '%s\n' "${ports[@]}") | while IFS=$'\t' read -r name port; do
+    # for var in "${ports[@]}"; do
+        if [ "$port" = "" ]; then
             continue
         fi
-        metrics_port=$((var+1))
+        metrics_port=$((port+1))
 
         # Generate PID file and log file names using a different delimiter
-        pidfile="/tmp/cloudflared_${var}.pid"
-        logfile="/tmp/cloudflared_${var}.log"
-        hostfile="/tmp/cloudflared_${var}.host"
+        pidfile="/tmp/cloudflared_${name}.pid"
+        logfile="/tmp/cloudflared_${name}.log"
+        hostfile="/tmp/cloudflared_${name}.host"
 
         # Start cloudflared tunnel in the background
-        nohup cloudflared tunnel --url http://localhost:${var} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
+        nohup cloudflared tunnel --url http://localhost:${port} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
 
         # Wait for the tunnel to become available
         retries=0
@@ -51,7 +53,7 @@ if [ "${CF_TOKEN}" = "quick" ]; then
                 echo "Success! Hostname is $hostname"
                 echo $hostname > $hostfile
                 if [ -n "${DISCORD_WEBHOOK_URL}" ]; then
-                    send_discord_message "Cloudflared: Hostname is $hostname"
+                    send_discord_message "Cloudflared: Hostname is $hostname for $name"
                 fi
                 break
             fi
