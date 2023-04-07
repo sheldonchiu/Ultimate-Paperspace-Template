@@ -1,5 +1,5 @@
 #!/bin/bash
-
+current_dir=$(dirname "$(realpath "$0")")
 if ! [ -e "/tmp/sd-webui.prepared" ]; then
     # Install Python 3.10
     apt-get install -y python3.10 python3.10-venv
@@ -13,7 +13,6 @@ if ! [ -e "/tmp/sd-webui.prepared" ]; then
     
     bash prepare_repo.sh
     export PYTHONPATH="$PYTHONPATH:$WEBUI_DIR"
-    current_dir="$PWD"
     # must run inside webui dir since env['PYTHONPATH'] = os.path.abspath(".") existing in launch.py
     cd $WEBUI_DIR
     python $current_dir/preinstall.py
@@ -28,7 +27,7 @@ else
     source /tmp/sd-webui-env/bin/activate
 fi
 
-bash ../utils/model_download/main.sh
-python ../utils/model_download/link_model.py
+bash $current_dir/../utils/model_download/main.sh
+python $current_dir/../utils/model_download/link_model.py
 
 bash start.sh

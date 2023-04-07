@@ -14,4 +14,4 @@ for module in "${MODULES[@]}"; do
     fi
 done
 
-python download_model.py
+python $(dirname "$(realpath "$0")")/download_model.py

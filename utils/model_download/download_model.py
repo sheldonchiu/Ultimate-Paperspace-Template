@@ -23,6 +23,7 @@ def dl_web_file(web_dl_file, filename=None,  token=None):
     os.system(command)
     
 def downlaod_model(model_uri):
+    model_uri = model_uri.strip()
     headers={'User-Agent': user_agent}
     magnet_match = re.search(r'magnet:\?xt=urn:btih:[\-_A-Za-z0-9&=%.]*', model_uri)
     civitai_match = re.search(r'^https?:\/\/(?:www\.|(?!www))civitai\.com\/models\/\d*\/.*?$', model_uri)

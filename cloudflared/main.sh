@@ -2,8 +2,25 @@
 
 cd /tmp
 
-curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-dpkg -i cloudflared.deb
+if ! [ -e "/tmp/cloudflared.prepared" ]; then
+    curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+    dpkg -i cloudflared.deb
+    touch /tmp/cloudflared.prepared
+fi
+
+function send_discord_message() {
+  # Your Discord webhook URL
+  local webhook_url="$DISCORD_WEBHOOK_URL"
+
+  # Message to send
+  local message="$2"
+
+  # Send the message using curl
+  curl -H "Content-Type: application/json" \
+       -X POST \
+       -d "{\"content\":\"${message}\"}" \
+       "${webhook_url}"
+}
 
 if [ "${CF_TOKEN}" = "quick" ]; then
     # Split EXPOSE_PORTS into an array using ':' as the delimiter
@@ -33,11 +50,17 @@ if [ "${CF_TOKEN}" = "quick" ]; then
                 hostname=$(echo "$response" | jq -r '.hostname')
                 echo "Success! Hostname is $hostname"
                 echo $hostname > $hostfile
+                if [ -n "${DISCORD_WEBHOOK_URL}" ]; then
+                    send_discord_message "Cloudflared: Hostname is $hostname"
+                fi
                 break
             fi
             retries=$((retries+1))
             if [ $retries -ge $max_retries ]; then
                 echo "Error: Failed to get response after $max_retries attempts"
+                if [ -n "${DISCORD_WEBHOOK_URL}" ]; then
+                    send_discord_message "Cloudflared: Failed to get response after $max_retries attempts"
+                fi
                 exit 1
             fi
             echo "Failed to get response. Retrying in 5 seconds..."

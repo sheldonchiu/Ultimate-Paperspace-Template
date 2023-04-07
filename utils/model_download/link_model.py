@@ -37,7 +37,7 @@ def link_ckpts(source_path, target_path):
     source_path = Path(source_path)
     target_path = Path(target_path)
     for file in [p for p in source_path.rglob('*') if p.suffix in ['.ckpt', '.safetensor', '.safetensors', '.st']]:
-        if Path(file).parent.parts[-1] not in ['embedding', 'hypernetworks', 'vae', 'lora', 'cn'] :
+        if Path(file).parent.parts[-1] not in ['embedding', 'hypernetworks', 'vae', 'lora', 'controlnet'] :
             if not (target_path / file.name):
                 print('New model:', file.name)
             create_symlink(file, target_path)
@@ -83,7 +83,7 @@ if webui_lora_path:
 if webui_controlnet_path:
     webui_controlnet_path = webui_controlnet_path.split(',')
     for path in webui_controlnet_path:
-        link_other('cn', model_storage_dir, path)
+        link_other('controlnet', model_storage_dir, path)
         
 if webui_embedding_path:
     webui_embedding_path = webui_embedding_path.split(',')
