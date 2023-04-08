@@ -5,6 +5,7 @@ set -e
 DIR=$(dirname "$(realpath "$0")")
 
 cd $DIR
+source .env
 file="/tmp/sd-webui.pid"
 
 # if [ "$1" == "reload" ]; then
@@ -42,7 +43,6 @@ elif [ "$1" == "reload_all" ]; then
     fi
 elif [ "$1" == "start" ]; then
     echo "Starting Stable Diffusion WebUI..."
-    source .env
     bash main.sh
 elif [ "$1" == "stop" ]; then
     if [ -e "$file" ]; then

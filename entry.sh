@@ -21,33 +21,33 @@ function check_required_env_vars() {
   return 0
 }
 
+export SCRIPT_ROOT_DIR=$(dirname "$(realpath "$0")")
+cd $SCRIPT_ROOT_DIR
+
 # Read the RUN_SCRIPT environment variable
 run_script="$RUN_SCRIPT"
 
 # Separate the variable by commas
 IFS=',' read -ra scripts <<< "$run_script"
 
-export SCRIPT_ROOT_DIR=$(dirname "$(realpath "$0")")
+bash utils/discord/send.sh "Starting script(s)"
 
 apt-get update -qq
-apt-get install -qq curl -y > /dev/null
+apt-get install -qq curl git-lfs -y > /dev/null
 
 # Loop through each script and execute the corresponding case
 for script in "${scripts[@]}"
 do
   cd $SCRIPT_ROOT_DIR
   if [ ! -d "$script" ]; then
-    echo "Script folder $script not found, skipping..."
+    bash utils/discord/send.sh "Script folder $script not found, skipping..."
     continue
   fi
-
   cd $script
   source_env_file
   if ! check_required_env_vars; then
-    echo "One or more required environment variables are missing."
+    bash utils/discord/send.sh "One or more required environment variables are missing."
     continue
   fi
-
   bash main.sh $@
-
 done

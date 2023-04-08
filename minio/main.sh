@@ -16,4 +16,5 @@ else
     mkdir -p $S3_MIRROR_PATH
     nohup mc mirror --overwrite --watch --quiet $S3_MIRROR_PATH dst/$S3_MIRROR_TO_BUCKET > /tmp/minio_mirror.log 2>&1 &
     echo $! > /tmp/minio_mirror.pid
+    bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Minio mirror started"
 fi
