@@ -27,7 +27,7 @@ def execute_command(command: str, authenticated: bool = Depends(authenticate)):
         error = result.stderr
     except CalledProcessError as e:
         raise HTTPException(status_code=500, detail=f"Error executing command: {e}")
-    return {"output": output, "error": error}
+    return {"code": result.returncode, "output": output, "error": error}
 
 @app.post("/run")
 async def start_process(command: str, authenticated: bool = Depends(authenticate)):
