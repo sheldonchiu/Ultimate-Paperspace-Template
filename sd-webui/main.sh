@@ -1,7 +1,7 @@
 #!/bin/bash
 current_dir=$(dirname "$(realpath "$0")")
 if ! [ -e "/tmp/sd-webui.prepared" ]; then
-    bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Preparing Environment for Stable Diffusion WebUI"
+    bash $DISCORD_PATH "Preparing Environment for Stable Diffusion WebUI"
     # Install Python 3.10
     apt-get install -y python3.10 python3.10-venv
     python3.10 -m venv /tmp/sd-webui-env
@@ -28,11 +28,11 @@ else
     source /tmp/sd-webui-env/bin/activate
 fi
 
-bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Downloading Models"
+bash $DISCORD_PATH "Downloading Models"
 bash $SCRIPT_ROOT_DIR/utils/model_download/main.sh
-bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Finished Downloading Models"
+bash $DISCORD_PATH "Finished Downloading Models"
 
 python $SCRIPT_ROOT_DIR/utils/model_download/link_model.py
 
 bash start.sh
-bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Stable Diffusion WebUI Started"
+bash $DISCORD_PATH "Stable Diffusion WebUI Started"

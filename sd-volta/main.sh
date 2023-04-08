@@ -34,9 +34,9 @@ if ! [ -e "/tmp/sd-volta.prepared" ]; then
   fi
 
   
-bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Downloading Models"
+bash $DISCORD_PATH "Downloading Models"
 bash $SCRIPT_ROOT_DIR/utils/model_download/main.sh
-bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Finished Downloading Models"
+bash $DISCORD_PATH "Finished Downloading Models"
 
 python $SCRIPT_ROOT_DIR/utils/model_download/link_model.py
 
@@ -44,5 +44,5 @@ python $SCRIPT_ROOT_DIR/utils/model_download/link_model.py
 cd "$REPO_DIR"
 nohup python main.py > /tmp/sd-volta.log 2>&1 &
 echo $! > /tmp/sd-volta.pid
-bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Stable Diffusion Volta Started"
+bash $DISCORD_PATH "Stable Diffusion Volta Started"
 

@@ -1,7 +1,3 @@
-python3 -m fastchat.serve.controller --host 127.0.0.1
-
-python3 -m fastchat.serve.model_worker --model-path /tmp/vicuna-7b/ --host 127.0.0.1
-
 #!/bin/bash
 
 current_dir=$(dirname "$(realpath "$0")")
@@ -15,7 +11,12 @@ if ! [ -e "/tmp/fastchat.prepared" ]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
 
-    pip3 install fschat
+    # pip3 install fschat
+    cd /tmp
+    git clone https://github.com/sheldonchiu/FastChat.git
+    cd FastChat
+    pip3 install -e .
+
     pip3 install git+https://github.com/huggingface/transformers
 
     cd /tmp
@@ -24,6 +25,7 @@ if ! [ -e "/tmp/fastchat.prepared" ]; then
         git clone https://huggingface.co/sheldonxxxx/llama-vicuna-7b
         model_path=/tmp/llama-vicuna-7b
     fi
+    touch /tmp/fastchat.prepared
 fi
 
 if [ -n "$1" ]; then
@@ -54,5 +56,5 @@ else
     python3 -m fastchat.serve.gradio_web_server --port $FASTCHAT_PORT --model-list-mode reload > /tmp/fastchat_server.log 2>&1 &
     echo $! > /tmp/fastchat_server.pid
 
-    bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Fastchat started"
+    bash $DISCORD_PATH "Fastchat started"
 fi

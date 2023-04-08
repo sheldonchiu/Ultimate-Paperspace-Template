@@ -14,4 +14,4 @@ fi
 nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > /tmp/command.log 2>&1 &
 echo $! > /tmp/command.pid
 
-bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Command server started"
+bash $DISCORD_PATH "Command server started"

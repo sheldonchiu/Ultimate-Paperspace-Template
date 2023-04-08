@@ -37,13 +37,13 @@ if [ "${CF_TOKEN}" = "quick" ]; then
             if [ $? -eq 0 ] && [ "$(echo "$response" | jq -r '.hostname')" != "" ]; then
                 hostname=$(echo "$response" | jq -r '.hostname')
                 echo $hostname > $hostfile
-                bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Cloudflared: Hostname is $hostname for $name"
+                bash $DISCORD_PATH "Cloudflared: Hostname is $hostname for $name"
                 break
             fi
             retries=$((retries+1))
             if [ $retries -ge $max_retries ]; then
                 echo "Error: Failed to get response after $max_retries attempts"
-                bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Cloudflared: Failed to get response after $max_retries attempts"
+                bash $DISCORD_PATH "Cloudflared: Failed to get response after $max_retries attempts"
                 break
             fi
             echo "Failed to get response. Retrying in 5 seconds..."
