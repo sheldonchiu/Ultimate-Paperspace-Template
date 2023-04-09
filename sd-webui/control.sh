@@ -22,7 +22,7 @@ file="/tmp/sd-webui.pid"
 #     fi
 if [ "$1" == "reload" ]; then
     if [ -e "$file" ]; then
-        echo "Reloading Stable Diffusion WebUI with new setting"
+        echo "Reloading Stable Diffusion WebUI"
         pid=$(cat $file)
         kill -TERM $pid
         bash main.sh

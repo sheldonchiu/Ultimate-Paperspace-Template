@@ -29,10 +29,10 @@ else
 fi
 
 bash $DISCORD_PATH "Downloading Models"
-bash $SCRIPT_ROOT_DIR/utils/model_download/main.sh
+bash $current_dir/../utils/model_download/main.sh
 bash $DISCORD_PATH "Finished Downloading Models"
 
-python $SCRIPT_ROOT_DIR/utils/model_download/link_model.py
+python $current_dir/../utils/model_download/link_model.py
 
 bash start.sh
 bash $DISCORD_PATH "Stable Diffusion WebUI Started"
