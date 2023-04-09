@@ -1,10 +1,11 @@
 #!/bin/bash
-set -e
+# set -e
 
 # Get the directory path of the current file
 DIR=$(dirname "$(realpath "$0")")
 
 cd $DIR
+source .env
 # if [ "$1" == "reload" ]; then
 #     if [ -n "$2" ]; then
 #         echo "Reloading Cloudflare tunnel with port $2..."
@@ -29,18 +30,18 @@ cd $DIR
 #         done
 #     fi 
 if [ "$1" == "reload" ]; then
-    if [ -n "$2" ]; then
-        echo "Reloading Cloudflare tunnel with port $2..."
-        pid=$(cat /tmp/cloudflared_{$2}.pid)
-        kill -TERM $pid
-        bash main.sh
-    else
-        for file in /tmp/cloudflared_*.pid; do
+    # if [ -n "$2" ]; then
+    #     echo "Reloading Cloudflare tunnel with port $2..."
+    #     pid=$(cat /tmp/cloudflared_{$2}.pid)
+    #     kill -TERM $pid
+    #     bash main.sh
+    # else
+    for file in /tmp/cloudflared_*.pid; do
             echo "Reloading $file"
             pid=$(cat $file)
             kill -TERM $pid
-            bash main.sh
-        done
+    done
+    bash main.sh
     fi     
 elif [ "$1" == "start" ]; then
     echo "Starting Cloudflare Tunnel..."

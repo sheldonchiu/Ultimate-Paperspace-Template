@@ -57,6 +57,6 @@ else
 
     python3 -m fastchat.serve.gradio_web_server --port $FASTCHAT_PORT --model-list-mode reload > /tmp/fastchat_server.log 2>&1 &
     echo $! > /tmp/fastchat_server.pid
-
+    
     bash $DISCORD_PATH "Fastchat started"
 fi
