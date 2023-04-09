@@ -26,6 +26,8 @@ if ! [ -e "/tmp/fastchat.prepared" ]; then
         model_path=/tmp/llama-vicuna-7b
     fi
     touch /tmp/fastchat.prepared
+else
+    source /tmp/fastchat-env/bin/activate
 fi
 
 if [ -n "$1" ]; then

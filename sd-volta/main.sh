@@ -32,6 +32,9 @@ if ! [ -e "/tmp/sd-volta.prepared" ]; then
     git fetch
     git checkout "${UPDATE_REPO_COMMIT}"
   fi
+else
+  source /tmp/fastchat-env/bin/activate
+fi
 
   
 bash $DISCORD_PATH "Downloading Models"

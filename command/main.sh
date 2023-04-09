@@ -9,6 +9,8 @@ if ! [ -e "/tmp/command.prepared" ]; then
     pip install --upgrade wheel setuptools
     pip install fastapi uvicorn[standard]
     touch /tmp/command.prepared
+else
+    source /tmp/command-env/bin/activate
 fi
 
 nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > /tmp/command.log 2>&1 &

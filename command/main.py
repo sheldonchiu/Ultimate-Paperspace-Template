@@ -1,10 +1,14 @@
 import os
+from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from subprocess import PIPE, run, CalledProcessError
 
 app = FastAPI()
 security = HTTPBasic()
+
+class Command(BaseModel):
+    command: str
 
 username = os.environ['COMMAND_USERNAME']
 password = os.environ['COMMAND_PASSWORD']
@@ -18,11 +22,11 @@ def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
     return True
 
 # define a route that executes a command and returns the output
-@app.get("/execute")
-def execute_command(command: str, authenticated: bool = Depends(authenticate)):
+@app.post("/execute")
+def execute_command(command: Command, authenticated: bool = Depends(authenticate)):
     """Execute a command and return the output"""
     try:
-        result = run(command, shell=True, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+        result = run(command.command, shell=True, stdout=PIPE, stderr=PIPE, universal_newlines=True)
         output = result.stdout
         error = result.stderr
     except CalledProcessError as e:
@@ -30,10 +34,10 @@ def execute_command(command: str, authenticated: bool = Depends(authenticate)):
     return {"code": result.returncode, "output": output, "error": error}
 
 @app.post("/run")
-async def start_process(command: str, authenticated: bool = Depends(authenticate)):
+async def start_process(command: Command, authenticated: bool = Depends(authenticate)):
     """Start a background process"""
     try:
-        run(command, shell=True, check=False)
+        run(command.command, shell=True, check=False)
     except CalledProcessError as e:
         raise HTTPException(status_code=500, detail=f"Error starting process: {e}")
     return {"message": "Process started in the background."}
