@@ -33,6 +33,7 @@ if [ "${CF_TOKEN}" = "quick" ]; then
         retries=0
         max_retries=10
         while true; do
+            sleep 5
             response=$(curl http://localhost:${metrics_port}/quicktunnel || true)
             if [ $? -eq 0 ] && [ "$(echo "$response" | jq -r '.hostname')" != "" ]; then
                 hostname=$(echo "$response" | jq -r '.hostname')

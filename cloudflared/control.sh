@@ -42,7 +42,6 @@ if [ "$1" == "reload" ]; then
             kill -TERM $pid
     done
     bash main.sh
-    fi     
 elif [ "$1" == "start" ]; then
     echo "Starting Cloudflare Tunnel..."
     source .env
