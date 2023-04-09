@@ -52,5 +52,5 @@ if [ "${CF_TOKEN}" = "quick" ]; then
     done
 else
     cloudflared service install "$CF_TOKEN"
-    bash $SCRIPT_ROOT_DIR/utils/discord/send.sh "Cloudflared: Running as a service"
+    bash $DISCORD_PATH/utils/discord/send.sh "Cloudflared: Running as a service"
 fi

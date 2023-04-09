@@ -42,4 +42,5 @@ do
   source_env_file
 done
 
+cd $SCRIPT_ROOT_DIR
 bash cloudflared/control.sh reload
