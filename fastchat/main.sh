@@ -12,11 +12,11 @@ if ! [ -e "/tmp/fastchat.prepared" ]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
 
-    # pip3 install fschat
-    cd /tmp
-    git clone https://github.com/sheldonchiu/FastChat.git
-    cd FastChat
-    pip3 install -e .
+    pip3 install fschat
+    # cd /tmp
+    # git clone https://github.com/sheldonchiu/FastChat.git
+    # cd FastChat
+    # pip3 install -e .
 
     pip3 install git+https://github.com/huggingface/transformers
 
@@ -30,6 +30,14 @@ if ! [ -e "/tmp/fastchat.prepared" ]; then
     touch /tmp/fastchat.prepared
 else
     source /tmp/fastchat-env/bin/activate
+fi
+
+bash $DISCORD_PATH "Downloading Models for FastChat"
+cd /tmp
+if [[ "$FASTCHAT_MODEL" == "vicuna-7b" ]]; then
+    git lfs install
+    git clone https://huggingface.co/sheldonxxxx/llama-vicuna-7b
+    model_path=/tmp/llama-vicuna-7b
 fi
 
 bash $DISCORD_PATH "FastChat is starting"
