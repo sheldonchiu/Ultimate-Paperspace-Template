@@ -16,7 +16,7 @@ if __name__ == "__main__":
         print("Please set HF_TARGET_REPO environment variable")
         sys.exit(1)
     else:
-        api.create_repo(name=target_repo, private=target_repo_is_private != None, exist_ok=True)
+        api.create_repo(repo_id=target_repo, private=target_repo_is_private != None, exist_ok=True)
         
     if target_folder_path is not None:
         target_folder_path = target_folder_path.strip()

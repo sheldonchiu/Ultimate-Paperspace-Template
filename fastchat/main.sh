@@ -4,6 +4,7 @@ current_dir=$(dirname "$(realpath "$0")")
 
 # Install Python 3.10
 if ! [ -e "/tmp/fastchat.prepared" ]; then
+    bash $DISCORD_PATH "Preparing Environment for FastChat"
     apt-get install -y python3.10 python3.10-venv
     python3.10 -m venv /tmp/fastchat-env
     source /tmp/fastchat-env/bin/activate
@@ -19,6 +20,7 @@ if ! [ -e "/tmp/fastchat.prepared" ]; then
 
     pip3 install git+https://github.com/huggingface/transformers
 
+    bash $DISCORD_PATH "Downloading Models for FastChat"
     cd /tmp
     if [[ "$FASTCHAT_MODEL" == "vicuna-7b" ]]; then
         git lfs install
@@ -29,6 +31,8 @@ if ! [ -e "/tmp/fastchat.prepared" ]; then
 else
     source /tmp/fastchat-env/bin/activate
 fi
+
+bash $DISCORD_PATH "FastChat is starting"
 
 if [ -n "$1" ]; then
     case $1 in

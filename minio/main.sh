@@ -14,7 +14,7 @@ if [[ -z "${S3_MIRROR_PATH}" || -z "${S3_MIRROR_TO_BUCKET}" ]]; then
     echo "ENV S3_MIRROR_PATH or S3_MIRROR_TO_BUCKET not provided, skipping minio mirror"
 else
     mkdir -p $S3_MIRROR_PATH
-    nohup mc mirror --overwrite --watch --quiet $S3_MIRROR_PATH dst/$S3_MIRROR_TO_BUCKET > /tmp/minio_mirror.log 2>&1 &
-    echo $! > /tmp/minio_mirror.pid
+    nohup mc mirror --overwrite --watch --quiet $S3_MIRROR_PATH dst/$S3_MIRROR_TO_BUCKET > /tmp/minio.log 2>&1 &
+    echo $! > /tmp/minio.pid
     bash $DISCORD_PATH "Minio mirror started"
 fi
