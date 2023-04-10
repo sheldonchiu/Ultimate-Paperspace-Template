@@ -95,6 +95,9 @@ export CF_TOKEN="quick"
 bash entry.sh
 ```
 
+## Contributing
+If you have an idea for a new feature or have found a bug, please open an issue or submit a pull request.
+
 ## Acknowledgements
 Stable diffusion Webui setup is based on the following repository:
 
