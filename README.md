@@ -13,6 +13,7 @@ This repository contains scripts to automatically configure your Paperspace note
 4. Sync to Minio Storage
 5. More to come...
 
+WEB UI for this repo: https://github.com/sheldonchiu/paperspace-web
 ## Getting Started
 * Paperspace Console -> Create Notebook -> Advanced options -> Workspace -> Workspace URL: **This repository URL**
 <div align="center"> 
