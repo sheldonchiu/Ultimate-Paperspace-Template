@@ -31,7 +31,7 @@ else:
 fi
 
 cd /tmp/text-generation-webui
-python server.py --model
+python server.py --model 
   
 # bash $current_dir/../utils/model_download/main.sh
 # python $current_dir/../utils/model_download/link_model.py
