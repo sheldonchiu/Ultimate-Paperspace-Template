@@ -67,14 +67,14 @@ for model in "${models[@]}"
 do
     cd /tmp
     if [[ "$model" == "vicuna-7b" ]]; then
-        SYMLINKS=("/tmp/llama-vicuna-7b:$REPO_DIR/models/llama-vicuna-7b") \
+        SYMLINKS="/tmp/llama-vicuna-7b:$REPO_DIR/models/llama-vicuna-7b" \
         TARGET_REPO_DIR="/tmp/llama-vicuna-7b" \
         TARGET_REPO_BRANCH="main" \
         TARGET_REPO_URL="https://huggingface.co/sheldonxxxx/llama-vicuna-7b" \
         bash $current_dir/../utils/prepare_repo.sh
         model_name="llama-vicuna-7b"
     elif [[ "$model" == "vicuna-13b" ]]; then
-        SYMLINKS=("/tmp/llama-vicuna-13b:$REPO_DIR/models/vicuna-13b") \
+        SYMLINKS="/tmp/llama-vicuna-13b:$REPO_DIR/models/vicuna-13b" \
         TARGET_REPO_DIR="/tmp/vicuna-13b" \
         TARGET_REPO_BRANCH="main" \
         TARGET_REPO_URL="https://huggingface.co/eachadea/vicuna-13b" \
@@ -82,7 +82,7 @@ do
         model_name="vicuna-13b"
         args="--load-in-8bit"
     elif [[ "$model" == "vicuna-13b-GPTQ-4bit-128g" ]]; then
-        SYMLINKS=("/tmp/vicuna-13b-GPTQ-4bit-128g:$REPO_DIR/models/vicuna-13b-GPTQ-4bit-128g") \
+        SYMLINKS="/tmp/vicuna-13b-GPTQ-4bit-128g:$REPO_DIR/models/vicuna-13b-GPTQ-4bit-128g" \
         TARGET_REPO_DIR="/tmp/vicuna-13b-GPTQ-4bit-128g" \
         TARGET_REPO_BRANCH="main" \
         TARGET_REPO_URL="https://huggingface.co/anon8231489123/vicuna-13b-GPTQ-4bit-128g" \
@@ -91,14 +91,15 @@ do
         args="--wbits 4 --groupsize 128"
     elif [[ "$model" == "vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g" ]]; then
         GIT_LFS_SKIP_SMUDGE=1 \
-        SYMLINKS=("/tmp/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g:$REPO_DIR/models/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g") \
+        SYMLINKS="/tmp/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g:$REPO_DIR/models/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g" \
         TARGET_REPO_DIR="/tmp/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g" \
         TARGET_REPO_BRANCH="main" \
         TARGET_REPO_URL="https://huggingface.co/TheBloke/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/" \
         bash $current_dir/../utils/prepare_repo.sh
         cd vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g
-        wget https://huggingface.co/TheBloke/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/resolve/main/tokenizer.model
-        wget https://huggingface.co/TheBloke/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/resolve/main/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g.safetensors
+        rm vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g.no-act-order.pt
+        wget -nc https://huggingface.co/TheBloke/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/resolve/main/tokenizer.model
+        wget -nc https://huggingface.co/TheBloke/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/resolve/main/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g.safetensors
         model_name="vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g"
         args="--wbits 4 --groupsize 128"
     fi
