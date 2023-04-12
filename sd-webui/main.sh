@@ -12,7 +12,20 @@ if ! [ -e "/tmp/sd-webui.prepared" ]; then
     pip install requests gdown bs4
     pip uninstall -y torch torchvision torchaudio protobuf lxml
     
-    bash prepare_repo.sh
+    symlinks=(
+        "$WEBUI_DIR:/notebooks/stable-diffusion-webui"
+        "$WEBUI_DIR/outputs:/notebooks/outputs"
+        "$WEBUI_DIR/log:$WEBUI_DIR/outputs/log"
+        "/storage:/notebooks/storage"
+        "$MODEL_DIR:/notebooks/models"
+    )
+    SYMLINKS=$symlinks \
+    TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \
+    TARGET_REPO_DIR=$WEBUI_DIR \
+    UPDATE_REPO=$SD_WEBUI_UPDATE_REPO \
+    UPDATE_REPO_COMMIT=$SD_WEBUI_UPDATE_REPO_COMMIT \
+    bash $current_dir/../utils/prepare_repo.sh
+
     export PYTHONPATH="$PYTHONPATH:$WEBUI_DIR"
     # must run inside webui dir since env['PYTHONPATH'] = os.path.abspath(".") existing in launch.py
     cd $WEBUI_DIR
