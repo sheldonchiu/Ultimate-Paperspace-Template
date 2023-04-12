@@ -3,17 +3,17 @@ set -e
 
 kill_pid() {
     # Read the pid from a file
-    if [ -f $1 ]; then
+    if [[ -f $1 ]]; then
         pid=$(cat $1)
     else
         echo "Error: PID file $1 not found!"
-        return 1
+        return 
     fi
 
     # Check if the process has exited
     if ps -p $pid -o pid,comm | grep -q $pid; then
         echo "Error: Process $pid has already exited."
-        return 1
+        return 
     fi
 
     # Kill the process
@@ -29,13 +29,13 @@ cd $DIR
 source .env
 file="/tmp/minio.pid"
 
-if [ "$1" == "reload" ]; then
+if [[ $1 == "reload" ]]; then
     kill_pid $file
     bash main.sh
-elif [ "$1" == "start" ]; then
+elif [[ $1 == "start" ]]; then
     echo "Starting Minio sync..."
     bash main.sh
-elif [ "$1" == "stop" ]; then
+elif [[ $1 == "stop" ]]; then
     kill_pid $file
 else
   echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"

@@ -3,7 +3,7 @@ set -e
 
 kill_pid() {
     # Read the pid from a file
-    if [ -f $1 ]; then
+    if [[ -f $1 ]]; then
         pid=$(cat $1)
     else
         echo "Error: PID file $1 not found!"
@@ -29,17 +29,17 @@ cd $DIR
 source .env
 file="/tmp/sd-webui.pid"
 
-if [ "$1" == "reload" ]; then
+if [[ $1 == "reload" ]]; then
     kill_pid $file
     bash main.sh
-elif [ "$1" == "reload_all" ]; then
+elif [[ $1 == "reload_all" ]]; then
     echo "Reinstalling Stable Diffusion WebUI"
     kill_pid $file
     rm /tmp/sd-webui.prepared
     bash main.sh
-elif [ "$1" == "start" ]; then
+elif [[ $1 == "start" ]]; then
     bash main.sh
-elif [ "$1" == "stop" ]; then
+elif [[ $1 == "stop" ]]; then
     kill_pid $file
 else
   echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"

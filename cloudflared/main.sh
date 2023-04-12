@@ -3,21 +3,22 @@ set -e
 
 cd /tmp
 
-if ! [ -e "/tmp/cloudflared.prepared" ]; then
+echo "Preparing cloudflared..."
+if ! [[ -e "/tmp/cloudflared.prepared" ]]; then
     curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
     dpkg -i cloudflared.deb
     touch /tmp/cloudflared.prepared
 fi
+echo "cloudflared prepared."
 
-if [ "${CF_TOKEN}" = "quick" ]; then
+if [[ $CF_TOKEN == "quick" ]]; then
     # Split EXPOSE_PORTS into an array using ':' as the delimiter
     IFS=':' read -ra names <<< "$PORT_MAPPING"
     IFS=':' read -ra ports <<< "$EXPOSE_PORTS"
 
     # Loop over the ports array
     paste <(printf '%s\n' "${names[@]}") <(printf '%s\n' "${ports[@]}") | while IFS=$'\t' read -r name port; do
-    # for var in "${ports[@]}"; do
-        if [ "$port" = "" ]; then
+        if [[ $port == "" ]]; then
             continue
         fi
         metrics_port=$((port+1))
@@ -27,10 +28,11 @@ if [ "${CF_TOKEN}" = "quick" ]; then
         logfile="/tmp/cloudflared_${name}.log"
         hostfile="/tmp/cloudflared_${name}.host"
 
-        if [ -f $pidfile ]; then
+        if [[ -f $pidfile ]]; then
             pid=$(cat $pidfile)
             # Only start the tunnel if the process is not running
             if ps -p $pid -o pid,comm | grep -q $pid; then
+                echo "Starting cloudflared tunnel for $name..."
                 # Start cloudflared tunnel in the background
                 nohup cloudflared tunnel --url http://localhost:${port} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
 
@@ -40,14 +42,14 @@ if [ "${CF_TOKEN}" = "quick" ]; then
                 while true; do
                     sleep 5
                     response=$(curl http://localhost:${metrics_port}/quicktunnel || true)
-                    if [ $? -eq 0 ] && [ "$(echo "$response" | jq -r '.hostname')" != "" ]; then
+                    if [[ $? -eq 0 ]] && [[ "$(echo "$response" | jq -r '.hostname')" != "" ]]; then
                         hostname=$(echo "$response" | jq -r '.hostname')
                         echo $hostname > $hostfile
                         bash $DISCORD_PATH "Cloudflared: Hostname is $hostname for $name"
                         break
                     fi
                     retries=$((retries+1))
-                    if [ $retries -ge $max_retries ]; then
+                    if [[ $retries -ge $max_retries ]]; then
                         echo "Error: Failed to get response after $max_retries attempts"
                         bash $DISCORD_PATH "Cloudflared: Failed to get response after $max_retries attempts"
                         break
@@ -55,6 +57,8 @@ if [ "${CF_TOKEN}" = "quick" ]; then
                     echo "Failed to get response. Retrying in 5 seconds..."
                     sleep 5
                 done
+            else
+                echo "Cloudflared tunnel for $name is already running."
             fi
         fi
     done

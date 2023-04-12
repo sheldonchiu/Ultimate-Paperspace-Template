@@ -1,19 +1,19 @@
-#!/bin/bash
+#!/bin/bashthen
 set -e
 
 kill_pid() {
     # Read the pid from a file
-    if [ -f $1 ]; then
+    if [[ -f $1 ]]; then
         pid=$(cat $1)
     else
         echo "Error: PID file $1 not found!"
-        return 1
+        return
     fi
 
     # Check if the process has exited
     if ps -p $pid -o pid,comm | grep -q $pid; then
         echo "Error: Process $pid has already exited."
-        return 1
+        return
     fi
 
     # Kill the process
@@ -29,13 +29,15 @@ cd $DIR
 source .env
 file="/tmp/command.pid"
 
-if [ "$1" == "reload" ]; then
+if [[ $1 == "reload" ]]; then
+    echo "Reloading Command Server..."
     kill_pid $file
     bash main.sh
-elif [ "$1" == "start" ]; then
+elif [[ $1 == "start" ]]; then
     echo "Starting Command Server..."
     bash main.sh
-elif [ "$1" == "stop" ]; then
+elif [[ $1 == "stop" ]]; then
+    echo "Stopping Command Server..."
     kill_pid $file
 else
   echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"

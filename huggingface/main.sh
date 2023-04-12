@@ -5,7 +5,8 @@ current_dir=$(dirname "$(realpath "$0")")
 cd $current_dir
 source .env
 
-if ! [ -e "/tmp/huggingface.prepared" ]; then
+echo "Setting up HuggingFace Hub..."
+if ! [[ -e "/tmp/huggingface.prepared" ]]; then
     apt-get install -y python3.10 python3.10-venv
     python3.10 -m venv /tmp/huggingface-env
     source /tmp/huggingface-env/bin/activate
@@ -18,6 +19,7 @@ else
     source /tmp/huggingface-env/bin/activate
 fi
 
+echo "Starting uploading to HuggingFace Hub..."
 python $current_dir/upload.py
 
-bash $DISCORD_PATH "Files uploaded to HuggingFace Hub"
+echo "Files uploaded to HuggingFace Hub"

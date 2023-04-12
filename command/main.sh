@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-if ! [ -e "/tmp/command.prepared" ]; then
+echo "Setting up Command Server..."
+if ! [[ -e "/tmp/command.prepared" ]]; then
     apt-get install -y python3.10 python3.10-venv
     python3.10 -m venv /tmp/command-env
     source /tmp/command-env/bin/activate
@@ -13,6 +14,7 @@ if ! [ -e "/tmp/command.prepared" ]; then
 else
     source /tmp/command-env/bin/activate
 fi
+echo "Command Server setup complete."
 
 nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > /tmp/command.log 2>&1 &
 echo $! > /tmp/command.pid

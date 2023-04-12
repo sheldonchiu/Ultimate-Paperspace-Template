@@ -3,9 +3,8 @@ set -e
 
 current_dir=$(dirname "$(realpath "$0")")
 
-# Install Python 3.10
-if ! [ -e "/tmp/fastchat.prepared" ]; then
-    bash $DISCORD_PATH "Preparing Environment for FastChat"
+echo "Preparing Environment for FastChat"
+if ! [[ -e "/tmp/fastchat.prepared" ]]; then
     apt-get install -y python3.10 python3.10-venv
     python3.10 -m venv /tmp/fastchat-env
     source /tmp/fastchat-env/bin/activate
@@ -20,29 +19,27 @@ if ! [ -e "/tmp/fastchat.prepared" ]; then
 else
     source /tmp/fastchat-env/bin/activate
 fi
+echo "Environment for FastChat is ready"
 
 args=""
 
-bash $DISCORD_PATH "Downloading Models for FastChat"
+echo "Downloading Models for FastChat"
 cd /tmp
-if [[ "$FASTCHAT_MODEL" == "vicuna-7b" ]]; then
-    git lfs install
+if [[ $FASTCHAT_MODEL == "vicuna-7b" ]]; then
     git clone https://huggingface.co/sheldonxxxx/llama-vicuna-7b
     model_path=/tmp/llama-vicuna-7b
-elif [[ "$FASTCHAT_MODEL" == "vicuna-13b" ]]; then
-    git lfs install
+elif [[ $FASTCHAT_MODEL == "vicuna-13b" ]]; then
     git clone https://huggingface.co/eachadea/vicuna-13b
     model_path=/tmp/vicuna-13b
     args="--load-8bit"
-elif [[ "$FASTCHAT_MODEL" == "chatglm-6b" ]]; then
-    git lfs install
+elif [[ $FASTCHAT_MODEL == "chatglm-6b" ]]; then
     git clone https://huggingface.co/THUDM/chatglm-6b
     model_path=/tmp/chatglm-6b
 fi
 
 bash $DISCORD_PATH "FastChat is starting"
 
-if [ -n "$1" ]; then
+if [[ -n $1 ]]; then
     case $1 in
         "controller")
             nohup python3 -m fastchat.serve.controller --host 127.0.0.1 > /tmp/fastchat_controller.log 2>&1 &

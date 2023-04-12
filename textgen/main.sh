@@ -5,20 +5,20 @@ create_symlink() {
     local src=$1
     local dest=$2
 
-    mkdir -p "$src"
-    if [ -L "$dest" ] && [ ! -e "$dest" ]; then # -e validates a symlink
+    mkdir -p $src
+    if [[ -L $dest ]] && [[ ! -e $dest ]]; then # -e validates a symlink
         echo "Symlink broken, removing: $dest"
-        rm "$dest"
+        rm $dest
     fi
-    if [ ! -e "$dest" ]; then
-        ln -s "$src" "$dest"
+    if [[ ! -e $dest ]]; then
+        ln -s $src $dest
     fi
 }
 
 current_dir=$(dirname "$(realpath "$0")")
 
-# Install Python 3.10
-if ! [ -e "/tmp/textgen.prepared" ]; then
+echo "Setting up Text generation Webui..."
+if ! [[ -e "/tmp/textgen.prepared" ]]; then
     apt-get install -y python3.10 python3.10-dev python3.10-venv
     python3.10 -m venv /tmp/textgen-env
     source /tmp/textgen-env/bin/activate
@@ -51,9 +51,10 @@ if ! [ -e "/tmp/textgen.prepared" ]; then
 else
     source /tmp/textgen-env/bin/activate
 fi
+echo "Finished setting up Text generation Webui"
 
 args=""
-bash $DISCORD_PATH "Downloading Models for Text generation Webui..."
+echo "Downloading Models for Text generation Webui..."
 mkdir -p $REPO_DIR/models
 IFS=',' read -ra models <<< "$FASTCHAT_MODEL"
 for model in "${models[@]}"
@@ -83,7 +84,11 @@ do
         args="--wbits 4 --groupsize 128"
     fi
 done
+echo "Finished downloading Models for Text generation Webui"
 
+echo "Starting Text generation Webui..."
 cd $REPO_DIR
 nohup python server.py --model model_name $args > /tmp/textgen.log 2>&1 &
 echo $! > /tmp/textgen.pid
+
+echo "Text generation Webui started"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! [ -e "/tmp/kohya.prepared" ]; then
+if ! [[ -e "/tmp/kohya.prepared" ]]; then
     apt-get install -qq pigz -y > /dev/null
 
     apt-get install -y -qq python3.10 python3.10-venv > /dev/null

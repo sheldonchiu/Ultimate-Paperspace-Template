@@ -2,9 +2,8 @@
 set -e
 
 current_dir=$(dirname "$(realpath "$0")")
-if ! [ -e "/tmp/sd-webui.prepared" ]; then
-    bash $DISCORD_PATH "Preparing Environment for Stable Diffusion WebUI"
-    # Install Python 3.10
+echo "Preparing Environment for Stable Diffusion WebUI"
+if ! [[ -e "/tmp/sd-webui.prepared" ]]; then
     apt-get install -y python3.10 python3.10-venv
     python3.10 -m venv /tmp/sd-webui-env
     source /tmp/sd-webui-env/bin/activate
@@ -34,20 +33,21 @@ if ! [ -e "/tmp/sd-webui.prepared" ]; then
     python $current_dir/preinstall.py
     cd $current_dir
 
-    if [ -n "${ACTIVATE_XFORMERS}" ]; then
-        pip install xformers==0.0.16
+    if [[ -n "${ACTIVATE_XFORMERS}" ]]; then
+        pip install xformers==0.0.18
     fi
 
     touch /tmp/sd-webui.prepared
 else
     source /tmp/sd-webui-env/bin/activate
 fi
+echo "Finished Preparing Environment for Stable Diffusion WebUI"
 
-bash $DISCORD_PATH "Downloading Models"
+echo "Downloading Models for Stable Diffusion WebUI"
 bash $current_dir/../utils/model_download/main.sh
-bash $DISCORD_PATH "Finished Downloading Models"
+echo "Finished Downloading Models for Stable Diffusion WebUI"
 
 python $current_dir/../utils/model_download/link_model.py
 
 bash start.sh
-bash $DISCORD_PATH "Stable Diffusion WebUI Started"
+echo "Stable Diffusion WebUI Started"
