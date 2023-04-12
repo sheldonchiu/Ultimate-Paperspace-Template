@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 current_dir=$(dirname "$(realpath "$0")")
 if ! [ -e "/tmp/sd-webui.prepared" ]; then
     bash $DISCORD_PATH "Preparing Environment for Stable Diffusion WebUI"

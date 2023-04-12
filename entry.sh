@@ -1,4 +1,5 @@
 #!/bin/bash
+# Don't exit on error
 
 function source_env_file() {
   if [ -e ".env" ]; then

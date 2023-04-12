@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 cd /tmp
 
@@ -26,30 +27,36 @@ if [ "${CF_TOKEN}" = "quick" ]; then
         logfile="/tmp/cloudflared_${name}.log"
         hostfile="/tmp/cloudflared_${name}.host"
 
-        # Start cloudflared tunnel in the background
-        nohup cloudflared tunnel --url http://localhost:${port} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
+        if [ -f $pidfile ]; then
+            pid=$(cat $pidfile)
+            # Only start the tunnel if the process is not running
+            if ps -p $pid -o pid,comm | grep -q $pid; then
+                # Start cloudflared tunnel in the background
+                nohup cloudflared tunnel --url http://localhost:${port} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
 
-        # Wait for the tunnel to become available
-        retries=0
-        max_retries=10
-        while true; do
-            sleep 5
-            response=$(curl http://localhost:${metrics_port}/quicktunnel || true)
-            if [ $? -eq 0 ] && [ "$(echo "$response" | jq -r '.hostname')" != "" ]; then
-                hostname=$(echo "$response" | jq -r '.hostname')
-                echo $hostname > $hostfile
-                bash $DISCORD_PATH "Cloudflared: Hostname is $hostname for $name"
-                break
+                # Wait for the tunnel to become available
+                retries=0
+                max_retries=10
+                while true; do
+                    sleep 5
+                    response=$(curl http://localhost:${metrics_port}/quicktunnel || true)
+                    if [ $? -eq 0 ] && [ "$(echo "$response" | jq -r '.hostname')" != "" ]; then
+                        hostname=$(echo "$response" | jq -r '.hostname')
+                        echo $hostname > $hostfile
+                        bash $DISCORD_PATH "Cloudflared: Hostname is $hostname for $name"
+                        break
+                    fi
+                    retries=$((retries+1))
+                    if [ $retries -ge $max_retries ]; then
+                        echo "Error: Failed to get response after $max_retries attempts"
+                        bash $DISCORD_PATH "Cloudflared: Failed to get response after $max_retries attempts"
+                        break
+                    fi
+                    echo "Failed to get response. Retrying in 5 seconds..."
+                    sleep 5
+                done
             fi
-            retries=$((retries+1))
-            if [ $retries -ge $max_retries ]; then
-                echo "Error: Failed to get response after $max_retries attempts"
-                bash $DISCORD_PATH "Cloudflared: Failed to get response after $max_retries attempts"
-                break
-            fi
-            echo "Failed to get response. Retrying in 5 seconds..."
-            sleep 5
-        done
+        fi
     done
 else
     cloudflared service install "$CF_TOKEN"

@@ -1,32 +1,42 @@
 #!/bin/bash
 set -e
 
+kill_pid() {
+    # Read the pid from a file
+    if [ -f $1 ]; then
+        pid=$(cat $1)
+    else
+        echo "Error: PID file $1 not found!"
+        return 1
+    fi
+
+    # Check if the process has exited
+    if ps -p $pid -o pid,comm | grep -q $pid; then
+        echo "Error: Process $pid has already exited."
+        return 1
+    fi
+
+    # Kill the process
+    kill -TERM $pid
+
+    echo "Process $pid has been killed."
+}
+
 # Get the directory path of the current file
 DIR=$(dirname "$(realpath "$0")")
 
 cd $DIR
 source .env
-file="/tmp/minio_mirror.pid"
+file="/tmp/minio.pid"
 
 if [ "$1" == "reload" ]; then
-    if [ -e "$file" ]; then
-        echo "Reloading Minio Sync"
-        pid=$(cat $file)
-        kill -TERM $pid
-        bash main.sh
-    else
-        echo "No Minio sync is running, installing..."
-        bash main.sh
-    fi
+    kill_pid $file
+    bash main.sh
 elif [ "$1" == "start" ]; then
     echo "Starting Minio sync..."
     bash main.sh
 elif [ "$1" == "stop" ]; then
-    if [ -e "$file" ]; then
-        echo "Stopping Minio sync"
-        pid=$(cat $file)
-        kill -TERM $pid
-    fi
+    kill_pid $file
 else
   echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"
 fi

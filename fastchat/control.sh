@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 kill_pid() {
     # Read the pid from a file

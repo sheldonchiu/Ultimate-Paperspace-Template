@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if ! [ -e "/tmp/command.prepared" ]; then
     apt-get install -y python3.10 python3.10-venv

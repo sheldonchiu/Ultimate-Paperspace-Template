@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 current_dir=$(dirname "$(realpath "$0")")
 

@@ -27,16 +27,16 @@ DIR=$(dirname "$(realpath "$0")")
 
 cd $DIR
 source .env
-file="/tmp/sd-webui.pid"
+file="/tmp/textgen.pid"
 
 if [ "$1" == "reload" ]; then
     kill_pid $file
     bash main.sh
-elif [ "$1" == "reload_all" ]; then
-    echo "Reinstalling Stable Diffusion WebUI"
-    kill_pid $file
-    rm /tmp/sd-webui.prepared
-    bash main.sh
+# elif [ "$1" == "reload_all" ]; then
+#     echo "Reinstalling Stable Diffusion WebUI"
+#     kill_pid $file
+#     rm $file
+#     bash main.sh
 elif [ "$1" == "start" ]; then
     bash main.sh
 elif [ "$1" == "stop" ]; then

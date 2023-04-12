@@ -1,4 +1,19 @@
 #!/bin/bash
+set -e
+
+create_symlink() {
+    local src=$1
+    local dest=$2
+
+    mkdir -p "$src"
+    if [ -L "$dest" ] && [ ! -e "$dest" ]; then # -e validates a symlink
+        echo "Symlink broken, removing: $dest"
+        rm "$dest"
+    fi
+    if [ ! -e "$dest" ]; then
+        ln -s "$src" "$dest"
+    fi
+}
 
 current_dir=$(dirname "$(realpath "$0")")
 
@@ -14,7 +29,8 @@ if ! [ -e "/tmp/textgen.prepared" ]; then
     pip3 install torch torchvision torchaudio
 
     TARGET_REPO_DIR=$REPO_DIR \
-    TARGET_REPO_URL="https://github.com/oobabooga/text-generation-webui"
+    TARGET_REPO_BRANCH="main" \
+    TARGET_REPO_URL="https://github.com/oobabooga/text-generation-webui" \
     UPDATE_REPO=$TEXTGEN_UPDATE_REPO \
     UPDATE_REPO_COMMIT=$TEXTGEN_UPDATE_REPO_COMMIT \
     bash $current_dir/../utils/prepare_repo.sh
@@ -28,34 +44,33 @@ if ! [ -e "/tmp/textgen.prepared" ]; then
     cd GPTQ-for-LLaMa
     python setup_cuda.py install
 
+    pip install deepspeed
+
     touch /tmp/textgen.prepared
 
-else:
+else
     source /tmp/textgen-env/bin/activate
 fi
 
 args=""
 bash $DISCORD_PATH "Downloading Models for Text generation Webui..."
-mkdir =p $REPO_DIR/models
+mkdir -p $REPO_DIR/models
 IFS=',' read -ra models <<< "$FASTCHAT_MODEL"
 for model in "${models[@]}"
 do
     cd /tmp
     if [[ "$model" == "vicuna-7b" ]]; then
-        git lfs install
         git clone https://huggingface.co/sheldonxxxx/llama-vicuna-7b
-        ln -s /tmp/llama-vicuna-7b $REPO_DIR/models/llama-vicuna-7b
+        create_symlink /tmp/llama-vicuna-7b $REPO_DIR/models/llama-vicuna-7b
         model_name="llama-vicuna-7b"
     elif [[ "$model" == "vicuna-13b" ]]; then
-        git lfs install
         git clone https://huggingface.co/eachadea/vicuna-13b
-        ln -s /tmp/vicuna-13b $REPO_DIR/models/vicuna-13b
+        create_symlink /tmp/vicuna-13b $REPO_DIR/models/vicuna-13b
         model_name="vicuna-13b"
         args="--load-in-8bit"
     elif [[ "$model" == "vicuna-13b-GPTQ-4bit-128g" ]]; then
-        git lfs install
         git clone https://huggingface.co/anon8231489123/vicuna-13b-GPTQ-4bit-128g
-        ln -s /tmp/vicuna-13b-GPTQ-4bit-128g $REPO_DIR/models/vicuna-13b-GPTQ-4bit-128g
+        create_symlink /tmp/vicuna-13b-GPTQ-4bit-128g $REPO_DIR/models/vicuna-13b-GPTQ-4bit-128g
         model_name="vicuna-13b-GPTQ-4bit-128g"
         args="--wbits 4 --groupsize 128"
     elif [[ "$model" == "vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g" ]]; then
@@ -63,6 +78,7 @@ do
         cd vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g
         wget https://huggingface.co/TheBloke/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/resolve/main/tokenizer.model
         wget https://huggingface.co/TheBloke/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/resolve/main/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g.safetensors
+        create_symlink /tmp/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g $REPO_DIR/models/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g
         model_name="vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g"
         args="--wbits 4 --groupsize 128"
     fi

@@ -1,6 +1,27 @@
 #!/bin/bash
 set -e
 
+kill_pid() {
+    # Read the pid from a file
+    if [ -f $1 ]; then
+        pid=$(cat $1)
+    else
+        echo "Error: PID file $1 not found!"
+        return 1
+    fi
+
+    # Check if the process has exited
+    if ps -p $pid -o pid,comm | grep -q $pid; then
+        echo "Error: Process $pid has already exited."
+        return 1
+    fi
+
+    # Kill the process
+    kill -TERM $pid
+
+    echo "Process $pid has been killed."
+}
+
 # Get the directory path of the current file
 DIR=$(dirname "$(realpath "$0")")
 
@@ -9,24 +30,13 @@ source .env
 file="/tmp/command.pid"
 
 if [ "$1" == "reload" ]; then
-    if [ -e "$file" ]; then
-        echo "Reloading Command Server"
-        pid=$(cat $file)
-        kill -TERM $pid
-        bash main.sh
-    else
-        echo "No Command Server is running, installing..."
-        bash main.sh
-    fi
+    kill_pid $file
+    bash main.sh
 elif [ "$1" == "start" ]; then
     echo "Starting Command Server..."
     bash main.sh
 elif [ "$1" == "stop" ]; then
-    if [ -e "$file" ]; then
-        echo "Stopping Command Server"
-        pid=$(cat $file)
-        kill -TERM $pid
-    fi
+    kill_pid $file
 else
   echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"
 fi

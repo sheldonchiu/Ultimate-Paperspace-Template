@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if [ ! -d "$TARGET_REPO_DIR/.git" ]; then
     mkdir -p "$TARGET_REPO_DIR"
@@ -8,7 +9,10 @@ if [ ! -d "$TARGET_REPO_DIR/.git" ]; then
     git fetch
     if [ -n "${TARGET_REPO_BRANCH}" ]; then
         git checkout -t origin/${TARGET_REPO_BRANCH} -f
+    else
+        git checkout -t origin/master -f
     fi
+fi
 
 if [ "${UPDATE_REPO}" = "auto" ]; then
     echo "Updating Repo $TARGET_REPO_DIR ..."

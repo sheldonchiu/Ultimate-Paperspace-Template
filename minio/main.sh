@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 curl https://dl.min.io/client/mc/release/linux-amd64/mc \
   --create-dirs \
