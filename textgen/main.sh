@@ -96,8 +96,8 @@ do
         TARGET_REPO_BRANCH="main" \
         TARGET_REPO_URL="https://huggingface.co/TheBloke/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/" \
         bash $current_dir/../utils/prepare_repo.sh
-        cd vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g
-        rm vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g.no-act-order.pt
+        cd /tmp/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g
+        git lfs ls-files | cut -d' ' -f3 | xargs rm
         wget -nc https://huggingface.co/TheBloke/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/resolve/main/tokenizer.model
         wget -nc https://huggingface.co/TheBloke/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g/resolve/main/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g.safetensors
         model_name="vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g"
