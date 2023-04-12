@@ -40,7 +40,15 @@ if ! [[ -e "/tmp/textgen.prepared" ]]; then
 
     mkdir -p repositories
     cd repositories
-    git clone https://github.com/qwopqwop200/GPTQ-for-LLaMa.git -b cuda
+
+    TARGET_REPO_DIR=$REPO_DIR/repositories/GPTQ-for-LLaMa \
+    TARGET_REPO_BRANCH="cuda" \
+    TARGET_REPO_URL="https://github.com/qwopqwop200/GPTQ-for-LLaMa.git" \
+    # UPDATE_REPO=$TEXTGEN_UPDATE_REPO \
+    # UPDATE_REPO_COMMIT=$TEXTGEN_UPDATE_REPO_COMMIT \
+    bash $current_dir/../utils/prepare_repo.sh
+
+    # git clone https://github.com/qwopqwop200/GPTQ-for-LLaMa.git -b cuda
     cd GPTQ-for-LLaMa
     python setup_cuda.py install
 
