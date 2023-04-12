@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 if ! [ -e "/tmp/rclone.prepared" ]; then
     curl https://rclone.org/install.sh | sudo bash
