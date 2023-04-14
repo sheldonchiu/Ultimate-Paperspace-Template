@@ -66,28 +66,28 @@ IFS=',' read -ra models <<< "$TEXTGEN_MODEL"
 for model in "${models[@]}"
 do
     cd /tmp
-    if [[ "$model" == "vicuna-7b" ]]; then
-        SYMLINKS="/tmp/llama-vicuna-7b:$REPO_DIR/models/llama-vicuna-7b" \
-        TARGET_REPO_DIR="/tmp/llama-vicuna-7b" \
+    if [[ "$model" == "vicuna-7B-1.1" ]]; then
+        SYMLINKS="/tmp/vicuna-7B-1.1-HF:$REPO_DIR/models/vicuna-7B-1.1-HF" \
+        TARGET_REPO_DIR="/tmp/vicuna-7B-1.1-HF" \
         TARGET_REPO_BRANCH="main" \
-        TARGET_REPO_URL="https://huggingface.co/sheldonxxxx/llama-vicuna-7b" \
+        TARGET_REPO_URL="https://huggingface.co/TheBloke/vicuna-7B-1.1-HF" \
         bash $current_dir/../utils/prepare_repo.sh
-        model_name="llama-vicuna-7b"
-    elif [[ "$model" == "vicuna-13b" ]]; then
-        SYMLINKS="/tmp/llama-vicuna-13b:$REPO_DIR/models/vicuna-13b" \
-        TARGET_REPO_DIR="/tmp/vicuna-13b" \
+        model_name="vicuna-7B-1.1-HF"
+    elif [[ "$model" == "vicuna-13B-1.1" ]]; then
+        SYMLINKS="/tmp/vicuna-13B-1.1-HF:$REPO_DIR/models/vicuna-13B-1.1-HF" \
+        TARGET_REPO_DIR="/tmp/vicuna-13B-1.1-HF" \
         TARGET_REPO_BRANCH="main" \
-        TARGET_REPO_URL="https://huggingface.co/eachadea/vicuna-13b" \
+        TARGET_REPO_URL="https://huggingface.co/TheBloke/vicuna-13B-1.1-HF" \
         bash $current_dir/../utils/prepare_repo.sh
-        model_name="vicuna-13b"
+        model_name="vicuna-13B-1.1-HF"
         args="--load-in-8bit"
-    elif [[ "$model" == "vicuna-13b-GPTQ-4bit-128g" ]]; then
-        SYMLINKS="/tmp/vicuna-13b-GPTQ-4bit-128g:$REPO_DIR/models/vicuna-13b-GPTQ-4bit-128g" \
-        TARGET_REPO_DIR="/tmp/vicuna-13b-GPTQ-4bit-128g" \
+    elif [[ "$model" == "vicuna-13B-1.1-GPTQ-4bit-128g" ]]; then
+        SYMLINKS="/tmp/vicuna-13B-1.1-GPTQ-4bit-128g:$REPO_DIR/models/vicuna-13B-1.1-GPTQ-4bit-128g" \
+        TARGET_REPO_DIR="/tmp/vicuna-13B-1.1-GPTQ-4bit-128g" \
         TARGET_REPO_BRANCH="main" \
-        TARGET_REPO_URL="https://huggingface.co/anon8231489123/vicuna-13b-GPTQ-4bit-128g" \
+        TARGET_REPO_URL="https://huggingface.co/TheBloke/vicuna-13B-1.1-GPTQ-4bit-128g" \
         bash $current_dir/../utils/prepare_repo.sh
-        model_name="vicuna-13b-GPTQ-4bit-128g"
+        model_name="vicuna-13B-1.1-GPTQ-4bit-128g"
         args="--wbits 4 --groupsize 128"
     elif [[ "$model" == "vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g" ]]; then
         SYMLINKS="/tmp/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g:$REPO_DIR/models/vicuna-AlekseyKorshuk-7B-GPTQ-4bit-128g" \
