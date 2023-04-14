@@ -40,4 +40,4 @@ async def start_process(command: Command, authenticated: bool = Depends(authenti
         run(command.command, shell=True, check=False)
     except CalledProcessError as e:
         raise HTTPException(status_code=500, detail=f"Error starting process: {e}")
-    return {"message": "Process started in the background."}
+    return {"code": "0", "output": "Process started in the background."}
