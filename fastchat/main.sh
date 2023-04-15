@@ -43,6 +43,10 @@ elif [[ $FASTCHAT_MODEL == "vicuna-13b" ]]; then
 elif [[ $FASTCHAT_MODEL == "chatglm-6b" ]]; then
     git clone https://huggingface.co/THUDM/chatglm-6b
     model_path=/tmp/chatglm-6b
+else:
+    echo "Invalid model name. Please set FASTCHAT_MODEL to vicuna-7b, vicuna-13b or chatglm-6b"
+    exit 1
+fi
 fi
 
 echo "### Starting Fastchat ###"
