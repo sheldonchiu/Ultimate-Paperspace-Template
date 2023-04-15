@@ -34,11 +34,11 @@ args=""
 echo "### Downloading Models for FastChat ###"
 cd /tmp
 if [[ $FASTCHAT_MODEL == "vicuna-7b" ]]; then
-    git clone https://huggingface.co/TheBloke/vicuna-7B-1.1-HF
-    model_path=/tmp/vicuna-7B-1.1-HF
+    git clone https://huggingface.co/eachadea/vicuna-7b-1.1
+    model_path=/tmp/vicuna-7b-1.1
 elif [[ $FASTCHAT_MODEL == "vicuna-13b" ]]; then
-    git clone https://huggingface.co/TheBloke/vicuna-13B-1.1-HF
-    model_path=/tmp/vicuna-13B-1.1-HF
+    git clone https://huggingface.co/eachadea/vicuna-13b-1.1
+    model_path=/tmp/vicuna-13b-1.1
     args="--load-8bit"
 elif [[ $FASTCHAT_MODEL == "chatglm-6b" ]]; then
     git clone https://huggingface.co/THUDM/chatglm-6b
