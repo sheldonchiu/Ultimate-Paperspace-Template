@@ -2,7 +2,7 @@
 set -e
 
 # Define a function to echo a message and exit
-function error_exit {
+error_exit() {
     echo "$1" >&2
     exit 1
 }
@@ -10,7 +10,7 @@ function error_exit {
 # Set up a trap to call the error_exit function on ERR signal
 trap 'error_exit "### ERROR ###"' ERR
 
-echo "### Compress command received ###"
+echo "### Command received ###"
 # Get the directory path of the current file
 DIR=$(dirname "$(realpath "$0")")
 cd $DIR
@@ -22,4 +22,4 @@ zip -rq $TARGET_FILE $ZIP_TARGET_PATH
 ln -s $TARGET_FILE /notebooks
 
 echo Path to zip file: $(echo $TARGET_FILE | sed 's/tmp/notebooks/g')
-echo "### DONE ###"
+echo "### Done ###"

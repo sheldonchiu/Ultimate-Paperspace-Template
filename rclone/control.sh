@@ -1,6 +1,15 @@
 #!/bin/bash
 set -e
 
+# Define a function to echo a message and exit
+error_exit() {
+    echo "$1" >&2
+    exit 1
+}
+
+# Set up a trap to call the error_exit function on ERR signal
+trap 'error_exit "### ERROR ###"' ERR
+
 kill_pid() {
     # Read the pid from a file
     if [[ -f $1 ]]; then
@@ -29,6 +38,7 @@ cd $DIR
 source .env
 file="/tmp/rclone.pid"
 
+echo "### Command received ###"
 if [[ $1 == "reload" ]]; then
     kill_pid $file
     bash main.sh
@@ -39,3 +49,5 @@ elif [[ $1 == "stop" ]]; then
 else
   echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"
 fi
+
+echo "### Done ###"

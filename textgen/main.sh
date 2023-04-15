@@ -1,6 +1,15 @@
 #!/bin/bash
 set -e
 
+# Define a function to echo a message and exit
+error_exit() {
+    echo "$1" >&2
+    exit 1
+}
+
+# Set up a trap to call the error_exit function on ERR signal
+trap 'error_exit "### ERROR ###"' ERR
+
 create_symlink() {
     local src=$1
     local dest=$2
@@ -17,7 +26,7 @@ create_symlink() {
 
 current_dir=$(dirname "$(realpath "$0")")
 
-echo "Setting up Text generation Webui..."
+echo "### Setting up Text generation Webui ###"
 if ! [[ -e "/tmp/textgen.prepared" ]]; then
     apt-get install -y python3.10 python3.10-dev python3.10-venv
     python3.10 -m venv /tmp/textgen-env
@@ -60,7 +69,7 @@ fi
 echo "Finished setting up Text generation Webui"
 
 args=""
-echo "Downloading Models for Text generation Webui..."
+echo "### Downloading Models ###"
 mkdir -p $REPO_DIR/models
 IFS=',' read -ra models <<< "$TEXTGEN_MODEL"
 for model in "${models[@]}"
@@ -101,9 +110,10 @@ do
 done
 echo "Finished downloading Models for Text generation Webui"
 
-echo "Starting Text generation Webui..."
+echo "### Starting Text generation Webui ###"
 cd $REPO_DIR
 nohup python server.py  --listen-port $TEXTGEN_PORT --model $model_name $args > /tmp/textgen.log 2>&1 &
 echo $! > /tmp/textgen.pid
 
 echo "Text generation Webui started"
+echo "### Done ###"

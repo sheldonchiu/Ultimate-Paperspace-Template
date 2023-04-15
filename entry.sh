@@ -32,9 +32,8 @@ run_script="$RUN_SCRIPT"
 IFS=',' read -ra scripts <<< "$run_script"
 
 echo "Starting script(s)"
-
 apt-get update -qq
-apt-get install -qq curl git-lfs zip -y > /dev/null
+apt-get install -qq curl git-lfs zip python3.10 python3.10-venv -y > /dev/null
 
 # Loop through each script and execute the corresponding case
 for script in "${scripts[@]}"

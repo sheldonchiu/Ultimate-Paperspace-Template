@@ -1,9 +1,17 @@
 #!/bin/bash
 set -e
 
-echo "Setting up Command Server..."
+# Define a function to echo a message and exit
+error_exit() {
+    echo "$1" >&2
+    exit 1
+}
+
+# Set up a trap to call the error_exit function on ERR signal
+trap 'error_exit "### ERROR ###"' ERR
+
+echo "### Setting up Command Server ###"
 if ! [[ -e "/tmp/command.prepared" ]]; then
-    apt-get install -y python3.10 python3.10-venv
     python3.10 -m venv /tmp/command-env
     source /tmp/command-env/bin/activate
 
@@ -16,7 +24,8 @@ else
 fi
 echo "Command Server setup complete."
 
+echo "### Starting Command Server ###"
 nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > /tmp/command.log 2>&1 &
 echo $! > /tmp/command.pid
 
-bash $DISCORD_PATH "Command server started"
+echo "### Done ###"

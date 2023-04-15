@@ -1,6 +1,15 @@
 #!/bin/bash
 set -e
 
+# Define a function to echo a message and exit
+error_exit() {
+    echo "$1" >&2
+    exit 1
+}
+
+# Set up a trap to call the error_exit function on ERR signal
+trap 'error_exit "### ERROR ###"' ERR
+
 kill_pid() {
     # Read the pid from a file
     if [[ -f $1 ]]; then
@@ -28,19 +37,20 @@ DIR=$(dirname "$(realpath "$0")")
 cd $DIR
 source .env
 
+echo "### Command received ###"
 if [[ $1 == "reload" ]]; then
     if [[ -n $2 ]]; then
         case $2 in
             "controller")
-                echo "Stopping Fastchat controller..."
+                echo "Stopping Fastchat controller"
                 kill_pid "/tmp/fastchat_controller.pid"
                 ;;
             "worker")
-                echo "Stopping Fastchat worker..."
+                echo "Stopping Fastchat worker"
                 kill_pid "tmp/fastchat_worker.pid"
                 ;;
             "server")
-                echo "Stopping Fastchat server..."
+                echo "Stopping Fastchat server"
                 kill_pid "/tmp/fastchat_server.pid"
                 ;;
             *)
@@ -50,28 +60,28 @@ if [[ $1 == "reload" ]]; then
         esac
         bash main.sh $2
     else
-        echo "Reloading Fastchat..."
+        echo "Reloading Fastchat"
         kill_pid "/tmp/fastchat_server.pid"
         kill_pid "tmp/fastchat_worker.pid"
         kill_pid "/tmp/fastchat_controller.pid"
         bash main.sh
     fi     
 elif [[ $1 == "start" ]]; then
-    echo "Starting Fastchat..."
+    echo "Starting Fastchat"
     bash main.sh
 elif [[ $1 == "stop" ]]; then
     if [[ -n $2 ]]; then
         case $2 in
             "controller")
-                echo "Stopping Fastchat controller..."
+                echo "Stopping Fastchat controller"
                 kill_pid "/tmp/fastchat_controller.pid"
                 ;;
             "worker")
-                echo "Stopping Fastchat worker..."
+                echo "Stopping Fastchat worker"
                 kill_pid "tmp/fastchat_worker.pid"
                 ;;
             "server")
-                echo "Stopping Fastchat server..."
+                echo "Stopping Fastchat server"
                 kill_pid "/tmp/fastchat_server.pid"
                 ;;
             *)
@@ -79,7 +89,7 @@ elif [[ $1 == "stop" ]]; then
                 ;;
         esac
     else
-        echo "Stopping Fastchat..."
+        echo "Stopping Fastchat"
         kill_pid "/tmp/fastchat_server.pid"
         kill_pid "tmp/fastchat_worker.pid"
         kill_pid "/tmp/fastchat_controller.pid"
@@ -87,3 +97,5 @@ elif [[ $1 == "stop" ]]; then
 else
   echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"
 fi
+
+echo "### Done ###"

@@ -1,11 +1,19 @@
 #!/bin/bash
 set -e
 
+# Define a function to echo a message and exit
+error_exit() {
+    echo "$1" >&2
+    exit 1
+}
+
+# Set up a trap to call the error_exit function on ERR signal
+trap 'error_exit "### ERROR ###"' ERR
+
 current_dir=$(dirname "$(realpath "$0")")
 
-echo "Preparing Environment for FastChat"
+echo "### Preparing Environment for FastChat ###"
 if ! [[ -e "/tmp/fastchat.prepared" ]]; then
-    apt-get install -y python3.10 python3.10-venv
     python3.10 -m venv /tmp/fastchat-env
     source /tmp/fastchat-env/bin/activate
 
@@ -23,7 +31,7 @@ echo "Environment for FastChat is ready"
 
 args=""
 
-echo "Downloading Models for FastChat"
+echo "### Downloading Models for FastChat ###"
 cd /tmp
 if [[ $FASTCHAT_MODEL == "vicuna-7b" ]]; then
     git clone https://huggingface.co/sheldonxxxx/llama-vicuna-7b
@@ -37,7 +45,7 @@ elif [[ $FASTCHAT_MODEL == "chatglm-6b" ]]; then
     model_path=/tmp/chatglm-6b
 fi
 
-bash $DISCORD_PATH "FastChat is starting"
+echo "### Starting Fastchat ###"
 
 if [[ -n $1 ]]; then
     case $1 in
@@ -67,5 +75,6 @@ else
     nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode reload --port $FASTCHAT_PORT > /tmp/fastchat_server.log 2>&1 &
     echo $! > /tmp/fastchat_server.pid
     
-    bash $DISCORD_PATH "Fastchat started"
 fi
+
+echo "### Done ###"

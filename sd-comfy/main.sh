@@ -1,13 +1,19 @@
 #!/bin/bash
 set -e
 
+# Define a function to echo a message and exit
+error_exit() {
+    echo "$1" >&2
+    exit 1
+}
+
+# Set up a trap to call the error_exit function on ERR signal
+trap 'error_exit "### ERROR ###"' ERR
+
 current_dir=$(dirname "$(realpath "$0")")
 
-# apt-get install -qq aria2 -y > /dev/null
-
-# Install Python 3.10
+echo "### Setting up Stable Diffusion Comfy ###"
 if ! [[ -e "/tmp/sd-comfy.prepared" ]]; then
-  apt-get install -y python3.10 python3.10-venv
   python3.10 -m venv /tmp/sd-confy-env
   source /tmp/sd-confy-env/bin/activate
 
@@ -36,14 +42,13 @@ else
   source /tmp/sd-confy-env/bin/activate
 fi
 
-bash $DISCORD_PATH "Downloading Models"
+echo "### Downloading Models ###"
 bash $current_dir/../utils/model_download/main.sh
-bash $DISCORD_PATH "Finished Downloading Models"
-
 python $current_dir/../utils/model_download/link_model.py
 
 cd "$REPO_DIR"
+echo "### Starting Stable Diffusion Comfy ###"
 nohup python main.py --dont-print-server > /tmp/sd-comfy.log 2>&1 &
 echo $! > /tmp/sd-comfy.pid
-bash $DISCORD_PATH "Stable Diffusion ComfyUI Started"
-
+echo "Stable Diffusion ComfyUI Started"
+echo "### Done ###"

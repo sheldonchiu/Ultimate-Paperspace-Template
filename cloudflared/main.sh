@@ -1,9 +1,18 @@
 #!/bin/bash
 set -e
 
+# Define a function to echo a message and exit
+error_exit() {
+    echo "$1" >&2
+    exit 1
+}
+
+# Set up a trap to call the error_exit function on ERR signal
+trap 'error_exit "### ERROR ###"' ERR
+
 cd /tmp
 
-echo "Preparing cloudflared..."
+echo "### Preparing cloudflared ###"
 if ! [[ -e "/tmp/cloudflared.prepared" ]]; then
     curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
     dpkg -i cloudflared.deb
@@ -11,6 +20,7 @@ if ! [[ -e "/tmp/cloudflared.prepared" ]]; then
 fi
 echo "cloudflared prepared."
 
+echo "### Starting cloudflare Tunnel ###"
 if [[ $CF_TOKEN == "quick" ]]; then
     # Split EXPOSE_PORTS into an array using ':' as the delimiter
     IFS=':' read -ra names <<< "$PORT_MAPPING"
@@ -32,7 +42,7 @@ if [[ $CF_TOKEN == "quick" ]]; then
             pid=$(cat $pidfile)
             # Only start the tunnel if the process is not running
             if ps -p $pid -o pid,comm | grep -q $pid; then
-                echo "Starting cloudflared tunnel for $name..."
+                echo "Starting cloudflared tunnel for $name"
                 # Start cloudflared tunnel in the background
                 nohup cloudflared tunnel --url http://localhost:${port} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
 
@@ -66,3 +76,5 @@ else
     cloudflared service install "$CF_TOKEN"
     bash $DISCORD_PATH "Cloudflared: Running as a service"
 fi
+
+echo "### Done ###"

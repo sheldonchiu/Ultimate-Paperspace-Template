@@ -1,13 +1,21 @@
 #!/bin/bash
 set -e
 
+# Define a function to echo a message and exit
+error_exit() {
+    echo "$1" >&2
+    exit 1
+}
+
+# Set up a trap to call the error_exit function on ERR signal
+trap 'error_exit "### ERROR ###"' ERR
+
 current_dir=$(dirname "$(realpath "$0")")
 
 # apt-get install -qq aria2 -y > /dev/null
 
-# Install Python 3.10
+echo "### Setting up stable-diffusion-volta ###"
 if ! [[ -e "/tmp/sd-volta.prepared" ]]; then
-  apt-get install -y python3.10 python3.10-venv
   python3.10 -m venv /tmp/sd-volta-env
   source /tmp/sd-volta-env/bin/activate
 
@@ -38,15 +46,13 @@ else
 fi
 
   
-bash $DISCORD_PATH "Downloading Models"
+echo "### Downloading Models ###"
 bash $current_dir/../utils/model_download/main.sh
-bash $DISCORD_PATH "Finished Downloading Models"
-
 python $current_dir/../utils/model_download/link_model.py
 
-
 cd "$REPO_DIR"
+echo "### Starting stable-diffusion-volta ###"
 nohup python main.py > /tmp/sd-volta.log 2>&1 &
 echo $! > /tmp/sd-volta.pid
-bash $DISCORD_PATH "Stable Diffusion Volta Started"
-
+echo "Stable Diffusion Volta Started"
+echo "### Done ###"

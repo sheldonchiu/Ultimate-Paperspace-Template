@@ -1,10 +1,18 @@
 #!/bin/bash
 set -e
 
+# Define a function to echo a message and exit
+error_exit() {
+    echo "$1" >&2
+    exit 1
+}
+
+# Set up a trap to call the error_exit function on ERR signal
+trap 'error_exit "### ERROR ###"' ERR
+
 current_dir=$(dirname "$(realpath "$0")")
-echo "Preparing Environment for Stable Diffusion WebUI"
+echo "### Setting up Stable Diffusion WebUI ###"
 if ! [[ -e "/tmp/sd-webui.prepared" ]]; then
-    apt-get install -y python3.10 python3.10-venv
     python3.10 -m venv /tmp/sd-webui-env
     source /tmp/sd-webui-env/bin/activate
 
@@ -43,11 +51,12 @@ else
 fi
 echo "Finished Preparing Environment for Stable Diffusion WebUI"
 
-echo "Downloading Models for Stable Diffusion WebUI"
+echo "### Downloading Models ###"
 bash $current_dir/../utils/model_download/main.sh
+python $current_dir/../utils/model_download/link_model.py
 echo "Finished Downloading Models for Stable Diffusion WebUI"
 
-python $current_dir/../utils/model_download/link_model.py
-
+echo "### Starting Stable Diffusion WebUI ###"
 bash start.sh
 echo "Stable Diffusion WebUI Started"
+echo "### Done ###"
