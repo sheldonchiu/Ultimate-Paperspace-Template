@@ -40,7 +40,7 @@ file="/tmp/minio.pid"
 
 echo "### Command received ###"
 if [[ $1 == "reload" ]]; then
-    "Reloading Minio"
+    echo "Reloading Minio"
     kill_pid $file
     bash main.sh
 elif [[ $1 == "start" ]]; then

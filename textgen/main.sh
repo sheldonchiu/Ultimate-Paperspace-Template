@@ -76,19 +76,19 @@ for model in "${models[@]}"
 do
     cd /tmp
     if [[ "$model" == "vicuna-7B-1.1" ]]; then
-        SYMLINKS="/tmp/vicuna-7B-1.1-HF:$REPO_DIR/models/vicuna-7B-1.1-HF" \
-        TARGET_REPO_DIR="/tmp/vicuna-7B-1.1-HF" \
+        SYMLINKS="/tmp/vicuna-7B-1.1:$REPO_DIR/models/vicuna-7B-1.1" \
+        TARGET_REPO_DIR="/tmp/vicuna-7B-1.1" \
         TARGET_REPO_BRANCH="main" \
-        TARGET_REPO_URL="https://huggingface.co/TheBloke/vicuna-7B-1.1-HF" \
+        TARGET_REPO_URL="https://huggingface.co/eachadea/vicuna-7b-1.1" \
         bash $current_dir/../utils/prepare_repo.sh
-        model_name="vicuna-7B-1.1-HF"
+        model_name="vicuna-7B-1.1"
     elif [[ "$model" == "vicuna-13B-1.1" ]]; then
-        SYMLINKS="/tmp/vicuna-13B-1.1-HF:$REPO_DIR/models/vicuna-13B-1.1-HF" \
-        TARGET_REPO_DIR="/tmp/vicuna-13B-1.1-HF" \
+        SYMLINKS="/tmp/vicuna-13B-1.1:$REPO_DIR/models/vicuna-13B-1.1" \
+        TARGET_REPO_DIR="/tmp/vicuna-13B-1.1" \
         TARGET_REPO_BRANCH="main" \
-        TARGET_REPO_URL="https://huggingface.co/TheBloke/vicuna-13B-1.1-HF" \
+        TARGET_REPO_URL="https://huggingface.co/eachadea/vicuna-13b-1.1" \
         bash $current_dir/../utils/prepare_repo.sh
-        model_name="vicuna-13B-1.1-HF"
+        model_name="vicuna-13B-1.1"
         args="--load-in-8bit"
     elif [[ "$model" == "vicuna-13B-1.1-GPTQ-4bit-128g" ]]; then
         SYMLINKS="/tmp/vicuna-13B-1.1-GPTQ-4bit-128g:$REPO_DIR/models/vicuna-13B-1.1-GPTQ-4bit-128g" \
