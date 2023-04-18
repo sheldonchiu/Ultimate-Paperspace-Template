@@ -74,7 +74,7 @@ if [[ $CF_TOKEN == "quick" ]]; then
     done
 else
     cloudflared service install "$CF_TOKEN"
-    bash $DISCORD_PATH "Cloudflared: Running as a service"
+    echo "Cloudflared: Running as a service"
 fi
 
 echo "### Done ###"

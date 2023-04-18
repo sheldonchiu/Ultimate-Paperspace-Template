@@ -19,12 +19,11 @@ symlinks=(
     "/storage:/notebooks/storage"
     "$MODEL_DIR:/notebooks/models"
 )
-SYMLINKS=${symlinks[@]} \
 TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \
 TARGET_REPO_DIR=$WEBUI_DIR \
 UPDATE_REPO=$SD_WEBUI_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$SD_WEBUI_UPDATE_REPO_COMMIT \
-bash $current_dir/../utils/prepare_repo.sh
+bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
 
 if ! [[ -e "/tmp/sd-webui.prepared" ]]; then
     python3.10 -m venv /tmp/sd-webui-env
