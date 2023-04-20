@@ -36,7 +36,7 @@ DIR=$(dirname "$(realpath "$0")")
 
 cd $DIR
 source .env
-file="/tmp/sd-webui.pid"
+file="/tmp/sd_webui.pid"
 
 echo "### Command received ###"
 if [[ $1 == "reload" ]]; then
@@ -45,7 +45,7 @@ if [[ $1 == "reload" ]]; then
 elif [[ $1 == "reload_all" ]]; then
     echo "Reinstalling Stable Diffusion WebUI"
     kill_pid $file
-    rm /tmp/sd-webui.prepared
+    rm /tmp/sd_webui.prepared
     bash main.sh
 elif [[ $1 == "start" ]]; then
     bash main.sh

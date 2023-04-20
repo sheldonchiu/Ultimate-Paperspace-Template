@@ -25,7 +25,7 @@ UPDATE_REPO=$SD_WEBUI_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$SD_WEBUI_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
 
-if ! [[ -e "/tmp/sd-webui.prepared" ]]; then
+if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     python3.10 -m venv /tmp/sd-webui-env
     source /tmp/sd-webui-env/bin/activate
 
@@ -44,7 +44,7 @@ if ! [[ -e "/tmp/sd-webui.prepared" ]]; then
         pip install xformers==0.0.18
     fi
 
-    touch /tmp/sd-webui.prepared
+    touch /tmp/sd_webui.prepared
 else
     source /tmp/sd-webui-env/bin/activate
 fi

@@ -46,5 +46,5 @@ if [[ -n "${GRADIO_QUEUE}" ]]; then
   queue="--gradio-queue"
 fi
 
-nohup python webui.py ${x_arg} ${dd_arg} ${mvram_arg} ${pickled} ${port} ${auth} ${theme} ${queue} ${gradio_link} --enable-insecure-extension-access > /tmp/sd-webui.log 2>&1 &
-echo $! > /tmp/sd-webui.pid
+nohup python webui.py ${x_arg} ${dd_arg} ${mvram_arg} ${pickled} ${port} ${auth} ${theme} ${queue} ${gradio_link} --enable-insecure-extension-access > /tmp/sd_webui.log 2>&1 &
+echo $! > /tmp/sd_webui.pid
