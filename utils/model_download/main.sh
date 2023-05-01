@@ -10,7 +10,7 @@ for module in "${MODULES[@]}"; do
     if ! pip show $module >/dev/null 2>&1; then
         # Module is not installed, install it with pip
         echo "Module $module is not installed. Installing it now..."
-        sudo pip install $module
+        pip install $module
     fi
 done
 
