@@ -52,3 +52,5 @@ elif [[ $1 == "stop" ]]; then
 else
   echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"
 fi
+
+echo "### Done ###"
