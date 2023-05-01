@@ -28,8 +28,10 @@ bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
 # git clone extensions that has their own model folder
 if [[ ! -d "${WEBUI_DIR}/extensions/sd-webui-controlnet" ]]; then
     git clone https://github.com/Mikubill/sd-webui-controlnet.git "${WEBUI_DIR}/extensions/sd-webui-controlnet"
+fi
 if [[ ! -d "${WEBUI_DIR}/extensions/sd-webui-additional-networks" ]]; then
     git clone https://github.com/kohya-ss/sd-webui-additional-networks.git  "${WEBUI_DIR}/extensions/sd-webui-additional-networks"
+fi
 
 if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     python3.10 -m venv /tmp/sd-webui-env
@@ -47,7 +49,7 @@ if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     cd $current_dir
 
     if [[ -n "${ACTIVATE_XFORMERS}" ]]; then
-        pip install xformers==0.0.18
+        pip install xformers==0.0.19
     fi
 
     touch /tmp/sd_webui.prepared
