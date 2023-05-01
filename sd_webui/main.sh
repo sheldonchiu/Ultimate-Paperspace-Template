@@ -25,6 +25,12 @@ UPDATE_REPO=$SD_WEBUI_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$SD_WEBUI_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
 
+# git clone extensions that has their own model folder
+if [[ ! -d "${WEBUI_DIR}/extensions/sd-webui-controlnet" ]]; then
+    git clone https://github.com/Mikubill/sd-webui-controlnet.git "${WEBUI_DIR}/extensions/sd-webui-controlnet"
+if [[ ! -d "${WEBUI_DIR}/extensions/sd-webui-additional-networks" ]]; then
+    git clone https://github.com/kohya-ss/sd-webui-additional-networks.git  "${WEBUI_DIR}/extensions/sd-webui-additional-networks"
+
 if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     python3.10 -m venv /tmp/sd-webui-env
     source /tmp/sd-webui-env/bin/activate

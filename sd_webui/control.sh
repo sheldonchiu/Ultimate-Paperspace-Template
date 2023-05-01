@@ -51,6 +51,11 @@ elif [[ $1 == "start" ]]; then
     bash main.sh
 elif [[ $1 == "stop" ]]; then
     kill_pid $file
+elif [[ $1 == "download_model" ]]; then
+    echo "### Downloading Models ###"
+    bash $current_dir/../utils/model_download/main.sh
+    python $current_dir/../utils/model_download/link_model.py
+    echo "Finished Downloading Models for Stable Diffusion WebUI"
 else
   echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"
 fi
