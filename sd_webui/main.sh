@@ -14,7 +14,7 @@ current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up Stable Diffusion WebUI ###"
 symlinks=(
     "$WEBUI_DIR:/notebooks/stable-diffusion-webui"
-    "$WEBUI_DIR/outputs:/notebooks/outputs"
+    "$WEBUI_DIR/outputs:/notebooks/outputs/stable-diffusion-webui"
     "$WEBUI_DIR/log:$WEBUI_DIR/outputs/log"
     "/storage:/notebooks/storage"
     "$MODEL_DIR:/notebooks/models"
