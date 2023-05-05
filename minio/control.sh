@@ -16,13 +16,13 @@ kill_pid() {
         pid=$(cat $1)
     else
         echo "Error: PID file $1 not found!"
-        return 
+        return
     fi
 
     # Check if the process has exited
     if ! kill -0 $pid; then
         echo "Error: Process $pid has already exited."
-        return 
+        return
     fi
 
     # Kill the process
@@ -41,16 +41,23 @@ file="/tmp/minio.pid"
 echo "### Command received ###"
 if [[ $1 == "reload" ]]; then
     echo "Reloading Minio"
+    
     kill_pid $file
     bash main.sh
+    
 elif [[ $1 == "start" ]]; then
     echo "Starting Minio"
+    
     bash main.sh
+    
 elif [[ $1 == "stop" ]]; then
     echo "Stopping Minio"
+        
     kill_pid $file
+    
+
 else
-  echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"
+  echo "Invalid argument"
 fi
 
 echo "### Done ###"
