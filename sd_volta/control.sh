@@ -36,22 +36,22 @@ DIR=$(dirname "$(realpath "$0")")
 
 cd $DIR
 source .env
-file="/tmp/textgen.pid"
+file="/tmp/sd_volta.pid"
 
 echo "### Command received ###"
 if [[ $1 == "reload" ]]; then
-    echo "Reloading Text generation Webui"
+    echo "Reloading Stable Diffusion Volta"
     
     kill_pid $file
     bash main.sh
     
 elif [[ $1 == "start" ]]; then
-    echo "Starting Text generation Webui"
+    echo "Starting Stable Diffusion Volta"
     
     bash main.sh
     
 elif [[ $1 == "stop" ]]; then
-    echo "Stopping Text generation Webui"
+    echo "Stopping Stable Diffusion Volta"
         
     kill_pid $file
     

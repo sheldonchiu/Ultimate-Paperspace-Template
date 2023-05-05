@@ -20,7 +20,7 @@ kill_pid() {
     fi
 
     # Check if the process has exited
-    if ps -p $pid -o pid,comm | grep -q $pid; then
+    if ! kill -0 $pid; then
         echo "Error: Process $pid has already exited."
         return
     fi
@@ -40,14 +40,24 @@ file="/tmp/rclone.pid"
 
 echo "### Command received ###"
 if [[ $1 == "reload" ]]; then
+    echo "Reloading Rclone"
+    
     kill_pid $file
     bash main.sh
+    
 elif [[ $1 == "start" ]]; then
+    echo "Starting Rclone"
+    
     bash main.sh
+    
 elif [[ $1 == "stop" ]]; then
+    echo "Stopping Rclone"
+        
     kill_pid $file
+    
+
 else
-  echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"
+  echo "Invalid argument"
 fi
 
 echo "### Done ###"

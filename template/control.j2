@@ -36,26 +36,34 @@ DIR=$(dirname "$(realpath "$0")")
 
 cd $DIR
 source .env
-file="/tmp/textgen.pid"
+file="/tmp/{{ name }}.pid"
 
 echo "### Command received ###"
 if [[ $1 == "reload" ]]; then
-    echo "Reloading Text generation Webui"
-    
+    echo "Reloading {{ title }}"
+    {% if custom_reload %}
+    {{ custom_reload }}
+    {% else %}
     kill_pid $file
     bash main.sh
-    
+    {% endif %}
 elif [[ $1 == "start" ]]; then
-    echo "Starting Text generation Webui"
-    
+    echo "Starting {{ title }}"
+    {% if custom_start %}
+    {{ custom_start }}
+    {% else %}
     bash main.sh
-    
+    {% endif %}
 elif [[ $1 == "stop" ]]; then
-    echo "Stopping Text generation Webui"
-        
+    echo "Stopping {{ title }}"
+    {% if custom_stop %}
+    {{ custom_stop }}
+    {% else %}    
     kill_pid $file
-    
-
+    {% endif %}
+{% if additional_condition %}
+{{ additional_condition }}
+{% endif %}
 else
   echo "Invalid argument"
 fi

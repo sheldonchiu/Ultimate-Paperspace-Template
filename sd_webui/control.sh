@@ -40,24 +40,32 @@ file="/tmp/sd_webui.pid"
 
 echo "### Command received ###"
 if [[ $1 == "reload" ]]; then
+    echo "Reloading Stable Diffusion WebUI"
+    
     kill_pid $file
     bash main.sh
-elif [[ $1 == "reload_all" ]]; then
-    echo "Reinstalling Stable Diffusion WebUI"
-    kill_pid $file
-    rm /tmp/sd_webui.prepared
-    bash main.sh
+    
 elif [[ $1 == "start" ]]; then
+    echo "Starting Stable Diffusion WebUI"
+    
     bash main.sh
+    
 elif [[ $1 == "stop" ]]; then
+    echo "Stopping Stable Diffusion WebUI"
+        
     kill_pid $file
+    
+
+
 elif [[ $1 == "download_model" ]]; then
     echo "### Downloading Models ###"
     bash $current_dir/../utils/model_download/main.sh
     python $current_dir/../utils/model_download/link_model.py
     echo "Finished Downloading Models for Stable Diffusion WebUI"
+
+
 else
-  echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"
+  echo "Invalid argument"
 fi
 
 echo "### Done ###"

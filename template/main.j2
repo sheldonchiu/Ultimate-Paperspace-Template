@@ -1,0 +1,47 @@
+#!/bin/bash
+set -e
+
+# Define a function to echo a message and exit
+error_exit() {
+    echo "$1" >&2
+    exit 1
+}
+
+# Set up a trap to call the error_exit function on ERR signal
+trap 'error_exit "### ERROR ###"' ERR
+
+current_dir=$(dirname "$(realpath "$0")")
+echo "### Setting up {{ title }} ###"
+
+{{ prepare_repo }}
+
+if ! [[ -e "/tmp/{{ name }}.prepared" ]]; then
+    {% if use_python %}
+    python3.10 -m venv /tmp/{{ name }}-env
+    source /tmp/{{ name }}-env/bin/activate
+
+    pip install --upgrade pip
+    pip install --upgrade wheel setuptools
+    {% endif %}
+    {{ prepare_env }}
+
+    touch /tmp/{{ name }}.prepared
+else
+    {% if use_python %}
+    source /tmp/{{ name }}-env/bin/activate
+    {% else %}
+    pass
+    {% endif %}
+fi
+echo "Finished Preparing Environment for {{ title }}"
+
+{% if download_model %}
+echo "### Downloading Model for {{ title }} ###"
+{{ download_model }}
+echo "Finished Downloading Models for {{ title }}"
+{% endif %}
+{{ action_before_start }}
+echo "### Starting {{ title }} ###"
+{{ start }}
+echo "{{ title }} Started"
+echo "### Done ###"

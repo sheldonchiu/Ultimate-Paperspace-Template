@@ -36,20 +36,28 @@ DIR=$(dirname "$(realpath "$0")")
 
 cd $DIR
 source .env
+file="/tmp/cloudflared.pid"
 
 echo "### Command received ###"
-
 if [[ $1 == "reload" ]]; then
-    echo "Reloading Cloudflare tunnels"
+    echo "Reloading Cloudflare Tunnel"
+    
+    
     for file in /tmp/cloudflared_*.pid; do
         kill_pid $file
     done
     bash main.sh
+
+    
 elif [[ $1 == "start" ]]; then
-    echo "Starting Cloudflare tunnels"
+    echo "Starting Cloudflare Tunnel"
+    
     bash main.sh
+    
 elif [[ $1 == "stop" ]]; then
-    echo "Stopping Cloudflare tunnels"
+    echo "Stopping Cloudflare Tunnel"
+    
+    
     if [[ -n $2 ]]; then
         echo "Stopping Cloudflare tunnel for $2"
         kill_pid /tmp/cloudflared_{$2}.pid
@@ -58,8 +66,11 @@ elif [[ $1 == "stop" ]]; then
             kill_pid $file
         done
     fi
+
+    
+
 else
-  echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"
+  echo "Invalid argument"
 fi
 
 echo "### Done ###"

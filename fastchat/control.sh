@@ -36,9 +36,13 @@ DIR=$(dirname "$(realpath "$0")")
 
 cd $DIR
 source .env
+file="/tmp/fastchat.pid"
 
 echo "### Command received ###"
 if [[ $1 == "reload" ]]; then
+    echo "Reloading FastChat"
+    
+    
     if [[ -n $2 ]]; then
         case $2 in
             "controller")
@@ -60,16 +64,21 @@ if [[ $1 == "reload" ]]; then
         esac
         bash main.sh $2
     else
-        echo "Reloading Fastchat"
         kill_pid "/tmp/fastchat_server.pid"
         kill_pid "tmp/fastchat_worker.pid"
         kill_pid "/tmp/fastchat_controller.pid"
         bash main.sh
-    fi     
+
+    
 elif [[ $1 == "start" ]]; then
-    echo "Starting Fastchat"
+    echo "Starting FastChat"
+    
     bash main.sh
+    
 elif [[ $1 == "stop" ]]; then
+    echo "Stopping FastChat"
+    
+    
     if [[ -n $2 ]]; then
         case $2 in
             "controller")
@@ -89,13 +98,15 @@ elif [[ $1 == "stop" ]]; then
                 ;;
         esac
     else
-        echo "Stopping Fastchat"
         kill_pid "/tmp/fastchat_server.pid"
         kill_pid "tmp/fastchat_worker.pid"
         kill_pid "/tmp/fastchat_controller.pid"
     fi  
+
+    
+
 else
-  echo "Invalid argument. Usage: bash test.sh [reload|start|stop]"
+  echo "Invalid argument"
 fi
 
 echo "### Done ###"

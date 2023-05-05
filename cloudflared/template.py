@@ -1,47 +1,29 @@
-#!/bin/bash
-set -e
+from jinja2 import Template
 
-# Define a function to echo a message and exit
-error_exit() {
-    echo "$1" >&2
-    exit 1
-}
+# Define the variables to be used in the template
+title = "Cloudflare Tunnel"
+name = "cloudflared"
+use_python = False
 
-# Set up a trap to call the error_exit function on ERR signal
-trap 'error_exit "### ERROR ###"' ERR
+prepare_repo = ""
 
-current_dir=$(dirname "$(realpath "$0")")
-echo "### Setting up Cloudflare Tunnel ###"
-
-
-
-if ! [[ -e "/tmp/cloudflared.prepared" ]]; then
-    
-     
+prepare_env = ''' 
     cd /tmp
     curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
     dpkg -i cloudflared.deb
+'''
+download_model = ""
 
+action_before_start = ""
 
-    touch /tmp/cloudflared.prepared
-else
-    
-    pass
-    
-fi
-echo "Finished Preparing Environment for Cloudflare Tunnel"
-
-
-
-echo "### Starting Cloudflare Tunnel ###"
-
+start = '''
 if [[ $CF_TOKEN == "quick" ]]; then
     # Split EXPOSE_PORTS into an array using ':' as the delimiter
     IFS=':' read -ra names <<< "$PORT_MAPPING"
     IFS=':' read -ra ports <<< "$EXPOSE_PORTS"
 
     # Loop over the ports array
-    paste <(printf '%s\n' "${names[@]}") <(printf '%s\n' "${ports[@]}") | while IFS=$'\t' read -r name port; do
+    paste <(printf '%s\\n' "${names[@]}") <(printf '%s\\n' "${ports[@]}") | while IFS=$'\\t' read -r name port; do
         if [[ $port == "" ]]; then
             continue
         fi
@@ -90,6 +72,57 @@ else
     cloudflared service install "$CF_TOKEN"
     echo "Cloudflared: Running as a service"
 fi
+'''
 
-echo "Cloudflare Tunnel Started"
-echo "### Done ###"
+# Load the template from a file
+with open('../template/main.j2') as f:
+    template = Template(f.read())
+
+# Render the template with the variables
+result = template.render(
+    title=title,
+    name=name, 
+    use_python=use_python,
+    prepare_repo=prepare_repo,
+    prepare_env=prepare_env,
+    download_model=download_model,
+    action_before_start=action_before_start,
+    start=start,
+)
+
+with open('main.sh', 'w') as f:
+    f.write(result)
+    
+######################################################
+with open('../template/control.j2') as f:
+    template = Template(f.read())
+    
+custom_reload = '''
+    for file in /tmp/cloudflared_*.pid; do
+        kill_pid $file
+    done
+    bash main.sh
+'''
+custom_stop = '''
+    if [[ -n $2 ]]; then
+        echo "Stopping Cloudflare tunnel for $2"
+        kill_pid /tmp/cloudflared_{$2}.pid
+    else
+        for file in /tmp/cloudflared_*.pid; do
+            kill_pid $file
+        done
+    fi
+'''
+custom_start = ""
+
+# Render the template with the variables
+result = template.render(
+    title=title,
+    name=name,
+    custom_reload=custom_reload,
+    custom_stop=custom_stop,
+    custom_start=custom_start,
+)
+
+with open('control.sh', 'w') as f:
+    f.write(result)
