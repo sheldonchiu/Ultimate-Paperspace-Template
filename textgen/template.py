@@ -77,6 +77,7 @@ done
 action_before_start = ""
 
 start = f'''
+cd $REPO_DIR
 nohup python server.py  --listen-port $TEXTGEN_PORT --model $model_name $args > /tmp/{name}.log 2>&1 &
 echo $! > /tmp/{name}.pid
 '''
