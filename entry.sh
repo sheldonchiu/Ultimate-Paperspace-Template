@@ -33,7 +33,10 @@ IFS=',' read -ra scripts <<< "$run_script"
 
 echo "Starting script(s)"
 apt-get update -qq
-apt-get install -qq curl git-lfs zip python3.10 python3.10-venv -y > /dev/null
+apt-get install -qq curl git-lfs zip python3.10 python3.10-venv python3.10-dev -y > /dev/null
+
+# Prepare required path
+mkdir -p /notebooks/outputs
 
 # Loop through each script and execute the corresponding case
 for script in "${scripts[@]}"

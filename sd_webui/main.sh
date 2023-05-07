@@ -21,7 +21,11 @@ symlinks=(
     "/storage:/notebooks/storage"
     "$MODEL_DIR:/notebooks/models"
 )
-TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" TARGET_REPO_DIR=$WEBUI_DIR UPDATE_REPO=$SD_WEBUI_UPDATE_REPO UPDATE_REPO_COMMIT=$SD_WEBUI_UPDATE_REPO_COMMIT bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
+TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \
+TARGET_REPO_DIR=$WEBUI_DIR \
+UPDATE_REPO=$SD_WEBUI_UPDATE_REPO \
+UPDATE_REPO_COMMIT=$SD_WEBUI_UPDATE_REPO_COMMIT \
+bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
 
 # git clone extensions that has their own model folder
 if [[ ! -d "${WEBUI_DIR}/extensions/sd-webui-controlnet" ]]; then
@@ -41,6 +45,8 @@ if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     pip install --upgrade wheel setuptools
     
      
+    # fix install issue with pycairo, which is needed by sd-webui-controlnet
+    apt-get install -y libcairo2-dev libjpeg-dev libgif-dev
     pip install requests gdown bs4
     pip uninstall -y torch torchvision torchaudio protobuf lxml
 

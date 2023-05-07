@@ -51,7 +51,7 @@ if [[ $1 == "reload" ]]; then
                 ;;
             "worker")
                 echo "Stopping Fastchat worker"
-                kill_pid "tmp/fastchat_worker.pid"
+                kill_pid "/tmp/fastchat_worker.pid"
                 ;;
             "server")
                 echo "Stopping Fastchat server"
@@ -65,9 +65,10 @@ if [[ $1 == "reload" ]]; then
         bash main.sh $2
     else
         kill_pid "/tmp/fastchat_server.pid"
-        kill_pid "tmp/fastchat_worker.pid"
+        kill_pid "/tmp/fastchat_worker.pid"
         kill_pid "/tmp/fastchat_controller.pid"
         bash main.sh
+    fi
 
     
 elif [[ $1 == "start" ]]; then
@@ -87,7 +88,7 @@ elif [[ $1 == "stop" ]]; then
                 ;;
             "worker")
                 echo "Stopping Fastchat worker"
-                kill_pid "tmp/fastchat_worker.pid"
+                kill_pid "/tmp/fastchat_worker.pid"
                 ;;
             "server")
                 echo "Stopping Fastchat server"
@@ -99,7 +100,7 @@ elif [[ $1 == "stop" ]]; then
         esac
     else
         kill_pid "/tmp/fastchat_server.pid"
-        kill_pid "tmp/fastchat_worker.pid"
+        kill_pid "/tmp/fastchat_worker.pid"
         kill_pid "/tmp/fastchat_controller.pid"
     fi  
 
