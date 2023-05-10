@@ -138,3 +138,10 @@ vae_list = os.environ.get('VAE_LIST', "").split(',')
 for uri in vae_list:
     if uri != '':
         downlaod_model(uri)
+        
+os.makedirs(f"{model_storage_dir}/embedding",exist_ok=True)
+os.chdir(f"{model_storage_dir}/embedding")    
+embedding_list = os.environ.get('EMBEDDING_LIST', "").split(',')
+for uri in embedding_list:
+    if uri != '':
+        downlaod_model(uri)

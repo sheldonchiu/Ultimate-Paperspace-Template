@@ -15,12 +15,14 @@ echo "### Setting up Stable Diffusion Volta ###"
 
 
 symlinks=(
-    "$WEBUI_DIR:/notebooks/stable-diffusion-volta"
+    "$REPO_DIR:/notebooks/stable-diffusion-volta"
     "/storage:/notebooks/storage"
+    "$REPO_DIR/data/outputs:/notebooks/outputs/stable-diffusion-volta"
     "$MODEL_DIR:/notebooks/models"
 )
 TARGET_REPO_URL="https://github.com/VoltaML/voltaML-fast-stable-diffusion.git" \
-TARGET_REPO_DIR=$WEBUI_DIR \
+TARGET_REPO_DIR=$REPO_DIR \
+TARGET_REPO_BRANCH=main \
 UPDATE_REPO=$SD_VOLTA_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$SD_VOLTA_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
@@ -35,6 +37,11 @@ if ! [[ -e "/tmp/sd_volta.prepared" ]]; then
     pip install --upgrade wheel setuptools
     
     
+    cd $REPO_DIR
+    python main.py --install-only
+    
+    pip install xformers==0.0.19
+
 
     touch /tmp/sd_volta.prepared
 else

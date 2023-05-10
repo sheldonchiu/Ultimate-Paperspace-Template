@@ -7,17 +7,24 @@ use_python = True
 
 prepare_repo = '''
 symlinks=(
-    "$WEBUI_DIR:/notebooks/stable-diffusion-comfy"
+    "$REPO_DIR:/notebooks/stable-diffusion-comfy"
     "/storage:/notebooks/storage"
+    "$REPO_DIR/output:/notebooks/outputs/stable-diffusion-comfy"
     "$MODEL_DIR:/notebooks/models"
 )
+
 TARGET_REPO_URL="https://github.com/comfyanonymous/ComfyUI.git" \\
-TARGET_REPO_DIR=$WEBUI_DIR \\
-UPDATE_REPO=$SD_COMFY_UPDATE_REPO \\ 
+TARGET_REPO_DIR=$REPO_DIR \\
+UPDATE_REPO=$SD_COMFY_UPDATE_REPO \\
 UPDATE_REPO_COMMIT=$SD_COMFY_UPDATE_REPO_COMMIT \\
 bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
 '''
-prepare_env = ''''''
+prepare_env = '''
+    cd $REPO_DIR
+    pip install xformers
+    pip install torchvision torchaudio --no-deps
+    pip install -r requirements.txt
+'''
 
 download_model = '''
 bash $current_dir/../utils/model_download/main.sh

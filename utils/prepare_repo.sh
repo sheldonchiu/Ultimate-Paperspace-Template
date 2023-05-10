@@ -25,7 +25,7 @@ elif [[ $UPDATE_REPO == "commit" ]]; then
     git checkout $UPDATE_REPO_COMMIT
 fi
 
-if [[ $# -gt 1 ]]; then
+if [[ $# -gt 0 ]]; then
     echo -e "\nCreating Symlinks..."
     for symlink in "$@"; do
         echo "Symlink: $symlink"

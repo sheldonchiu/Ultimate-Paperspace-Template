@@ -3,7 +3,6 @@ from pathlib import Path
 
 repo_storage_dir = os.environ['REPO_DIR']
 model_storage_dir = Path(os.environ['MODEL_DIR'])
-stable_diffusion_webui_path = os.environ['WEBUI_DIR']
 
 webui_sd_model_path =  os.environ.get('LINK_MODEL_TO', None)
 webui_vae_path = os.environ.get('LINK_VAE_TO', None)
