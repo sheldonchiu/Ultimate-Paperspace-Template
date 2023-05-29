@@ -17,11 +17,9 @@ echo "### Setting up Cloudflare Tunnel ###"
 
 if ! [[ -e "/tmp/cloudflared.prepared" ]]; then
     
-     
     cd /tmp
     curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
     dpkg -i cloudflared.deb
-
 
     touch /tmp/cloudflared.prepared
 else
@@ -34,7 +32,6 @@ echo "Finished Preparing Environment for Cloudflare Tunnel"
 
 
 echo "### Starting Cloudflare Tunnel ###"
-
 if [[ $CF_TOKEN == "quick" ]]; then
     # Split EXPOSE_PORTS into an array using ':' as the delimiter
     IFS=':' read -ra names <<< "$PORT_MAPPING"
@@ -90,6 +87,5 @@ else
     cloudflared service install "$CF_TOKEN"
     echo "Cloudflared: Running as a service"
 fi
-
 echo "Cloudflare Tunnel Started"
 echo "### Done ###"

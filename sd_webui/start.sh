@@ -1,5 +1,5 @@
 #!/bin/bash
-cd $WEBUI_DIR
+cd $REPO_DIR
 
 x_arg=""
 if [[ -n "${ACTIVATE_XFORMERS}" ]]; then

@@ -15,12 +15,12 @@ prepare_env = '''
   chmod +x /tmp/minio-binaries/mc
   export PATH=$PATH:/tmp/minio-binaries/
   echo "export PATH=\$PATH:/tmp/minio-binaries/" >> /etc/bash.bashrc
-'''
+'''.strip()
 download_model = ""
 
 action_before_start = '''
 /tmp/minio-binaries/mc alias set dst $S3_HOST_URL $S3_ACCESS_KEY $S3_SECRET_KEY
-'''
+'''.strip()
 
 start = f'''
 if [[ -z $S3_MIRROR_PATH || -z $S3_MIRROR_TO_BUCKET ]]; then
@@ -30,7 +30,7 @@ else
     nohup /tmp/minio-binaries/mc mirror --overwrite --watch --quiet $S3_MIRROR_PATH dst/$S3_MIRROR_TO_BUCKET > /tmp/{name}.log 2>&1 &
     echo $! > /tmp/{name}.pid
 fi
-'''
+'''.strip()
 # Load the template from a file
 with open('../template/main.j2') as f:
     template = Template(f.read())
@@ -69,4 +69,21 @@ result = template.render(
 )
 
 with open('control.sh', 'w') as f:
+    f.write(result)
+    
+##############################################
+
+with open('../template/env.j2') as f:
+    template = Template(f.read())
+    
+export_required_env = '''
+export REQUIRED_ENV="S3_HOST_URL,S3_ACCESS_KEY,S3_SECRET_KEY"
+'''.strip()
+other_commands = ""
+result = template.render(
+    export_required_env=export_required_env,
+    other_commands=other_commands,
+)
+
+with open('.env', 'w') as f:
     f.write(result)

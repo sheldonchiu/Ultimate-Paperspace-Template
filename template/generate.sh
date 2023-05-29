@@ -1,5 +1,7 @@
 #!/bin/bash
-cd ..
+
+current_dir=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
+cd $current_dir/..
 # Loop through all folders in the current directory
 for folder in */; do
     # Check if template.py exists in the current folder

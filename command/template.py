@@ -52,3 +52,24 @@ result = template.render(
 
 with open('control.sh', 'w') as f:
     f.write(result)
+    
+##############################################
+
+with open('../template/env.j2') as f:
+    template = Template(f.read())
+    
+export_required_env = '''
+export REQUIRED_ENV="COMMAND_USERNAME,COMMAND_PASSWORD"
+'''.strip()
+other_commands = '''
+export COMMAND_PORT=${COMMAND_PORT:-"8022"}
+export EXPOSE_PORTS="$EXPOSE_PORTS:$COMMAND_PORT"
+export PORT_MAPPING="$PORT_MAPPING:command_server"
+'''.strip()
+result = template.render(
+    export_required_env=export_required_env,
+    other_commands=other_commands,
+)
+
+with open('.env', 'w') as f:
+    f.write(result)

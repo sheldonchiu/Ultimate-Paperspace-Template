@@ -12,7 +12,7 @@ TARGET_REPO_URL="https://github.com/oobabooga/text-generation-webui" \\
 UPDATE_REPO=$TEXTGEN_UPDATE_REPO \\
 UPDATE_REPO_COMMIT=$TEXTGEN_UPDATE_REPO_COMMIT \\
 bash $current_dir/../utils/prepare_repo.sh
-'''
+'''.strip()
 
 prepare_env = '''
     cd $REPO_DIR
@@ -33,7 +33,7 @@ prepare_env = '''
     
     # Temp fix for graio 3.25.0 cannot restart on GUI
     pip install gradio>=3.28.0
-'''
+'''.strip()
 
 download_model = '''
 function download_from_hf() {
@@ -68,7 +68,7 @@ do
         args="--wbits 4 --groupsize 128 --model_type Llama"
     fi
 done
-'''
+'''.strip()
 
 action_before_start = ""
 
@@ -76,7 +76,7 @@ start = f'''
 cd $REPO_DIR
 nohup python server.py  --listen-port $TEXTGEN_PORT --model $model_name $args --xformers > /tmp/{name}.log 2>&1 &
 echo $! > /tmp/{name}.pid
-'''
+'''.strip()
 
 # Load the template from a file
 with open('../template/main.j2') as f:
@@ -109,4 +109,29 @@ result = template.render(
 )
 
 with open('control.sh', 'w') as f:
+    f.write(result)
+    
+##############################################
+
+with open('../template/env.j2') as f:
+    template = Template(f.read())
+    
+export_required_env = ""
+other_commands = '''
+export MODEL_DIR=${TEXTGEN_MODEL_DIR:-"/tmp/textgen-model"}
+export REPO_DIR=${TEXTGEN_REPO_DIR:-"/storage/text-generation-webui"}
+
+export TEXTGEN_PORT=${TEXTGEN_PORT:-7862}
+export EXPOSE_PORTS="$EXPOSE_PORTS:$TEXTGEN_PORT"
+export PORT_MAPPING="$PORT_MAPPING:textgen"
+export HUGGINGFACE_TOKEN=$HF_TOKEN
+
+export LINK_MODEL_TO=${TEXTGEN_LINK_MODEL_TO:-"${REPO_DIR}/models/"}
+'''.strip()
+result = template.render(
+    export_required_env=export_required_env,
+    other_commands=other_commands,
+)
+
+with open('.env', 'w') as f:
     f.write(result)

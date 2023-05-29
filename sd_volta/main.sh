@@ -13,11 +13,10 @@ trap 'error_exit "### ERROR ###"' ERR
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up Stable Diffusion Volta ###"
 
-
 symlinks=(
     "$REPO_DIR:/notebooks/stable-diffusion-volta"
     "/storage:/notebooks/storage"
-    "$REPO_DIR/data/outputs:/notebooks/outputs/stable-diffusion-volta"
+    "$REPO_DIR/data/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-volta"
     "$MODEL_DIR:/notebooks/models"
 )
 TARGET_REPO_URL="https://github.com/VoltaML/voltaML-fast-stable-diffusion.git" \
@@ -27,7 +26,6 @@ UPDATE_REPO=$SD_VOLTA_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$SD_VOLTA_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
 
-
 if ! [[ -e "/tmp/sd_volta.prepared" ]]; then
     
     python3.10 -m venv /tmp/sd_volta-env
@@ -36,12 +34,10 @@ if ! [[ -e "/tmp/sd_volta.prepared" ]]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
     
-    
     cd $REPO_DIR
     python main.py --install-only
     
-    pip install xformers==0.0.19
-
+    pip install xformers==0.0.20
 
     touch /tmp/sd_volta.prepared
 else
@@ -53,18 +49,14 @@ echo "Finished Preparing Environment for Stable Diffusion Volta"
 
 
 echo "### Downloading Model for Stable Diffusion Volta ###"
-
 bash $current_dir/../utils/model_download/main.sh
 python $current_dir/../utils/model_download/link_model.py
-
 echo "Finished Downloading Models for Stable Diffusion Volta"
 
 
 echo "### Starting Stable Diffusion Volta ###"
-
 cd "$REPO_DIR"
 nohup python main.py > /tmp/sd_volta.log 2>&1 &
 echo $! > /tmp/sd_volta.pid
-
 echo "Stable Diffusion Volta Started"
 echo "### Done ###"

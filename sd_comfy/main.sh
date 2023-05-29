@@ -13,11 +13,10 @@ trap 'error_exit "### ERROR ###"' ERR
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up Stable Diffusion Comfy ###"
 
-
 symlinks=(
     "$REPO_DIR:/notebooks/stable-diffusion-comfy"
     "/storage:/notebooks/storage"
-    "$REPO_DIR/output:/notebooks/outputs/stable-diffusion-comfy"
+    "$REPO_DIR/output:$IMAGE_OUTPUTS_DIR/stable-diffusion-comfy"
     "$MODEL_DIR:/notebooks/models"
 )
 
@@ -27,7 +26,6 @@ UPDATE_REPO=$SD_COMFY_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$SD_COMFY_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
 
-
 if ! [[ -e "/tmp/sd_comfy.prepared" ]]; then
     
     python3.10 -m venv /tmp/sd_comfy-env
@@ -36,12 +34,10 @@ if ! [[ -e "/tmp/sd_comfy.prepared" ]]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
     
-    
     cd $REPO_DIR
     pip install xformers
     pip install torchvision torchaudio --no-deps
     pip install -r requirements.txt
-
 
     touch /tmp/sd_comfy.prepared
 else
@@ -53,18 +49,14 @@ echo "Finished Preparing Environment for Stable Diffusion Comfy"
 
 
 echo "### Downloading Model for Stable Diffusion Comfy ###"
-
 bash $current_dir/../utils/model_download/main.sh
 python $current_dir/../utils/model_download/link_model.py
-
 echo "Finished Downloading Models for Stable Diffusion Comfy"
 
 
 echo "### Starting Stable Diffusion Comfy ###"
-
 cd "$REPO_DIR"
 nohup python main.py --dont-print-server > /tmp/sd_comfy.log 2>&1 &
 echo $! > /tmp/sd_comfy.pid
-
 echo "Stable Diffusion Comfy Started"
 echo "### Done ###"

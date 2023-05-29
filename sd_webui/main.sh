@@ -13,28 +13,25 @@ trap 'error_exit "### ERROR ###"' ERR
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up Stable Diffusion WebUI ###"
 
-
 symlinks=(
-    "$WEBUI_DIR:/notebooks/stable-diffusion-webui"
-    "$WEBUI_DIR/outputs:/notebooks/outputs/stable-diffusion-webui"
-    "$WEBUI_DIR/log:$WEBUI_DIR/outputs/log"
+    "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-webui"
+    "$REPO_DIR/log:$REPO_DIR/outputs/log"
     "/storage:/notebooks/storage"
     "$MODEL_DIR:/notebooks/models"
 )
 TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \
-TARGET_REPO_DIR=$WEBUI_DIR \
+TARGET_REPO_DIR=$REPO_DIR \
 UPDATE_REPO=$SD_WEBUI_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$SD_WEBUI_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
 
 # git clone extensions that has their own model folder
-if [[ ! -d "${WEBUI_DIR}/extensions/sd-webui-controlnet" ]]; then
-    git clone https://github.com/Mikubill/sd-webui-controlnet.git "${WEBUI_DIR}/extensions/sd-webui-controlnet"
+if [[ ! -d "${REPO_DIR}/extensions/sd-webui-controlnet" ]]; then
+    git clone https://github.com/Mikubill/sd-webui-controlnet.git "${REPO_DIR}/extensions/sd-webui-controlnet"
 fi
-if [[ ! -d "${WEBUI_DIR}/extensions/sd-webui-additional-networks" ]]; then
-    git clone https://github.com/kohya-ss/sd-webui-additional-networks.git  "${WEBUI_DIR}/extensions/sd-webui-additional-networks"
+if [[ ! -d "${REPO_DIR}/extensions/sd-webui-additional-networks" ]]; then
+    git clone https://github.com/kohya-ss/sd-webui-additional-networks.git  "${REPO_DIR}/extensions/sd-webui-additional-networks"
 fi
-
 
 if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     
@@ -44,22 +41,18 @@ if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
     
-     
     # fix install issue with pycairo, which is needed by sd-webui-controlnet
     apt-get install -y libcairo2-dev libjpeg-dev libgif-dev
     pip install requests gdown bs4
     pip uninstall -y torch torchvision torchaudio protobuf lxml
 
-    export PYTHONPATH="$PYTHONPATH:$WEBUI_DIR"
+    export PYTHONPATH="$PYTHONPATH:$REPO_DIR"
     # must run inside webui dir since env['PYTHONPATH'] = os.path.abspath(".") existing in launch.py
-    cd $WEBUI_DIR
+    cd $REPO_DIR
     python $current_dir/preinstall.py
     cd $current_dir
 
-    if [[ -n "${ACTIVATE_XFORMERS}" ]]; then
-        pip install xformers==0.0.19
-    fi
-
+    pip install xformers==0.0.20
 
     touch /tmp/sd_webui.prepared
 else
@@ -71,10 +64,8 @@ echo "Finished Preparing Environment for Stable Diffusion WebUI"
 
 
 echo "### Downloading Model for Stable Diffusion WebUI ###"
-
 bash $current_dir/../utils/model_download/main.sh
 python $current_dir/../utils/model_download/link_model.py
-
 echo "Finished Downloading Models for Stable Diffusion WebUI"
 
 

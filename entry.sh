@@ -22,7 +22,7 @@ function check_required_env_vars() {
   return 0
 }
 
-export SCRIPT_ROOT_DIR=$(dirname "$(realpath "$0")")
+export SCRIPT_ROOT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 cd $SCRIPT_ROOT_DIR
 
 # Read the RUN_SCRIPT environment variable
@@ -31,14 +31,18 @@ run_script="$RUN_SCRIPT"
 # Separate the variable by commas
 IFS=',' read -ra scripts <<< "$run_script"
 
-echo "Starting script(s)"
+echo "Installing common dependencies"
 apt-get update -qq
 apt-get install -qq curl git-lfs zip python3.10 python3.10-venv python3.10-dev -y > /dev/null
 
 # Prepare required path
-mkdir -p /notebooks/outputs
+export IMAGE_OUTPUTS_DIR="/storage/image_outputs"
+mkdir -p /notebooks/image_outputs
+mkdir -p $IMAGE_OUTPUTS_DIR
+ln -s $IMAGE_OUTPUTS_DIR /notebooks/image_outputs
 
 # Loop through each script and execute the corresponding case
+echo "Starting script(s)"
 for script in "${scripts[@]}"
 do
   cd $SCRIPT_ROOT_DIR

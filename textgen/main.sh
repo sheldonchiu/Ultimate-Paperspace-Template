@@ -13,14 +13,12 @@ trap 'error_exit "### ERROR ###"' ERR
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up Text generation Webui ###"
 
-
 TARGET_REPO_DIR=$REPO_DIR \
 TARGET_REPO_BRANCH="main" \
 TARGET_REPO_URL="https://github.com/oobabooga/text-generation-webui" \
 UPDATE_REPO=$TEXTGEN_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$TEXTGEN_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh
-
 
 if ! [[ -e "/tmp/textgen.prepared" ]]; then
     
@@ -29,7 +27,6 @@ if ! [[ -e "/tmp/textgen.prepared" ]]; then
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
-    
     
     cd $REPO_DIR
     pip install torch torchvision torchaudio
@@ -50,7 +47,6 @@ if ! [[ -e "/tmp/textgen.prepared" ]]; then
     # Temp fix for graio 3.25.0 cannot restart on GUI
     pip install gradio>=3.28.0
 
-
     touch /tmp/textgen.prepared
 else
     
@@ -61,7 +57,6 @@ echo "Finished Preparing Environment for Text generation Webui"
 
 
 echo "### Downloading Model for Text generation Webui ###"
-
 function download_from_hf() {
     model_hub="$1"
     model_name="$2"
@@ -94,15 +89,12 @@ do
         args="--wbits 4 --groupsize 128 --model_type Llama"
     fi
 done
-
 echo "Finished Downloading Models for Text generation Webui"
 
 
 echo "### Starting Text generation Webui ###"
-
 cd $REPO_DIR
 nohup python server.py  --listen-port $TEXTGEN_PORT --model $model_name $args --xformers > /tmp/textgen.log 2>&1 &
 echo $! > /tmp/textgen.pid
-
 echo "Text generation Webui Started"
 echo "### Done ###"

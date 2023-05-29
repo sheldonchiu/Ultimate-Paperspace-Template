@@ -11,7 +11,7 @@ prepare_env = '''
     cd /tmp
     curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
     dpkg -i cloudflared.deb
-'''
+'''.strip()
 download_model = ""
 
 action_before_start = ""
@@ -72,7 +72,7 @@ else
     cloudflared service install "$CF_TOKEN"
     echo "Cloudflared: Running as a service"
 fi
-'''
+'''.strip()
 
 # Load the template from a file
 with open('../template/main.j2') as f:
@@ -102,7 +102,7 @@ custom_reload = '''
         kill_pid $file
     done
     bash main.sh
-'''
+'''.strip()
 custom_stop = '''
     if [[ -n $2 ]]; then
         echo "Stopping Cloudflare tunnel for $2"
@@ -112,7 +112,7 @@ custom_stop = '''
             kill_pid $file
         done
     fi
-'''
+'''.strip()
 custom_start = ""
 
 # Render the template with the variables
@@ -125,4 +125,22 @@ result = template.render(
 )
 
 with open('control.sh', 'w') as f:
+    f.write(result)
+    
+##############################################
+
+with open('../template/env.j2') as f:
+    template = Template(f.read())
+    
+export_required_env = '''
+export REQUIRED_ENV="CF_TOKEN"
+'''.strip()
+other_commands = '''
+'''.strip()
+result = template.render(
+    export_required_env=export_required_env,
+    other_commands=other_commands,
+)
+
+with open('.env', 'w') as f:
     f.write(result)

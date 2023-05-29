@@ -10,7 +10,7 @@ prepare_repo = ""
 prepare_env = '''
     pip3 install fschat bitsandbytes
     pip3 install git+https://github.com/huggingface/transformers
-'''
+'''.strip()
 
 download_model = '''
 model_paths=""
@@ -41,7 +41,7 @@ else
     exit 1
 fi
 done
-'''
+'''.strip()
 action_before_start = ""
 
 worker_loop = f'''
@@ -57,7 +57,7 @@ worker_loop = f'''
         (( model_args_id++ ))
     fi
     done
-'''
+'''.strip()
 
 start = f'''
 if [[ -n $1 ]]; then
@@ -95,7 +95,7 @@ else
     echo $! > /tmp/{name}_server.pid
     
 fi
-'''
+'''.strip()
 
 # Load the template from a file
 with open('../template/main.j2') as f:
@@ -148,7 +148,7 @@ custom_reload = f'''
         kill_pid "/tmp/{name}_controller.pid"
         bash main.sh
     fi
-'''
+'''.strip()
 custom_stop = f'''
     if [[ -n $2 ]]; then
         case $2 in
@@ -173,7 +173,7 @@ custom_stop = f'''
         kill_pid "/tmp/{name}_worker.pid"
         kill_pid "/tmp/{name}_controller.pid"
     fi  
-'''
+'''.strip()
 
 custom_start = ""
 
@@ -187,4 +187,25 @@ result = template.render(
 )
 
 with open('control.sh', 'w') as f:
+    f.write(result)
+    
+##############################################
+
+with open('../template/env.j2') as f:
+    template = Template(f.read())
+    
+export_required_env = '''
+'''.strip()
+other_commands = '''
+export FASTCHAT_MODEL=${FASTCHAT_MODEL:-"vicuna-7b"}
+export FASTCHAT_PORT=${FASTCHAT_PORT:-7861}
+export EXPOSE_PORTS="$EXPOSE_PORTS:$FASTCHAT_PORT"
+export PORT_MAPPING="$PORT_MAPPING:fastchat"
+'''.strip()
+result = template.render(
+    export_required_env=export_required_env,
+    other_commands=other_commands,
+)
+
+with open('.env', 'w') as f:
     f.write(result)

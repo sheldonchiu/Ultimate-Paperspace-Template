@@ -23,10 +23,8 @@ if ! [[ -e "/tmp/fastchat.prepared" ]]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
     
-    
     pip3 install fschat bitsandbytes
     pip3 install git+https://github.com/huggingface/transformers
-
 
     touch /tmp/fastchat.prepared
 else
@@ -38,7 +36,6 @@ echo "Finished Preparing Environment for FastChat"
 
 
 echo "### Downloading Model for FastChat ###"
-
 model_paths=""
 model_args = ()
 IFS=',' read -ra models <<< "$FASTCHAT_MODEL"
@@ -67,12 +64,10 @@ else
     exit 1
 fi
 done
-
 echo "Finished Downloading Models for FastChat"
 
 
 echo "### Starting FastChat ###"
-
 if [[ -n $1 ]]; then
     case $1 in
         "controller")
@@ -80,8 +75,7 @@ if [[ -n $1 ]]; then
             echo $! > /tmp/fastchat_controller.pid
             ;;
         "worker")
-            
-    port=21001
+            port=21001
     model_args_id=0
     IFS=',' read -ra models <<< "$model_paths"
     for model in "${models[@]}"
@@ -93,7 +87,6 @@ if [[ -n $1 ]]; then
         (( model_args_id++ ))
     fi
     done
-
             ;;
         "server")
             nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT > /tmp/fastchat_server.log 2>&1 &
@@ -107,7 +100,6 @@ else
     nohup python3 -m fastchat.serve.controller --host 127.0.0.1 > /tmp/fastchat_controller.log 2>&1 &
     echo $! > /tmp/fastchat_controller.pid
     
-    
     port=21001
     model_args_id=0
     IFS=',' read -ra models <<< "$model_paths"
@@ -120,7 +112,6 @@ else
         (( model_args_id++ ))
     fi
     done
-
     
     while true; do
         sleep 5
@@ -134,6 +125,5 @@ else
     echo $! > /tmp/fastchat_server.pid
     
 fi
-
 echo "FastChat Started"
 echo "### Done ###"
