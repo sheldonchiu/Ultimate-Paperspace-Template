@@ -5,16 +5,11 @@ title = "Cloudflare Tunnel"
 name = "cloudflared"
 use_python = False
 
-prepare_repo = ""
-
 prepare_env = ''' 
     cd /tmp
     curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
     dpkg -i cloudflared.deb
 '''.strip()
-download_model = ""
-
-action_before_start = ""
 
 start = '''
 if [[ $CF_TOKEN == "quick" ]]; then

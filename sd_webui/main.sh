@@ -12,7 +12,6 @@ trap 'error_exit "### ERROR ###"' ERR
 
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up Stable Diffusion WebUI ###"
-
 symlinks=(
     "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-webui"
     "$REPO_DIR/log:$REPO_DIR/outputs/log"
@@ -32,7 +31,6 @@ fi
 if [[ ! -d "${REPO_DIR}/extensions/sd-webui-additional-networks" ]]; then
     git clone https://github.com/kohya-ss/sd-webui-additional-networks.git  "${REPO_DIR}/extensions/sd-webui-additional-networks"
 fi
-
 if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     
     python3.10 -m venv /tmp/sd_webui-env
@@ -43,7 +41,6 @@ if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     
     # fix install issue with pycairo, which is needed by sd-webui-controlnet
     apt-get install -y libcairo2-dev libjpeg-dev libgif-dev
-    pip install requests gdown bs4
     pip uninstall -y torch torchvision torchaudio protobuf lxml
 
     export PYTHONPATH="$PYTHONPATH:$REPO_DIR"
@@ -52,8 +49,8 @@ if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     python $current_dir/preinstall.py
     cd $current_dir
 
-    pip install xformers==0.0.20
-
+    pip install xformers
+    
     touch /tmp/sd_webui.prepared
 else
     

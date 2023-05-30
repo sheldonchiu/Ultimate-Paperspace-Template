@@ -5,10 +5,11 @@ cd $current_dir/..
 # Loop through all folders in the current directory
 for folder in */; do
     # Check if template.py exists in the current folder
-    if [[ -f "${folder}template.py" ]]; then
+    if [[ -f "${folder}template.yaml" ]]; then
         # Run python template.py in the current folder
         cd "${folder}"
-        python template.py
+        echo "Generating files for ${folder}"
+        python ../template/template.py --yaml_file template.yaml --output_path ./
         cd ..
     fi
 done

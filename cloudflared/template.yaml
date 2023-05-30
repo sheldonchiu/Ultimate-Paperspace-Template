@@ -1,0 +1,89 @@
+title: Cloudflare Tunnel
+name: cloudflared
+use_python: False
+
+prepare_env: |-
+  cd /tmp
+  curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+  dpkg -i cloudflared.deb
+
+start: |-
+  if [[ $CF_TOKEN == "quick" ]]; then
+      # Split EXPOSE_PORTS into an array using ':' as the delimiter
+      IFS=':' read -ra names <<< "$PORT_MAPPING"
+      IFS=':' read -ra ports <<< "$EXPOSE_PORTS"
+
+      # Loop over the ports array
+      paste <(printf '%s\\n' "${names[@]}") <(printf '%s\\n' "${ports[@]}") | while IFS=$'\\t' read -r name port; do
+          if [[ $port == "" ]]; then
+              continue
+          fi
+          metrics_port=$((port+1))
+
+          # Generate PID file and log file names using a different delimiter
+          pidfile="/tmp/{{ name }}_${name}.pid"
+          logfile="/tmp/{{ name }}_${name}.log"
+          hostfile="/tmp/{{ name }}_${name}.host"
+
+          if [[ -f $pidfile ]]; then
+              pid=$(cat $pidfile)
+              # Only start the tunnel if the process is not running
+              if ps -p $pid -o pid,comm | grep -q $pid; then
+                  log "Starting cloudflared tunnel for $name"
+                  # Start cloudflared tunnel in the background
+                  nohup cloudflared tunnel --url http://localhost:${port} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
+
+                  # Wait for the tunnel to become available
+                  retries=0
+                  max_retries=10
+                  while true; do
+                      sleep 5
+                      response=$(curl http://localhost:${metrics_port}/quicktunnel || true)
+                      if [[ $? -eq 0 ]] && [[ "$(echo "$response" | jq -r '.hostname')" != "" ]]; then
+                          hostname=$(echo "$response" | jq -r '.hostname')
+                          echo $hostname > $hostfile
+                          send_to_discord "Cloudflared: Hostname is $hostname for $name"
+                          break
+                      fi
+                      retries=$((retries+1))
+                      if [[ $retries -ge $max_retries ]]; then
+                          log "Error: Failed to get response after $max_retries attempts"
+                          send_to_discord "Cloudflared: Failed to get response after $max_retries attempts"
+                          break
+                      fi
+                      echo "Failed to get response. Retrying in 5 seconds..."
+                      sleep 5
+                  done
+              else
+                  log "Cloudflared tunnel for $name is already running."
+              fi
+          fi
+      done
+  else
+      cloudflared service install "$CF_TOKEN"
+      log "Cloudflared: Running as a service"
+  fi
+
+custom_start: ""
+custom_reload: |-
+      for file in /tmp/cloudflared_*.pid; do
+          kill_pid $file
+      done
+      bash main.sh
+custom_stop: |-
+      if [[ -n $2 ]]; then
+          log "Stopping Cloudflare tunnel for $2"
+          kill_pid /tmp/cloudflared_{$2}.pid
+      else
+        log "Stopping all Cloudflare tunnel(s)"
+        for file in /tmp/cloudflared_*.pid; do
+            kill_pid $file
+        done
+      fi
+
+export_required_env: |-
+    export REQUIRED_ENV="CF_TOKEN"
+other_commands: |-
+    export COMMAND_PORT=${COMMAND_PORT:-"8022"}
+    export EXPOSE_PORTS="$EXPOSE_PORTS:$COMMAND_PORT"
+    export PORT_MAPPING="$PORT_MAPPING:command_server"

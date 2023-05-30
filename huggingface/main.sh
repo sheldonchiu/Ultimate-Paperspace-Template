@@ -13,8 +13,6 @@ trap 'error_exit "### ERROR ###"' ERR
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up HuggingFace Hub ###"
 
-
-
 if ! [[ -e "/tmp/huggingface.prepared" ]]; then
     
     python3.10 -m venv /tmp/huggingface-env
@@ -24,7 +22,7 @@ if ! [[ -e "/tmp/huggingface.prepared" ]]; then
     pip install --upgrade wheel setuptools
     
     pip install --upgrade huggingface_hub
-
+    
     touch /tmp/huggingface.prepared
 else
     

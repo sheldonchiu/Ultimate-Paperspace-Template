@@ -11,7 +11,7 @@ kill_pid() {
     if [[ -f $1 ]]; then
         pid=$(cat $1)
     else
-        echo "Error: PID file $1 not found!"
+        log "Error: PID file $1 not found!"
         return
     fi
 
@@ -25,4 +25,13 @@ kill_pid() {
     kill -TERM $pid
 
     echo "Process $pid has been killed."
+}
+
+download_from_hf() {
+    model_hub="$1"
+    model_name="$2"
+    TARGET_REPO_DIR="$MODEL_DIR/$model_name" \
+    TARGET_REPO_BRANCH="$3" \
+    TARGET_REPO_URL="https://huggingface.co/$model_hub/$model_name" \
+    bash $current_dir/../utils/prepare_repo.sh  
 }

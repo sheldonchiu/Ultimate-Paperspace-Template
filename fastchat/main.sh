@@ -13,8 +13,6 @@ trap 'error_exit "### ERROR ###"' ERR
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up FastChat ###"
 
-
-
 if ! [[ -e "/tmp/fastchat.prepared" ]]; then
     
     python3.10 -m venv /tmp/fastchat-env
@@ -25,7 +23,7 @@ if ! [[ -e "/tmp/fastchat.prepared" ]]; then
     
     pip3 install fschat bitsandbytes
     pip3 install git+https://github.com/huggingface/transformers
-
+    
     touch /tmp/fastchat.prepared
 else
     
@@ -76,17 +74,17 @@ if [[ -n $1 ]]; then
             ;;
         "worker")
             port=21001
-    model_args_id=0
-    IFS=',' read -ra models <<< "$model_paths"
-    for model in "${models[@]}"
-    do
-    if [ -n "$model" ]; then
-        (( port++ ))
-        nohup python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model --load-8bit ${model_args[$model_args_id]} > /tmp/fastchat_worker_$port.log 2>&1 &
-        echo $! > /tmp/fastchat_worker_$port.pid
-        (( model_args_id++ ))
-    fi
-    done
+            model_args_id=0
+            IFS=',' read -ra models <<< "$model_paths"
+            for model in "${models[@]}"
+            do
+                if [ -n "$model" ]; then
+                    (( port++ ))
+                    nohup python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model --load-8bit ${model_args[$model_args_id]} > /tmp/fastchat_worker_$port.log 2>&1 &
+                    echo $! > /tmp/fastchat_worker_$port.pid
+                    (( model_args_id++ ))
+                fi
+            done
             ;;
         "server")
             nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT > /tmp/fastchat_server.log 2>&1 &

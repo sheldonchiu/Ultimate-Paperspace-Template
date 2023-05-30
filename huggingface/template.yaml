@@ -1,0 +1,8 @@
+title: HuggingFace Hub
+name: huggingface
+use_python: true
+
+prepare_repo: ""
+prepare_env: "pip install --upgrade huggingface_hub"
+
+start: "python $current_dir/upload.py"

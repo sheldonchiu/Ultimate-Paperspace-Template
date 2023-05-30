@@ -13,8 +13,6 @@ trap 'error_exit "### ERROR ###"' ERR
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up Command Server ###"
 
-
-
 if ! [[ -e "/tmp/command.prepared" ]]; then
     
     python3.10 -m venv /tmp/command-env
@@ -24,7 +22,7 @@ if ! [[ -e "/tmp/command.prepared" ]]; then
     pip install --upgrade wheel setuptools
     
     pip install fastapi uvicorn[standard]
-
+    
     touch /tmp/command.prepared
 else
     

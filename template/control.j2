@@ -10,24 +10,24 @@ trap 'error_exit "### ERROR ###"' ERR
 echo "### Command received ###"
 file="/tmp/{{ name }}.pid"
 if [[ $1 == "reload" ]]; then
-    echo "Reloading {{ title }}"
+    log "Reloading {{ title }}"
     {% if custom_reload %}
-    {{ custom_reload }}
+    {{ custom_reload | indent(4) }}
     {% else %}
     kill_pid $file
     bash main.sh
     {% endif %}
 elif [[ $1 == "start" ]]; then
-    echo "Starting {{ title }}"
+    log "Starting {{ title }}"
     {% if custom_start %}
-    {{ custom_start }}
+    {{ custom_start | indent(4) }}
     {% else %}
     bash main.sh
     {% endif %}
 elif [[ $1 == "stop" ]]; then
-    echo "Stopping {{ title }}"
+    log "Stopping {{ title }}"
     {% if custom_stop %}
-    {{ custom_stop }}
+    {{ custom_stop | indent(4) }}
     {% else %}    
     kill_pid $file
     {% endif %}

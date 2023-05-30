@@ -12,9 +12,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up {{ title }} ###"
-
 {{ prepare_repo }}
-
 if ! [[ -e "/tmp/{{ name }}.prepared" ]]; then
     {% if use_python %}
     python3.10 -m venv /tmp/{{ name }}-env
@@ -23,8 +21,8 @@ if ! [[ -e "/tmp/{{ name }}.prepared" ]]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
     {% endif %}
-    {{ prepare_env }}
-
+    {{ prepare_env | indent(4)}}
+    
     touch /tmp/{{ name }}.prepared
 else
     {% if use_python %}
@@ -36,12 +34,14 @@ fi
 echo "Finished Preparing Environment for {{ title }}"
 
 {% if download_model %}
-echo "### Downloading Model for {{ title }} ###"
+log "### Downloading Model for {{ title }} ###"
 {{ download_model }}
-echo "Finished Downloading Models for {{ title }}"
+log "Finished Downloading Models for {{ title }}"
 {% endif %}
+{% if action_before_start %}
 {{ action_before_start }}
+{% endif%}
 echo "### Starting {{ title }} ###"
 {{ start }}
-echo "{{ title }} Started"
+log "{{ title }} Started"
 echo "### Done ###"

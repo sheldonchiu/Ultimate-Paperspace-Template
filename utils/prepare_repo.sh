@@ -15,31 +15,31 @@ if [[ ! -d "$TARGET_REPO_DIR/.git" ]]; then
 fi
 
 if [[ $UPDATE_REPO == "auto" ]]; then
-    echo "Updating Repo $TARGET_REPO_DIR ..."
+    log "Updating Repo $TARGET_REPO_DIR ..."
     cd $TARGET_REPO_DIR
     git pull
 elif [[ $UPDATE_REPO == "commit" ]]; then
-    echo "Updating $TARGET_REPO_DIR to commit $UPDATE_REPO_COMMIT..."
+    log "Updating $TARGET_REPO_DIR to commit $UPDATE_REPO_COMMIT..."
     cd $TARGET_REPO_DIR
     git fetch
     git checkout $UPDATE_REPO_COMMIT
 fi
 
 if [[ $# -gt 0 ]]; then
-    echo -e "\nCreating Symlinks..."
+    log -e "\nCreating Symlinks..."
     for symlink in "$@"; do
-        echo "Symlink: $symlink"
+        log "Symlink: $symlink"
         src="${symlink%%:*}"
         dest="${symlink#*:}"
 
         mkdir -p $src
         if [[ -L $dest ]] && [[ ! -e $dest ]]; then # -e validates a symlink
-            echo "Symlink broken, removing: $dest"
+            log "Symlink broken, removing: $dest"
             rm $dest
         fi
         if [[ ! -e $dest ]]; then
             ln -s $src $dest
         fi
-        echo "$(realpath $dest) -> $dest"
+        log "$(realpath $dest) -> $dest"
     done
 fi

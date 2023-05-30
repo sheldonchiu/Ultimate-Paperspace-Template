@@ -1,0 +1,79 @@
+title: Text generation Webui
+name: textgen
+use_python: true
+
+prepare_repo: |-
+  TARGET_REPO_DIR=$REPO_DIR \
+  TARGET_REPO_BRANCH="main" \
+  TARGET_REPO_URL="https://github.com/oobabooga/text-generation-webui" \
+  UPDATE_REPO=$TEXTGEN_UPDATE_REPO \
+  UPDATE_REPO_COMMIT=$TEXTGEN_UPDATE_REPO_COMMIT \
+  bash $current_dir/../utils/prepare_repo.sh
+
+prepare_env: |-
+  cd $REPO_DIR
+  pip install torch torchvision torchaudio
+  pip install -r requirements.txt
+
+  mkdir -p repositories
+  cd repositories
+  TARGET_REPO_DIR=$REPO_DIR/repositories/GPTQ-for-LLaMa \
+  TARGET_REPO_BRANCH="cuda" \
+  TARGET_REPO_URL="https://github.com/qwopqwop200/GPTQ-for-LLaMa.git" \
+  bash $current_dir/../utils/prepare_repo.sh
+  
+  cd GPTQ-for-LLaMa
+  python setup_cuda.py install
+
+  pip install deepspeed
+  
+  # Temp fix for graio 3.25.0 cannot restart on GUI
+  pip install gradio>=3.28.0
+
+download_model: |-
+  # Prepare model dir and link it under the models folder inside the repo
+  mkdir -p $MODEL_DIR
+  rm -rf $LINK_MODEL_TO
+  ln -s $MODEL_DIR $LINK_MODEL_TO
+  if [[ ! -f $model_dir/config.yaml ]]; then  
+      wget -q https://raw.githubusercontent.com/oobabooga/text-generation-webui/main/models/config.yaml -P $model_dir
+  fi
+
+  args=""
+  IFS=',' read -ra models <<< "$TEXTGEN_MODEL"
+  for model in "${models[@]}"
+  do
+      cd /tmp
+      if [[ "$model" == "vicuna-13B-1.1" ]]; then
+          model_name="vicuna-13B-1.1-GPTQ-4bit-128g"
+          download_from_hf  "TheBloke" "$model_name" "main"
+          args="--wbits 4 --groupsize 128 --model_type Llama"
+      elif [[ "$model" == "stable-vicuna-13B" ]]; then
+          model_name="stable-vicuna-13B-GPTQ"
+          download_from_hf  "TheBloke" "$model_name" "latest"
+          args="--wbits 4 --groupsize 128 --model_type Llama"
+      fi
+  done
+
+action_before_start: ""
+
+start: |-
+  cd $REPO_DIR
+  nohup python server.py  --listen-port $TEXTGEN_PORT --model $model_name $args --xformers > /tmp/{{ name }}.log 2>&1 &
+  echo $! > /tmp/{{ name }}.pid
+
+custom_start: ""
+custom_reload: ""
+custom_stop: ""
+
+export_required_env: ""
+other_commands: |-
+  export MODEL_DIR=${TEXTGEN_MODEL_DIR:-"/tmp/llm-models"}
+  export REPO_DIR=${TEXTGEN_REPO_DIR:-"/storage/text-generation-webui"}
+
+  export TEXTGEN_PORT=${TEXTGEN_PORT:-7862}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:$TEXTGEN_PORT"
+  export PORT_MAPPING="$PORT_MAPPING:textgen"
+  export HUGGINGFACE_TOKEN=$HF_TOKEN
+
+  export LINK_MODEL_TO=${TEXTGEN_LINK_MODEL_TO:-"${REPO_DIR}/models/"}

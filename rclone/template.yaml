@@ -1,0 +1,26 @@
+title: Rclone
+name: rclone
+use_python: False
+
+prepare_repo: ""
+prepare_env: |-
+  curl https://rclone.org/install.sh | sudo bash
+  mkdir -p /root/.config/rclone
+
+download_model: ""
+
+action_before_start: ""
+
+start: |-
+  rclone serve $RCLONE_SERVE_PROTOCOL --addr :$RCLONE_PORT --copy-links --user $RCLONE_USERNAME --pass $RCLONE_PASSWORD $RCLONE_SERVE_PATH > /tmp/rclone_serve.log 2>&1 &
+  echo $! > /tmp/rclone.pid
+
+export_required_env: |-
+  export REQUIRED_ENV="RCLONE_USERNAME,RCLONE_PASSWORD"
+other_commands: |-
+  export RCLONE_SERVE_PROTOCOL=${RCLONE_SERVE_PROTOCOL:-webdav}
+  export RCLONE_PORT=${RCLONE_PORT:-8080}
+  export RCLONE_SERVE_PATH=${RCLONE_SERVE_PATH:-/notebooks}
+
+  export EXPOSE_PORTS="$EXPOSE_PORTS:$RCLONE_PORT"
+  export PORT_MAPPING="$PORT_MAPPING:rclone"

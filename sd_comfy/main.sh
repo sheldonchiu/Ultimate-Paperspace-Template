@@ -12,7 +12,6 @@ trap 'error_exit "### ERROR ###"' ERR
 
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up Stable Diffusion Comfy ###"
-
 symlinks=(
     "$REPO_DIR:/notebooks/stable-diffusion-comfy"
     "/storage:/notebooks/storage"
@@ -25,7 +24,6 @@ TARGET_REPO_DIR=$REPO_DIR \
 UPDATE_REPO=$SD_COMFY_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$SD_COMFY_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
-
 if ! [[ -e "/tmp/sd_comfy.prepared" ]]; then
     
     python3.10 -m venv /tmp/sd_comfy-env
@@ -38,7 +36,7 @@ if ! [[ -e "/tmp/sd_comfy.prepared" ]]; then
     pip install xformers
     pip install torchvision torchaudio --no-deps
     pip install -r requirements.txt
-
+    
     touch /tmp/sd_comfy.prepared
 else
     
@@ -56,7 +54,7 @@ echo "Finished Downloading Models for Stable Diffusion Comfy"
 
 echo "### Starting Stable Diffusion Comfy ###"
 cd "$REPO_DIR"
-nohup python main.py --dont-print-server > /tmp/sd_comfy.log 2>&1 &
-echo $! > /tmp/sd_comfy.pid
+nohup python main.py --dont-print-server > /tmp/{{ name }}.log 2>&1 &
+echo $! > /tmp/{{ name }}.pid
 echo "Stable Diffusion Comfy Started"
 echo "### Done ###"

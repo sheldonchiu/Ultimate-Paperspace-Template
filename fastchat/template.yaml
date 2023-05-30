@@ -1,0 +1,159 @@
+title: FastChat
+name: fastchat
+use_python: true
+
+prepare_repo: ""
+prepare_env: |-
+  pip3 install fschat bitsandbytes
+  pip3 install git+https://github.com/huggingface/transformers
+
+download_model: |-
+  model_paths=""
+  model_args = ()
+  IFS=',' read -ra models <<< "$FASTCHAT_MODEL"
+  for model in "${models[@]}"
+  do
+  if [[ $model == "vicuna-7b" ]]; then
+      if [[ ! -d "/tmp/vicuna-7b-1.1" ]]; then
+          git clone https://huggingface.co/eachadea/vicuna-7b-1.1 /tmp/vicuna-7b-1.1
+      fi
+      model_paths="$model_paths,/tmp/vicuna-7b-1.1"
+      model_args += ("--load-8bit")
+  elif [[ $model == "vicuna-13b" ]]; then
+      if [[ ! -d "/tmp/vicuna-13b-1.1" ]]; then
+          git clone https://huggingface.co/eachadea/vicuna-13b-1.1 /tmp/vicuna-13b-1.1
+      fi
+      model_paths="$model_paths,/tmp/vicuna-13b-1.1"
+      model_args += ("--load-8bit")
+  elif [[ $model == "chatglm-6b" ]]; then
+      if [[ ! -d "/tmp/chatglm-6b" ]]; then
+          git clone https://huggingface.co/THUDM/chatglm-6b /tmp/chatglm-6b
+      fi
+      model_paths="$model_paths,/tmp/chatglm-6b"
+      model_args += ("")
+  else
+      log "Invalid model name. Please set FASTCHAT_MODEL to vicuna-7b, vicuna-13b or chatglm-6b"
+      exit 1
+  fi
+  done
+
+action_before_start: ""
+
+start: |-
+  if [[ -n $1 ]]; then
+      case $1 in
+          "controller")
+              nohup python3 -m fastchat.serve.controller --host 127.0.0.1 > /tmp/fastchat_controller.log 2>&1 &
+              echo $! > /tmp/fastchat_controller.pid
+              ;;
+          "worker")
+              port=21001
+              model_args_id=0
+              IFS=',' read -ra models <<< "$model_paths"
+              for model in "${models[@]}"
+              do
+                  if [ -n "$model" ]; then
+                      (( port++ ))
+                      nohup python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model --load-8bit ${model_args[$model_args_id]} > /tmp/fastchat_worker_$port.log 2>&1 &
+                      echo $! > /tmp/fastchat_worker_$port.pid
+                      (( model_args_id++ ))
+                  fi
+              done
+              ;;
+          "server")
+              nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT > /tmp/fastchat_server.log 2>&1 &
+              echo $! > /tmp/fastchat_server.pid
+              ;;
+          *)
+              echo "Invalid argument. Usage: bash main.sh [controller|worker|server]"
+              ;;
+      esac
+  else
+      nohup python3 -m fastchat.serve.controller --host 127.0.0.1 > /tmp/fastchat_controller.log 2>&1 &
+      echo $! > /tmp/fastchat_controller.pid
+      
+      port=21001
+      model_args_id=0
+      IFS=',' read -ra models <<< "$model_paths"
+      for model in "${models[@]}"
+      do
+      if [ -n "$model" ]; then
+          (( port++ ))
+          nohup python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model --load-8bit ${model_args[$model_args_id]} > /tmp/fastchat_worker_$port.log 2>&1 &
+          echo $! > /tmp/fastchat_worker_$port.pid
+          (( model_args_id++ ))
+      fi
+      done
+      
+      while true; do
+          sleep 5
+          response=$(curl -X POST http://localhost:21002/worker_get_status || true )
+          if [[ $? -eq 0 ]] && [[ "$(echo "$response" | jq -r '.model_names')" != "" ]]; then
+              break
+          fi
+      done
+
+      nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT > /tmp/fastchat_server.log 2>&1 &
+      echo $! > /tmp/fastchat_server.pid
+      
+  fi
+
+custom_start: ""
+custom_reload: |-
+  if [[ -n $2 ]]; then
+      case $2 in
+          "controller")
+              log "Stopping Fastchat controller"
+              kill_pid "/tmp/fastchat_controller.pid"
+              ;;
+          "worker")
+              log "Stopping Fastchat worker"
+              kill_pid "/tmp/fastchat_worker.pid"
+              ;;
+          "server")
+              log "Stopping Fastchat server"
+              kill_pid "/tmp/fastchat_server.pid"
+              ;;
+          *)
+              echo "Invalid argument. Usage: bash control.sh [reload|start|stop] [controller|worker|server]"
+              exit 1
+              ;;
+      esac
+      bash main.sh $2
+  else
+      kill_pid "/tmp/fastchat_server.pid"
+      kill_pid "/tmp/fastchat_worker.pid"
+      kill_pid "/tmp/fastchat_controller.pid"
+      bash main.sh
+  fi
+custom_stop: |-
+  if [[ -n $2 ]]; then
+      case $2 in
+          "controller")
+              log "Stopping Fastchat controller"
+              kill_pid "/tmp/fastchat_controller.pid"
+              ;;
+          "worker")
+              log "Stopping Fastchat worker"
+              kill_pid "/tmp/fastchat_worker.pid"
+              ;;
+          "server")
+              log "Stopping Fastchat server"
+              kill_pid "/tmp/fastchat_server.pid"
+              ;;
+          *)
+              echo "Invalid argument. Usage: bash control.sh [reload|start|stop] [controller|worker|server]"
+              ;;
+      esac
+  else
+      kill_pid "/tmp/fastchat_server.pid"
+      kill_pid "/tmp/fastchat_worker.pid"
+      kill_pid "/tmp/fastchat_controller.pid"
+  fi
+
+export_required_env: ""
+other_commands: |-
+  export FASTCHAT_MODEL=${FASTCHAT_MODEL:-"vicuna-7b"}
+  export FASTCHAT_PORT=${FASTCHAT_PORT:-7861}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:$FASTCHAT_PORT"
+  export PORT_MAPPING="$PORT_MAPPING:fastchat"

@@ -13,14 +13,12 @@ trap 'error_exit "### ERROR ###"' ERR
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up Cloudflare Tunnel ###"
 
-
-
 if ! [[ -e "/tmp/cloudflared.prepared" ]]; then
     
     cd /tmp
     curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
     dpkg -i cloudflared.deb
-
+    
     touch /tmp/cloudflared.prepared
 else
     
@@ -38,7 +36,7 @@ if [[ $CF_TOKEN == "quick" ]]; then
     IFS=':' read -ra ports <<< "$EXPOSE_PORTS"
 
     # Loop over the ports array
-    paste <(printf '%s\n' "${names[@]}") <(printf '%s\n' "${ports[@]}") | while IFS=$'\t' read -r name port; do
+    paste <(printf '%s\\n' "${names[@]}") <(printf '%s\\n' "${ports[@]}") | while IFS=$'\\t' read -r name port; do
         if [[ $port == "" ]]; then
             continue
         fi

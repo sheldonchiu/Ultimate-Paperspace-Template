@@ -1,0 +1,15 @@
+title: Command Server
+name: command
+use_python: true
+
+prepare_env: "pip install fastapi uvicorn[standard]"
+
+start: "nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > /tmp/{{ name }}.log 2>&1 &"
+
+export_required_env: |-
+  export REQUIRED_ENV="COMMAND_USERNAME,COMMAND_PASSWORD"
+
+other_commands: |-
+  export COMMAND_PORT=${COMMAND_PORT:-"8022"}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:$COMMAND_PORT"
+  export PORT_MAPPING="$PORT_MAPPING:command_server"
