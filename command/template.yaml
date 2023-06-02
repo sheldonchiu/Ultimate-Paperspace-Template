@@ -12,4 +12,4 @@ export_required_env: |-
 other_commands: |-
   export COMMAND_PORT=${COMMAND_PORT:-"8022"}
   export EXPOSE_PORTS="$EXPOSE_PORTS:$COMMAND_PORT"
-  export PORT_MAPPING="$PORT_MAPPING:command_server"
+  export PORT_MAPPING="$PORT_MAPPING:{{ name }}"

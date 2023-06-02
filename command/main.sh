@@ -34,6 +34,6 @@ echo "Finished Preparing Environment for Command Server"
 
 
 echo "### Starting Command Server ###"
-nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > /tmp/{{ name }}.log 2>&1 &
+nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > /tmp/command.log 2>&1 &
 log "Command Server Started"
 echo "### Done ###"

@@ -12,7 +12,7 @@ download_model: ""
 action_before_start: ""
 
 start: |-
-  rclone serve $RCLONE_SERVE_PROTOCOL --addr :$RCLONE_PORT --copy-links --user $RCLONE_USERNAME --pass $RCLONE_PASSWORD $RCLONE_SERVE_PATH > /tmp/rclone_serve.log 2>&1 &
+  rclone serve $RCLONE_SERVE_PROTOCOL --addr :$RCLONE_PORT --copy-links --user $RCLONE_USERNAME --pass $RCLONE_PASSWORD $RCLONE_SERVE_PATH > /tmp/{{ name }}_serve.log 2>&1 &
   echo $! > /tmp/rclone.pid
 
 export_required_env: |-
@@ -23,4 +23,4 @@ other_commands: |-
   export RCLONE_SERVE_PATH=${WORKING_DIR:-$WORKING_DIR}
 
   export EXPOSE_PORTS="$EXPOSE_PORTS:$RCLONE_PORT"
-  export PORT_MAPPING="$PORT_MAPPING:rclone"
+  export PORT_MAPPING="$PORT_MAPPING:{{ name }}"

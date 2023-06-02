@@ -21,9 +21,9 @@ start: |-
           metrics_port=$((port+1))
 
           # Generate PID file and log file names using a different delimiter
-          pidfile="/tmp/{{ name }}_${name}.pid"
-          logfile="/tmp/{{ name }}_${name}.log"
-          hostfile="/tmp/{{ name }}_${name}.host"
+          pidfile="/tmp/cloudflared_${name}.pid"
+          logfile="/tmp/cloudflared_${name}.log"
+          hostfile="/tmp/cloudflared_${name}.host"
 
           if [[ -f $pidfile ]]; then
               pid=$(cat $pidfile)
@@ -83,7 +83,4 @@ custom_stop: |-
 
 export_required_env: |-
     export REQUIRED_ENV="CF_TOKEN"
-other_commands: |-
-    export COMMAND_PORT=${COMMAND_PORT:-"8022"}
-    export EXPOSE_PORTS="$EXPOSE_PORTS:$COMMAND_PORT"
-    export PORT_MAPPING="$PORT_MAPPING:command_server"
+other_commands: ""

@@ -54,7 +54,7 @@ log "Finished Downloading Models for Stable Diffusion Comfy"
 
 echo "### Starting Stable Diffusion Comfy ###"
 cd "$REPO_DIR"
-nohup python main.py --dont-print-server > /tmp/{{ name }}.log 2>&1 &
-echo $! > /tmp/{{ name }}.pid
+nohup python main.py --dont-print-server > /tmp/sd_comfy.log 2>&1 &
+echo $! > /tmp/sd_comfy.pid
 log "Stable Diffusion Comfy Started"
 echo "### Done ###"

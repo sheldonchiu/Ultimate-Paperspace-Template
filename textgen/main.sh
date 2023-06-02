@@ -83,7 +83,7 @@ log "Finished Downloading Models for Text generation Webui"
 
 echo "### Starting Text generation Webui ###"
 cd $REPO_DIR
-nohup python server.py  --listen-port $TEXTGEN_PORT --model $model_name $args --xformers > /tmp/{{ name }}.log 2>&1 &
-echo $! > /tmp/{{ name }}.pid
+nohup python server.py  --listen-port $TEXTGEN_PORT --model $model_name $args --xformers > /tmp/textgen.log 2>&1 &
+echo $! > /tmp/textgen.pid
 log "Text generation Webui Started"
 echo "### Done ###"

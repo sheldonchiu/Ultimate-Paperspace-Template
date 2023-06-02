@@ -22,6 +22,7 @@ prepare_repo: |-
   if [[ ! -d "${REPO_DIR}/extensions/sd-webui-additional-networks" ]]; then
       git clone https://github.com/kohya-ss/sd-webui-additional-networks.git  "${REPO_DIR}/extensions/sd-webui-additional-networks"
   fi
+
 prepare_env: |-
   # fix install issue with pycairo, which is needed by sd-webui-controlnet
   apt-get install -y libcairo2-dev libjpeg-dev libgif-dev
@@ -50,14 +51,14 @@ additional_condition: |-
       python $current_dir/../utils/model_download/link_model.py
       echo "Finished Downloading Models for Stable Diffusion WebUI"
 
-export_required_env: "44444444444444444"
+export_required_env: ""
 other_commands: |-
-  export MODEL_DIR=${SD_WEBUI_MODEL_DIR:-"/tmp/stable-diffusion-models"}
+  export MODEL_DIR=${SD_WEBUI_MODEL_DIR:-"$DATA_DIR/stable-diffusion-models"}
   export REPO_DIR=${SD_WEBUI_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-webui"}
 
   export SD_WEBUI_PORT=${SD_WEBUI_PORT:-"7860"}
   export EXPOSE_PORTS="$EXPOSE_PORTS:$SD_WEBUI_PORT"
-  export PORT_MAPPING="$PORT_MAPPING:sd-webui"
+  export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
 
   export LINK_MODEL_TO=${SD_WEBUI_LINK_MODEL_TO:-"${REPO_DIR}/models/Stable-diffusion"}
   export LINK_VAE_TO=${SD_WEBUI_LINK_VAE_TO:-"${REPO_DIR}/models/VAE"}

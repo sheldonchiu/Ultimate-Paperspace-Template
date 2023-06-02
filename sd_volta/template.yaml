@@ -35,12 +35,12 @@ start: |-
 
 export_required_env: ""
 other_commands: |-
-  export MODEL_DIR=${SD_VOLTA_MODEL_DIR:-"/tmp/stable-diffusion-models"}
+  export MODEL_DIR=${SD_VOLTA_MODEL_DIR:-"$DATA_DIR/stable-diffusion-models"}
   export REPO_DIR=${SD_VOLTA_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-volta"}
 
   export SD_VOLTA_PORT=${SD_VOLTA_PORT:-"5003"}
   export EXPOSE_PORTS="$EXPOSE_PORTS:$SD_VOLTA_PORT"
-  export PORT_MAPPING="$PORT_MAPPING:sd-volta"
+  export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
   export HUGGINGFACE_TOKEN=$HF_TOKEN
 
   export LINK_MODEL_TO=${SD_VOLTA_LINK_MODEL_TO:-"${REPO_DIR}/data/models/"}

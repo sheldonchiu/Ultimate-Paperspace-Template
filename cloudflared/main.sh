@@ -43,9 +43,9 @@ if [[ $CF_TOKEN == "quick" ]]; then
         metrics_port=$((port+1))
 
         # Generate PID file and log file names using a different delimiter
-        pidfile="/tmp/{{ name }}_${name}.pid"
-        logfile="/tmp/{{ name }}_${name}.log"
-        hostfile="/tmp/{{ name }}_${name}.host"
+        pidfile="/tmp/cloudflared_${name}.pid"
+        logfile="/tmp/cloudflared_${name}.log"
+        hostfile="/tmp/cloudflared_${name}.host"
 
         if [[ -f $pidfile ]]; then
             pid=$(cat $pidfile)

@@ -17,10 +17,15 @@ if __name__ == "__main__":
     parser.add_argument("--yaml_file", help="path to the YAML file")
     parser.add_argument("--output_path", help="path to the output file")
     args = parser.parse_args()
-
+        
     # Load the YAML file
     with open(args.yaml_file) as f:
         yaml_data = yaml.safe_load(f)
+        
+    # Load the YAML file as a Jinja2 template
+    with open(args.yaml_file) as f:
+        yaml_string = Template(f.read()).render(yaml_data)
+        yaml_data = yaml.safe_load(yaml_string)
 
     for j2_file, output_filename in target_files.items():
         # Load the Jinja2 template file
