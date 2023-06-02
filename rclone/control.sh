@@ -10,18 +10,18 @@ trap 'error_exit "### ERROR ###"' ERR
 echo "### Command received ###"
 file="/tmp/rclone.pid"
 if [[ $1 == "reload" ]]; then
-    echo "Reloading Rclone"
+    log "Reloading Rclone"
     
     kill_pid $file
     bash main.sh
     
 elif [[ $1 == "start" ]]; then
-    echo "Starting Rclone"
+    log "Starting Rclone"
     
     bash main.sh
     
 elif [[ $1 == "stop" ]]; then
-    echo "Stopping Rclone"
+    log "Stopping Rclone"
         
     kill_pid $file
     

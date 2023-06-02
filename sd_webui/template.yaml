@@ -6,8 +6,8 @@ prepare_repo: |-
   symlinks=(
       "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-webui"
       "$REPO_DIR/log:$REPO_DIR/outputs/log"
-      "/storage:/notebooks/storage"
-      "$MODEL_DIR:/notebooks/models"
+      "$OUTPUTS_DIR:$WORKING_DIR/storage"
+      "$MODEL_DIR:$WORKING_DIR/models"
   )
   TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \
   TARGET_REPO_DIR=$REPO_DIR \
@@ -53,7 +53,7 @@ additional_condition: |-
 export_required_env: "44444444444444444"
 other_commands: |-
   export MODEL_DIR=${SD_WEBUI_MODEL_DIR:-"/tmp/stable-diffusion-models"}
-  export REPO_DIR=${SD_WEBUI_REPO_DIR:-"/storage/stable-diffusion-webui"}
+  export REPO_DIR=${SD_WEBUI_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-webui"}
 
   export SD_WEBUI_PORT=${SD_WEBUI_PORT:-"7860"}
   export EXPOSE_PORTS="$EXPOSE_PORTS:$SD_WEBUI_PORT"

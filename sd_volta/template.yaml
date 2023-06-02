@@ -4,10 +4,10 @@ use_python: true
 
 prepare_repo: |-
   symlinks=(
-      "$REPO_DIR:/notebooks/stable-diffusion-volta"
-      "/storage:/notebooks/storage"
+      "$REPO_DIR:$WORKING_DIR/stable-diffusion-volta"
+      "$OUTPUTS_DIR:$WORKING_DIR/storage"
       "$REPO_DIR/data/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-volta"
-      "$MODEL_DIR:/notebooks/models"
+      "$MODEL_DIR:$WORKING_DIR/models"
   )
   TARGET_REPO_URL="https://github.com/VoltaML/voltaML-fast-stable-diffusion.git" \
   TARGET_REPO_DIR=$REPO_DIR \
@@ -36,7 +36,7 @@ start: |-
 export_required_env: ""
 other_commands: |-
   export MODEL_DIR=${SD_VOLTA_MODEL_DIR:-"/tmp/stable-diffusion-models"}
-  export REPO_DIR=${SD_VOLTA_REPO_DIR:-"/storage/stable-diffusion-volta"}
+  export REPO_DIR=${SD_VOLTA_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-volta"}
 
   export SD_VOLTA_PORT=${SD_VOLTA_PORT:-"5003"}
   export EXPOSE_PORTS="$EXPOSE_PORTS:$SD_VOLTA_PORT"

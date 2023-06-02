@@ -4,10 +4,10 @@ use_python: true
 
 prepare_repo: |-
   symlinks=(
-      "$REPO_DIR:/notebooks/stable-diffusion-comfy"
-      "/storage:/notebooks/storage"
+      "$REPO_DIR:$WORKING_DIR/stable-diffusion-comfy"
+      "$OUTPUTS_DIR:$WORKING_DIR/storage"
       "$REPO_DIR/output:$IMAGE_OUTPUTS_DIR/stable-diffusion-comfy"
-      "$MODEL_DIR:/notebooks/models"
+      "$MODEL_DIR:$WORKING_DIR/models"
   )
 
   TARGET_REPO_URL="https://github.com/comfyanonymous/ComfyUI.git" \
@@ -35,7 +35,7 @@ start: |-
 export_required_env: ""
 other_commands: |-
   export MODEL_DIR=${SD_COMFY_MODEL_DIR:-"/tmp/stable-diffusion-models"}
-  export REPO_DIR=${SD_COMFY_REPO_DIR:-"/storage/stable-diffusion-comfy"}
+  export REPO_DIR=${SD_COMFY_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-comfy"}
 
   export SD_COMFY_PORT=${SD_COMFY_PORT:-"8188"}
   export EXPOSE_PORTS="$EXPOSE_PORTS:$SD_COMFY_PORT"

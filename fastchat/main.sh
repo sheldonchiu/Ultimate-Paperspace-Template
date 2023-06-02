@@ -33,7 +33,7 @@ fi
 echo "Finished Preparing Environment for FastChat"
 
 
-echo "### Downloading Model for FastChat ###"
+log "### Downloading Model for FastChat ###"
 model_paths=""
 model_args = ()
 IFS=',' read -ra models <<< "$FASTCHAT_MODEL"
@@ -58,11 +58,11 @@ elif [[ $model == "chatglm-6b" ]]; then
     model_paths="$model_paths,/tmp/chatglm-6b"
     model_args += ("")
 else
-    echo "Invalid model name. Please set FASTCHAT_MODEL to vicuna-7b, vicuna-13b or chatglm-6b"
+    log "Invalid model name. Please set FASTCHAT_MODEL to vicuna-7b, vicuna-13b or chatglm-6b"
     exit 1
 fi
 done
-echo "Finished Downloading Models for FastChat"
+log "Finished Downloading Models for FastChat"
 
 
 echo "### Starting FastChat ###"
@@ -123,5 +123,5 @@ else
     echo $! > /tmp/fastchat_server.pid
     
 fi
-echo "FastChat Started"
+log "FastChat Started"
 echo "### Done ###"

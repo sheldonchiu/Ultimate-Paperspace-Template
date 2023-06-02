@@ -10,18 +10,18 @@ trap 'error_exit "### ERROR ###"' ERR
 echo "### Command received ###"
 file="/tmp/textgen.pid"
 if [[ $1 == "reload" ]]; then
-    echo "Reloading Text generation Webui"
+    log "Reloading Text generation Webui"
     
     kill_pid $file
     bash main.sh
     
 elif [[ $1 == "start" ]]; then
-    echo "Starting Text generation Webui"
+    log "Starting Text generation Webui"
     
     bash main.sh
     
 elif [[ $1 == "stop" ]]; then
-    echo "Stopping Text generation Webui"
+    log "Stopping Text generation Webui"
         
     kill_pid $file
     

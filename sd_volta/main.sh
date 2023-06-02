@@ -13,10 +13,10 @@ trap 'error_exit "### ERROR ###"' ERR
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up Stable Diffusion Volta ###"
 symlinks=(
-    "$REPO_DIR:/notebooks/stable-diffusion-volta"
-    "/storage:/notebooks/storage"
+    "$REPO_DIR:$WORKING_DIR/stable-diffusion-volta"
+    "$OUTPUTS_DIR:$WORKING_DIR/storage"
     "$REPO_DIR/data/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-volta"
-    "$MODEL_DIR:/notebooks/models"
+    "$MODEL_DIR:$WORKING_DIR/models"
 )
 TARGET_REPO_URL="https://github.com/VoltaML/voltaML-fast-stable-diffusion.git" \
 TARGET_REPO_DIR=$REPO_DIR \
@@ -46,15 +46,15 @@ fi
 echo "Finished Preparing Environment for Stable Diffusion Volta"
 
 
-echo "### Downloading Model for Stable Diffusion Volta ###"
+log "### Downloading Model for Stable Diffusion Volta ###"
 bash $current_dir/../utils/model_download/main.sh
 python $current_dir/../utils/model_download/link_model.py
-echo "Finished Downloading Models for Stable Diffusion Volta"
+log "Finished Downloading Models for Stable Diffusion Volta"
 
 
 echo "### Starting Stable Diffusion Volta ###"
 cd "$REPO_DIR"
 nohup python main.py > /tmp/{{ name }}.log 2>&1 &
 echo $! > /tmp/{{ name }}.pid
-echo "Stable Diffusion Volta Started"
+log "Stable Diffusion Volta Started"
 echo "### Done ###"

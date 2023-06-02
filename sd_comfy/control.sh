@@ -10,18 +10,18 @@ trap 'error_exit "### ERROR ###"' ERR
 echo "### Command received ###"
 file="/tmp/sd_comfy.pid"
 if [[ $1 == "reload" ]]; then
-    echo "Reloading Stable Diffusion Comfy"
+    log "Reloading Stable Diffusion Comfy"
     
     kill_pid $file
     bash main.sh
     
 elif [[ $1 == "start" ]]; then
-    echo "Starting Stable Diffusion Comfy"
+    log "Starting Stable Diffusion Comfy"
     
     bash main.sh
     
 elif [[ $1 == "stop" ]]; then
-    echo "Stopping Stable Diffusion Comfy"
+    log "Stopping Stable Diffusion Comfy"
         
     kill_pid $file
     

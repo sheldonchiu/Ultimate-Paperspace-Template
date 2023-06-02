@@ -10,18 +10,18 @@ trap 'error_exit "### ERROR ###"' ERR
 echo "### Command received ###"
 file="/tmp/huggingface.pid"
 if [[ $1 == "reload" ]]; then
-    echo "Reloading HuggingFace Hub"
+    log "Reloading HuggingFace Hub"
     
     kill_pid $file
     bash main.sh
     
 elif [[ $1 == "start" ]]; then
-    echo "Starting HuggingFace Hub"
+    log "Starting HuggingFace Hub"
     
     bash main.sh
     
 elif [[ $1 == "stop" ]]; then
-    echo "Stopping HuggingFace Hub"
+    log "Stopping HuggingFace Hub"
         
     kill_pid $file
     

@@ -43,15 +43,15 @@ if [[ $CF_TOKEN == "quick" ]]; then
         metrics_port=$((port+1))
 
         # Generate PID file and log file names using a different delimiter
-        pidfile="/tmp/cloudflared_${name}.pid"
-        logfile="/tmp/cloudflared_${name}.log"
-        hostfile="/tmp/cloudflared_${name}.host"
+        pidfile="/tmp/{{ name }}_${name}.pid"
+        logfile="/tmp/{{ name }}_${name}.log"
+        hostfile="/tmp/{{ name }}_${name}.host"
 
         if [[ -f $pidfile ]]; then
             pid=$(cat $pidfile)
             # Only start the tunnel if the process is not running
             if ps -p $pid -o pid,comm | grep -q $pid; then
-                echo "Starting cloudflared tunnel for $name"
+                log "Starting cloudflared tunnel for $name"
                 # Start cloudflared tunnel in the background
                 nohup cloudflared tunnel --url http://localhost:${port} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
 
@@ -64,26 +64,26 @@ if [[ $CF_TOKEN == "quick" ]]; then
                     if [[ $? -eq 0 ]] && [[ "$(echo "$response" | jq -r '.hostname')" != "" ]]; then
                         hostname=$(echo "$response" | jq -r '.hostname')
                         echo $hostname > $hostfile
-                        bash $DISCORD_PATH "Cloudflared: Hostname is $hostname for $name"
+                        send_to_discord "Cloudflared: Hostname is $hostname for $name"
                         break
                     fi
                     retries=$((retries+1))
                     if [[ $retries -ge $max_retries ]]; then
-                        echo "Error: Failed to get response after $max_retries attempts"
-                        bash $DISCORD_PATH "Cloudflared: Failed to get response after $max_retries attempts"
+                        log "Error: Failed to get response after $max_retries attempts"
+                        send_to_discord "Cloudflared: Failed to get response after $max_retries attempts"
                         break
                     fi
                     echo "Failed to get response. Retrying in 5 seconds..."
                     sleep 5
                 done
             else
-                echo "Cloudflared tunnel for $name is already running."
+                log "Cloudflared tunnel for $name is already running."
             fi
         fi
     done
 else
     cloudflared service install "$CF_TOKEN"
-    echo "Cloudflared: Running as a service"
+    log "Cloudflared: Running as a service"
 fi
-echo "Cloudflare Tunnel Started"
+log "Cloudflare Tunnel Started"
 echo "### Done ###"

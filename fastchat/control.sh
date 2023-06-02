@@ -10,20 +10,20 @@ trap 'error_exit "### ERROR ###"' ERR
 echo "### Command received ###"
 file="/tmp/fastchat.pid"
 if [[ $1 == "reload" ]]; then
-    echo "Reloading FastChat"
+    log "Reloading FastChat"
     
     if [[ -n $2 ]]; then
         case $2 in
             "controller")
-                echo "Stopping Fastchat controller"
+                log "Stopping Fastchat controller"
                 kill_pid "/tmp/fastchat_controller.pid"
                 ;;
             "worker")
-                echo "Stopping Fastchat worker"
+                log "Stopping Fastchat worker"
                 kill_pid "/tmp/fastchat_worker.pid"
                 ;;
             "server")
-                echo "Stopping Fastchat server"
+                log "Stopping Fastchat server"
                 kill_pid "/tmp/fastchat_server.pid"
                 ;;
             *)
@@ -40,25 +40,25 @@ if [[ $1 == "reload" ]]; then
     fi
     
 elif [[ $1 == "start" ]]; then
-    echo "Starting FastChat"
+    log "Starting FastChat"
     
     bash main.sh
     
 elif [[ $1 == "stop" ]]; then
-    echo "Stopping FastChat"
+    log "Stopping FastChat"
     
     if [[ -n $2 ]]; then
         case $2 in
             "controller")
-                echo "Stopping Fastchat controller"
+                log "Stopping Fastchat controller"
                 kill_pid "/tmp/fastchat_controller.pid"
                 ;;
             "worker")
-                echo "Stopping Fastchat worker"
+                log "Stopping Fastchat worker"
                 kill_pid "/tmp/fastchat_worker.pid"
                 ;;
             "server")
-                echo "Stopping Fastchat server"
+                log "Stopping Fastchat server"
                 kill_pid "/tmp/fastchat_server.pid"
                 ;;
             *)

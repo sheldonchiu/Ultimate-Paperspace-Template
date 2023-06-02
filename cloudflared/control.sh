@@ -10,7 +10,7 @@ trap 'error_exit "### ERROR ###"' ERR
 echo "### Command received ###"
 file="/tmp/cloudflared.pid"
 if [[ $1 == "reload" ]]; then
-    echo "Reloading Cloudflare Tunnel"
+    log "Reloading Cloudflare Tunnel"
     
     for file in /tmp/cloudflared_*.pid; do
         kill_pid $file
@@ -18,20 +18,21 @@ if [[ $1 == "reload" ]]; then
     bash main.sh
     
 elif [[ $1 == "start" ]]; then
-    echo "Starting Cloudflare Tunnel"
+    log "Starting Cloudflare Tunnel"
     
     bash main.sh
     
 elif [[ $1 == "stop" ]]; then
-    echo "Stopping Cloudflare Tunnel"
+    log "Stopping Cloudflare Tunnel"
     
     if [[ -n $2 ]]; then
-        echo "Stopping Cloudflare tunnel for $2"
+        log "Stopping Cloudflare tunnel for $2"
         kill_pid /tmp/cloudflared_{$2}.pid
     else
-        for file in /tmp/cloudflared_*.pid; do
-            kill_pid $file
-        done
+      log "Stopping all Cloudflare tunnel(s)"
+      for file in /tmp/cloudflared_*.pid; do
+          kill_pid $file
+      done
     fi
     
 

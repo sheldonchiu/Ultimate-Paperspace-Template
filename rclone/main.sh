@@ -31,5 +31,5 @@ echo "Finished Preparing Environment for Rclone"
 echo "### Starting Rclone ###"
 rclone serve $RCLONE_SERVE_PROTOCOL --addr :$RCLONE_PORT --copy-links --user $RCLONE_USERNAME --pass $RCLONE_PASSWORD $RCLONE_SERVE_PATH > /tmp/rclone_serve.log 2>&1 &
 echo $! > /tmp/rclone.pid
-echo "Rclone Started"
+log "Rclone Started"
 echo "### Done ###"

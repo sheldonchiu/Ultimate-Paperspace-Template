@@ -13,10 +13,10 @@ trap 'error_exit "### ERROR ###"' ERR
 current_dir=$(dirname "$(realpath "$0")")
 echo "### Setting up Stable Diffusion Comfy ###"
 symlinks=(
-    "$REPO_DIR:/notebooks/stable-diffusion-comfy"
-    "/storage:/notebooks/storage"
+    "$REPO_DIR:$WORKING_DIR/stable-diffusion-comfy"
+    "$OUTPUTS_DIR:$WORKING_DIR/storage"
     "$REPO_DIR/output:$IMAGE_OUTPUTS_DIR/stable-diffusion-comfy"
-    "$MODEL_DIR:/notebooks/models"
+    "$MODEL_DIR:$WORKING_DIR/models"
 )
 
 TARGET_REPO_URL="https://github.com/comfyanonymous/ComfyUI.git" \
@@ -46,15 +46,15 @@ fi
 echo "Finished Preparing Environment for Stable Diffusion Comfy"
 
 
-echo "### Downloading Model for Stable Diffusion Comfy ###"
+log "### Downloading Model for Stable Diffusion Comfy ###"
 bash $current_dir/../utils/model_download/main.sh
 python $current_dir/../utils/model_download/link_model.py
-echo "Finished Downloading Models for Stable Diffusion Comfy"
+log "Finished Downloading Models for Stable Diffusion Comfy"
 
 
 echo "### Starting Stable Diffusion Comfy ###"
 cd "$REPO_DIR"
 nohup python main.py --dont-print-server > /tmp/{{ name }}.log 2>&1 &
 echo $! > /tmp/{{ name }}.pid
-echo "Stable Diffusion Comfy Started"
+log "Stable Diffusion Comfy Started"
 echo "### Done ###"

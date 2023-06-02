@@ -35,5 +35,5 @@ echo "Finished Preparing Environment for HuggingFace Hub"
 
 echo "### Starting HuggingFace Hub ###"
 python $current_dir/upload.py
-echo "HuggingFace Hub Started"
+log "HuggingFace Hub Started"
 echo "### Done ###"

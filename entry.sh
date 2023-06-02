@@ -24,6 +24,7 @@ function check_required_env_vars() {
 
 export SCRIPT_ROOT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 cd $SCRIPT_ROOT_DIR
+source_env_file
 
 # Read the RUN_SCRIPT environment variable
 run_script="$RUN_SCRIPT"
@@ -36,10 +37,10 @@ apt-get update -qq
 apt-get install -qq curl git-lfs zip python3.10 python3.10-venv python3.10-dev -y > /dev/null
 
 # Prepare required path
-export IMAGE_OUTPUTS_DIR="/storage/image_outputs"
-mkdir -p /notebooks/image_outputs
+export IMAGE_OUTPUTS_DIR="$OUTPUTS_DIR/image_outputs"
+mkdir -p $WORKING_DIR/image_outputs
 mkdir -p $IMAGE_OUTPUTS_DIR
-ln -s $IMAGE_OUTPUTS_DIR /notebooks/image_outputs
+ln -s $IMAGE_OUTPUTS_DIR $WORKING_DIR/image_outputs
 
 # Loop through each script and execute the corresponding case
 echo "Starting script(s)"

@@ -10,18 +10,18 @@ trap 'error_exit "### ERROR ###"' ERR
 echo "### Command received ###"
 file="/tmp/command.pid"
 if [[ $1 == "reload" ]]; then
-    echo "Reloading Command Server"
+    log "Reloading Command Server"
     
     kill_pid $file
     bash main.sh
     
 elif [[ $1 == "start" ]]; then
-    echo "Starting Command Server"
+    log "Starting Command Server"
     
     bash main.sh
     
 elif [[ $1 == "stop" ]]; then
-    echo "Stopping Command Server"
+    log "Stopping Command Server"
         
     kill_pid $file
     

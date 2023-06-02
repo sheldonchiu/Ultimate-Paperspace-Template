@@ -10,18 +10,18 @@ trap 'error_exit "### ERROR ###"' ERR
 echo "### Command received ###"
 file="/tmp/sd_volta.pid"
 if [[ $1 == "reload" ]]; then
-    echo "Reloading Stable Diffusion Volta"
+    log "Reloading Stable Diffusion Volta"
     
     kill_pid $file
     bash main.sh
     
 elif [[ $1 == "start" ]]; then
-    echo "Starting Stable Diffusion Volta"
+    log "Starting Stable Diffusion Volta"
     
     bash main.sh
     
 elif [[ $1 == "stop" ]]; then
-    echo "Stopping Stable Diffusion Volta"
+    log "Stopping Stable Diffusion Volta"
         
     kill_pid $file
     

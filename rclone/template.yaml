@@ -20,7 +20,7 @@ export_required_env: |-
 other_commands: |-
   export RCLONE_SERVE_PROTOCOL=${RCLONE_SERVE_PROTOCOL:-webdav}
   export RCLONE_PORT=${RCLONE_PORT:-8080}
-  export RCLONE_SERVE_PATH=${RCLONE_SERVE_PATH:-/notebooks}
+  export RCLONE_SERVE_PATH=${WORKING_DIR:-$WORKING_DIR}
 
   export EXPOSE_PORTS="$EXPOSE_PORTS:$RCLONE_PORT"
   export PORT_MAPPING="$PORT_MAPPING:rclone"

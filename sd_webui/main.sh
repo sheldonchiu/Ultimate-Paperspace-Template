@@ -15,8 +15,8 @@ echo "### Setting up Stable Diffusion WebUI ###"
 symlinks=(
     "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-webui"
     "$REPO_DIR/log:$REPO_DIR/outputs/log"
-    "/storage:/notebooks/storage"
-    "$MODEL_DIR:/notebooks/models"
+    "$OUTPUTS_DIR:$WORKING_DIR/storage"
+    "$MODEL_DIR:$WORKING_DIR/models"
 )
 TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \
 TARGET_REPO_DIR=$REPO_DIR \
@@ -60,13 +60,13 @@ fi
 echo "Finished Preparing Environment for Stable Diffusion WebUI"
 
 
-echo "### Downloading Model for Stable Diffusion WebUI ###"
+log "### Downloading Model for Stable Diffusion WebUI ###"
 bash $current_dir/../utils/model_download/main.sh
 python $current_dir/../utils/model_download/link_model.py
-echo "Finished Downloading Models for Stable Diffusion WebUI"
+log "Finished Downloading Models for Stable Diffusion WebUI"
 
 
 echo "### Starting Stable Diffusion WebUI ###"
 bash start.sh
-echo "Stable Diffusion WebUI Started"
+log "Stable Diffusion WebUI Started"
 echo "### Done ###"
