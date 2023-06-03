@@ -1,16 +1,14 @@
 #!/bin/bash
 set -e
 
-# Define a function to echo a message and exit
-error_exit() {
-    echo "$1" >&2
-    exit 1
-}
+current_dir=$(dirname "$(realpath "$0")")
+cd $current_dir
+source .env
 
 # Set up a trap to call the error_exit function on ERR signal
 trap 'error_exit "### ERROR ###"' ERR
 
-current_dir=$(dirname "$(realpath "$0")")
+
 echo "### Setting up Stable Diffusion Comfy ###"
 symlinks=(
     "$REPO_DIR:$WORKING_DIR/stable-diffusion-comfy"

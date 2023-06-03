@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-cd $(dirname "$(realpath "$0")")
+current_dir=$(dirname "$(realpath "$0")")
+cd $current_dir
 source .env
 
 # Set up a trap to call the error_exit function on ERR signal

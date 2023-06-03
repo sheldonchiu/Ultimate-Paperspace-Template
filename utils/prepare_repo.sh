@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+current_dir=$(dirname "$(realpath "$0")")
+source $current_dir/log.sh
+
 if [[ ! -d "$TARGET_REPO_DIR/.git" ]]; then
     mkdir -p "$TARGET_REPO_DIR"
     cd "$TARGET_REPO_DIR"
