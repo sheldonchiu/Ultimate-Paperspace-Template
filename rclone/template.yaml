@@ -13,7 +13,7 @@ action_before_start: ""
 
 start: |-
   rclone serve $RCLONE_SERVE_PROTOCOL --addr :$RCLONE_PORT --copy-links --user $RCLONE_USERNAME --pass $RCLONE_PASSWORD $RCLONE_SERVE_PATH > /tmp/{{ name }}_serve.log 2>&1 &
-  echo $! > /tmp/rclone.pid
+  echo $! > /tmp/{{ name }}.pid
 
 export_required_env: |-
   export REQUIRED_ENV="RCLONE_USERNAME,RCLONE_PASSWORD"

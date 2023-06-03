@@ -24,6 +24,7 @@ action_before_start: |-
 start: |-
   cd $REPO_DIR
   nohup python app.py --port=$IMAGE_BROWSER_PORT > /tmp/{{ name }}.log 2>&1 &
+  echo $! > /tmp/{{ name }}.pid
 
 export_required_env: |-
   export REQUIRED_ENV="IMAGE_BROWSER_KEY"
