@@ -1,0 +1,24 @@
+title: Image Browser
+name: image_browser
+use_python: true
+
+prepare_repo: |-
+  TARGET_REPO_URL="https://github.com/zanllp/sd-webui-infinite-image-browsing.git" \
+  TARGET_REPO_DIR=$REPO_DIR \
+  UPDATE_REPO="auto" \
+  bash $current_dir/../utils/prepare_repo.sh
+
+prepare_env: |-
+  cd $REPO_DIR
+  pip install -r requirements.txt
+
+start: |-
+  cd $REPO_DIR
+  nohup python app.py --port=$IMAGE_BROWSER_PORT > /tmp/{{ name }}.log 2>&1 &
+
+export_required_env: ""
+
+other_commands: |-
+  export IMAGE_BROWSER_PORT=${IMAGE_BROWSER_PORT:-"7888"}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:$COMMAND_PORT"
+  export PORT_MAPPING="$PORT_MAPPING:{{ name }}"

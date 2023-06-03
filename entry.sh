@@ -38,7 +38,6 @@ apt-get install -qq curl git-lfs zip python3.10 python3.10-venv python3.10-dev -
 
 # Prepare required path
 export IMAGE_OUTPUTS_DIR="$OUTPUTS_DIR/image_outputs"
-mkdir -p $WORKING_DIR/image_outputs
 mkdir -p $IMAGE_OUTPUTS_DIR
 ln -s $IMAGE_OUTPUTS_DIR $WORKING_DIR/image_outputs
 
