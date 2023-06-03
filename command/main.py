@@ -1,11 +1,21 @@
 import os
 from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from subprocess import PIPE, run, CalledProcessError
 
 app = FastAPI()
 security = HTTPBasic()
+
+# Allow CORS from all origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Command(BaseModel):
     command: str
