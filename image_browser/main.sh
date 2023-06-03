@@ -35,6 +35,14 @@ echo "Finished Preparing Environment for Image Browser"
 
 
 
+cat > $REPO_DIR/.env << EOF
+IIB_SECRET_KEY=$IMAGE_BROWSER_KEY
+# Configuring the server-side language for this extension,
+# including the tab title and most of the server-side error messages returned. Options are 'zh', 'en', or 'auto'.
+# If you want to configure the language for the front-end pages, please set it on the extension's global settings page.
+IIB_SERVER_LANG=auto
+EOF
+
 echo "### Starting Image Browser ###"
 cd $REPO_DIR
 nohup python app.py --port=$IMAGE_BROWSER_PORT > /tmp/image_browser.log 2>&1 &
