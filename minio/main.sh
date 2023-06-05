@@ -24,7 +24,7 @@ if ! [[ -e "/tmp/minio.prepared" ]]; then
     touch /tmp/minio.prepared
 else
     
-    pass
+    echo "Environment already prepared"
     
 fi
 echo "Finished Preparing Environment for Minio"

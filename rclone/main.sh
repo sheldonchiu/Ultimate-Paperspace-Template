@@ -19,7 +19,7 @@ if ! [[ -e "/tmp/rclone.prepared" ]]; then
     touch /tmp/rclone.prepared
 else
     
-    pass
+    echo "Environment already prepared"
     
 fi
 echo "Finished Preparing Environment for Rclone"

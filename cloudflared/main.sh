@@ -20,7 +20,7 @@ if ! [[ -e "/tmp/cloudflared.prepared" ]]; then
     touch /tmp/cloudflared.prepared
 else
     
-    pass
+    echo "Environment already prepared"
     
 fi
 echo "Finished Preparing Environment for Cloudflare Tunnel"

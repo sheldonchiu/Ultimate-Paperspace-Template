@@ -26,7 +26,7 @@ else
     {% if use_python %}
     source /tmp/{{ name }}-env/bin/activate
     {% else %}
-    pass
+    echo "Environment already prepared"
     {% endif %}
 fi
 echo "Finished Preparing Environment for {{ title }}"
