@@ -34,7 +34,7 @@ if [[ $CF_TOKEN == "quick" ]]; then
     IFS=':' read -ra ports <<< "$EXPOSE_PORTS"
 
     # Loop over the ports array
-    paste <(printf '%s\\n' "${names[@]}") <(printf '%s\\n' "${ports[@]}") | while IFS=$'\\t' read -r name port; do
+    paste <(printf '%s\n' "${names[@]}") <(printf '%s\n' "${ports[@]}") | while IFS=$'\t' read -r name port; do
         if [[ $port == "" ]]; then
             continue
         fi
