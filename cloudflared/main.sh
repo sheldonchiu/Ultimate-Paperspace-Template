@@ -49,7 +49,7 @@ if [[ $CF_TOKEN == "quick" ]]; then
         
         # Check if tunnel is already running
         if [[ -f $pidfile ]]; then
-            if kill -0 "$(cat $pidfile)"; then
+            if kill -0 "$(cat $pidfile)" 2>/dev/null; then
                 log "Cloudflared tunnel for $name is already running."
                 continue
             fi
@@ -63,7 +63,7 @@ if [[ $CF_TOKEN == "quick" ]]; then
         max_retries=10
         while true; do
             sleep 5
-            response=$(curl http://localhost:${metrics_port}/quicktunnel || true)
+            response=$(curl -s http://localhost:${metrics_port}/quicktunnel || true)
             if [[ $? -eq 0 ]] && [[ "$(echo "$response" | jq -r '.hostname')" != "" ]]; then
                 hostname=$(echo "$response" | jq -r '.hostname')
                 echo $hostname > $hostfile

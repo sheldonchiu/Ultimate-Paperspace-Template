@@ -16,7 +16,7 @@ kill_pid() {
     fi
 
     # Check if the process has exited
-    if ! kill -0 $pid; then
+    if ! kill -0 $pid 2>/dev/null; then
         echo "Error: Process $pid has already exited."
         return
     fi
