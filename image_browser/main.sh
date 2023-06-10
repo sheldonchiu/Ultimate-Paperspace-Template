@@ -46,8 +46,12 @@ EOF
 
 echo "### Starting Image Browser ###"
 log "Starting Image Browser"
-cd $REPO_DIR
-nohup python app.py --port=$IMAGE_BROWSER_PORT > /tmp/image_browser.log 2>&1 &
+if [ -n IMAGE_OUTPUTS_DIR ]; then
+    cd $IMAGE_OUTPUTS_DIR
+else
+    cd $REPO_DIR
+fi
+nohup python $REPO_DIR/app.py --port=$IMAGE_BROWSER_PORT > /tmp/image_browser.log 2>&1 &
 echo $! > /tmp/image_browser.pid
 
 send_to_discord "Image Browser Started"

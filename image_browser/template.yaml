@@ -22,8 +22,12 @@ action_before_start: |-
   EOF
 
 start: |-
-  cd $REPO_DIR
-  nohup python app.py --port=$IMAGE_BROWSER_PORT > /tmp/{{ name }}.log 2>&1 &
+  if [ -n IMAGE_OUTPUTS_DIR ]; then
+      cd $IMAGE_OUTPUTS_DIR
+  else
+      cd $REPO_DIR
+  fi
+  nohup python $REPO_DIR/app.py --port=$IMAGE_BROWSER_PORT > /tmp/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: |-
