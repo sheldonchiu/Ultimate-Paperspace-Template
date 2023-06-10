@@ -32,5 +32,5 @@ export_required_env: |-
 other_commands: |-
   export REPO_DIR=${SD_COMFY_REPO_DIR:-"$OUTPUTS_DIR/sd-webui-infinite-image-browsing"}
   export IMAGE_BROWSER_PORT=${IMAGE_BROWSER_PORT:-"7888"}
-  export EXPOSE_PORTS="$EXPOSE_PORTS:$COMMAND_PORT"
+  export EXPOSE_PORTS="$EXPOSE_PORTS:$IMAGE_BROWSER_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"

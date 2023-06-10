@@ -24,6 +24,10 @@ function check_required_env_vars() {
 export SCRIPT_ROOT_DIR=$(dirname "$(realpath "$0")")
 cd $SCRIPT_ROOT_DIR
 
+# Clear env
+PORT_MAPPING=""
+EXPOSE_PORTS=""
+
 # Read the RUN_SCRIPT environment variable
 run_script="$RUN_SCRIPT"
 

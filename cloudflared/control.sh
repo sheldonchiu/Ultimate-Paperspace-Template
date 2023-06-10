@@ -13,9 +13,7 @@ file="/tmp/cloudflared.pid"
 if [[ $1 == "reload" ]]; then
     log "Reloading Cloudflare Tunnel"
     
-    for file in /tmp/cloudflared_*.pid; do
-        kill_pid $file
-    done
+    # Kill all and restart is not a good idea, only start tunnel if it's not running
     bash main.sh
     
 elif [[ $1 == "start" ]]; then

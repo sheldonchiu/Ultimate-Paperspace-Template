@@ -65,9 +65,7 @@ start: |-
 
 custom_start: ""
 custom_reload: |-
-      for file in /tmp/cloudflared_*.pid; do
-          kill_pid $file
-      done
+      # Kill all and restart is not a good idea, only start tunnel if it's not running
       bash main.sh
 custom_stop: |-
       if [[ -n $2 ]]; then
