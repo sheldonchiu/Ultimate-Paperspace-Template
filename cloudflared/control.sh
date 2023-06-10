@@ -26,7 +26,7 @@ elif [[ $1 == "stop" ]]; then
     
     if [[ -n $2 ]]; then
         log "Stopping Cloudflare tunnel for $2"
-        kill_pid /tmp/cloudflared_{$2}.pid
+        kill_pid /tmp/cloudflared_$2.pid
     else
       log "Stopping all Cloudflare tunnel(s)"
       for file in /tmp/cloudflared_*.pid; do
