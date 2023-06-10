@@ -10,6 +10,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 
 echo "### Setting up Cloudflare Tunnel ###"
+log "Setting up Cloudflare Tunnel"
 
 if ! [[ -e "/tmp/cloudflared.prepared" ]]; then
     
@@ -20,14 +21,15 @@ if ! [[ -e "/tmp/cloudflared.prepared" ]]; then
     touch /tmp/cloudflared.prepared
 else
     
-    echo "Environment already prepared"
+    log "Environment already prepared"
     
 fi
-echo "Finished Preparing Environment for Cloudflare Tunnel"
+log "Finished Preparing Environment for Cloudflare Tunnel"
 
 
 
 echo "### Starting Cloudflare Tunnel ###"
+log "Starting Cloudflare Tunnel"
 if [[ $CF_TOKEN == "quick" ]]; then
     # Split EXPOSE_PORTS into an array using ':' as the delimiter
     IFS=':' read -ra names <<< "$PORT_MAPPING"
@@ -44,44 +46,44 @@ if [[ $CF_TOKEN == "quick" ]]; then
         pidfile="/tmp/cloudflared_${name}.pid"
         logfile="/tmp/cloudflared_${name}.log"
         hostfile="/tmp/cloudflared_${name}.host"
-
+        
+        # Check if tunnel is already running
         if [[ -f $pidfile ]]; then
-            pid=$(cat $pidfile)
-            # Only start the tunnel if the process is not running
-            if ps -p $pid -o pid,comm | grep -q $pid; then
-                log "Starting cloudflared tunnel for $name"
-                # Start cloudflared tunnel in the background
-                nohup cloudflared tunnel --url http://localhost:${port} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
-
-                # Wait for the tunnel to become available
-                retries=0
-                max_retries=10
-                while true; do
-                    sleep 5
-                    response=$(curl http://localhost:${metrics_port}/quicktunnel || true)
-                    if [[ $? -eq 0 ]] && [[ "$(echo "$response" | jq -r '.hostname')" != "" ]]; then
-                        hostname=$(echo "$response" | jq -r '.hostname')
-                        echo $hostname > $hostfile
-                        send_to_discord "Cloudflared: Hostname is $hostname for $name"
-                        break
-                    fi
-                    retries=$((retries+1))
-                    if [[ $retries -ge $max_retries ]]; then
-                        log "Error: Failed to get response after $max_retries attempts"
-                        send_to_discord "Cloudflared: Failed to get response after $max_retries attempts"
-                        break
-                    fi
-                    echo "Failed to get response. Retrying in 5 seconds..."
-                    sleep 5
-                done
-            else
+            if kill -0 "$(cat $pidfile)"; then
                 log "Cloudflared tunnel for $name is already running."
+                continue
             fi
         fi
+        log "Starting cloudflared tunnel for $name"
+        # Start cloudflared tunnel in the background
+        nohup cloudflared tunnel --url http://localhost:${port} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
+
+        # Wait for the tunnel to become available
+        retries=0
+        max_retries=10
+        while true; do
+            sleep 5
+            response=$(curl http://localhost:${metrics_port}/quicktunnel || true)
+            if [[ $? -eq 0 ]] && [[ "$(echo "$response" | jq -r '.hostname')" != "" ]]; then
+                hostname=$(echo "$response" | jq -r '.hostname')
+                echo $hostname > $hostfile
+                send_to_discord "Cloudflared: Hostname is $hostname for $name"
+                break
+            fi
+            retries=$((retries+1))
+            if [[ $retries -ge $max_retries ]]; then
+                log "Error: Failed to get response after $max_retries attempts"
+                send_to_discord "Cloudflared: Failed to get response after $max_retries attempts"
+                break
+            fi
+            echo "Failed to get response. Retrying in 5 seconds..."
+            sleep 5
+        done
     done
 else
     cloudflared service install "$CF_TOKEN"
-    log "Cloudflared: Running as a service"
+    send_to_discord "Cloudflared: Running as a service"
 fi
-log "Cloudflare Tunnel Started"
+
+send_to_discord "Cloudflare Tunnel Started"
 echo "### Done ###"

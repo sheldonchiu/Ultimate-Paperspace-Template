@@ -10,6 +10,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 
 echo "### Setting up Rclone ###"
+log "Setting up Rclone"
 
 if ! [[ -e "/tmp/rclone.prepared" ]]; then
     
@@ -19,15 +20,17 @@ if ! [[ -e "/tmp/rclone.prepared" ]]; then
     touch /tmp/rclone.prepared
 else
     
-    echo "Environment already prepared"
+    log "Environment already prepared"
     
 fi
-echo "Finished Preparing Environment for Rclone"
+log "Finished Preparing Environment for Rclone"
 
 
 
 echo "### Starting Rclone ###"
+log "Starting Rclone"
 rclone serve $RCLONE_SERVE_PROTOCOL --addr :$RCLONE_PORT --copy-links --user $RCLONE_USERNAME --pass $RCLONE_PASSWORD $RCLONE_SERVE_PATH > /tmp/rclone_serve.log 2>&1 &
 echo $! > /tmp/rclone.pid
-log "Rclone Started"
+
+send_to_discord "Rclone Started"
 echo "### Done ###"

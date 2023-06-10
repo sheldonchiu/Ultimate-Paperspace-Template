@@ -10,6 +10,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 
 echo "### Setting up Text generation Webui ###"
+log "Setting up Text generation Webui"
 TARGET_REPO_DIR=$REPO_DIR \
 TARGET_REPO_BRANCH="main" \
 TARGET_REPO_URL="https://github.com/oobabooga/text-generation-webui" \
@@ -49,10 +50,11 @@ else
     source /tmp/textgen-env/bin/activate
     
 fi
-echo "Finished Preparing Environment for Text generation Webui"
+log "Finished Preparing Environment for Text generation Webui"
 
 
-log "### Downloading Model for Text generation Webui ###"
+echo "### Downloading Model for Text generation Webui ###"
+log "Downloading Model for Text generation Webui"
 # Prepare model dir and link it under the models folder inside the repo
 mkdir -p $MODEL_DIR
 rm -rf $LINK_MODEL_TO
@@ -80,8 +82,10 @@ log "Finished Downloading Models for Text generation Webui"
 
 
 echo "### Starting Text generation Webui ###"
+log "Starting Text generation Webui"
 cd $REPO_DIR
 nohup python server.py  --listen-port $TEXTGEN_PORT --model $model_name $args --xformers > /tmp/textgen.log 2>&1 &
 echo $! > /tmp/textgen.pid
-log "Text generation Webui Started"
+
+send_to_discord "Text generation Webui Started"
 echo "### Done ###"

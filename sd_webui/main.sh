@@ -10,6 +10,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 
 echo "### Setting up Stable Diffusion WebUI ###"
+log "Setting up Stable Diffusion WebUI"
 symlinks=(
     "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-webui"
     "$REPO_DIR/log:$REPO_DIR/outputs/log"
@@ -55,16 +56,19 @@ else
     source /tmp/sd_webui-env/bin/activate
     
 fi
-echo "Finished Preparing Environment for Stable Diffusion WebUI"
+log "Finished Preparing Environment for Stable Diffusion WebUI"
 
 
-log "### Downloading Model for Stable Diffusion WebUI ###"
+echo "### Downloading Model for Stable Diffusion WebUI ###"
+log "Downloading Model for Stable Diffusion WebUI"
 bash $current_dir/../utils/model_download/main.sh
 python $current_dir/../utils/model_download/link_model.py
 log "Finished Downloading Models for Stable Diffusion WebUI"
 
 
 echo "### Starting Stable Diffusion WebUI ###"
+log "Starting Stable Diffusion WebUI"
 bash start.sh
-log "Stable Diffusion WebUI Started"
+
+send_to_discord "Stable Diffusion WebUI Started"
 echo "### Done ###"

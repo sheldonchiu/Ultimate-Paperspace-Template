@@ -10,6 +10,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 
 echo "### Setting up HuggingFace Hub ###"
+log "Setting up HuggingFace Hub"
 
 if ! [[ -e "/tmp/huggingface.prepared" ]]; then
     
@@ -27,11 +28,13 @@ else
     source /tmp/huggingface-env/bin/activate
     
 fi
-echo "Finished Preparing Environment for HuggingFace Hub"
+log "Finished Preparing Environment for HuggingFace Hub"
 
 
 
 echo "### Starting HuggingFace Hub ###"
+log "Starting HuggingFace Hub"
 python $current_dir/upload.py
-log "HuggingFace Hub Started"
+
+send_to_discord "HuggingFace Hub Started"
 echo "### Done ###"

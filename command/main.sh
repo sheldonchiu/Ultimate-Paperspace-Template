@@ -10,6 +10,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 
 echo "### Setting up Command Server ###"
+log "Setting up Command Server"
 
 if ! [[ -e "/tmp/command.prepared" ]]; then
     
@@ -27,12 +28,14 @@ else
     source /tmp/command-env/bin/activate
     
 fi
-echo "Finished Preparing Environment for Command Server"
+log "Finished Preparing Environment for Command Server"
 
 
 
 echo "### Starting Command Server ###"
+log "Starting Command Server"
 nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > /tmp/command.log 2>&1 &
 echo $! > /tmp/command.pid
-log "Command Server Started"
+
+send_to_discord "Command Server Started"
 echo "### Done ###"

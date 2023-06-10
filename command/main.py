@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from subprocess import PIPE, run, CalledProcessError
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 security = HTTPBasic()
 
 # Allow CORS from all origins

@@ -10,6 +10,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 
 echo "### Setting up Stable Diffusion InvokeAI ###"
+log "Setting up Stable Diffusion InvokeAI"
 symlinks=(
     "$REPO_DIR:$WORKING_DIR/stable-diffusion-invokeai"
     "$OUTPUTS_DIR:$WORKING_DIR/storage"
@@ -41,18 +42,21 @@ else
     source /tmp/sd_invoke-env/bin/activate
     
 fi
-echo "Finished Preparing Environment for Stable Diffusion InvokeAI"
+log "Finished Preparing Environment for Stable Diffusion InvokeAI"
 
 
-log "### Downloading Model for Stable Diffusion InvokeAI ###"
+echo "### Downloading Model for Stable Diffusion InvokeAI ###"
+log "Downloading Model for Stable Diffusion InvokeAI"
 bash $current_dir/../utils/model_download/main.sh
 python $current_dir/../utils/model_download/link_model.py
 log "Finished Downloading Models for Stable Diffusion InvokeAI"
 
 
 echo "### Starting Stable Diffusion InvokeAI ###"
+log "Starting Stable Diffusion InvokeAI"
 cd "$REPO_DIR"
 nohup invokeai --web --autoconvert $MODEL_DIR > /tmp/sd_invoke.log 2>&1 &
 echo $! > /tmp/sd_invoke.pid
-log "Stable Diffusion InvokeAI Started"
+
+send_to_discord "Stable Diffusion InvokeAI Started"
 echo "### Done ###"

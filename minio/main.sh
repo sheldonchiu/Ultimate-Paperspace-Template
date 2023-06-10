@@ -10,6 +10,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 
 echo "### Setting up Minio ###"
+log "Setting up Minio"
 
 if ! [[ -e "/tmp/minio.prepared" ]]; then
     
@@ -24,16 +25,17 @@ if ! [[ -e "/tmp/minio.prepared" ]]; then
     touch /tmp/minio.prepared
 else
     
-    echo "Environment already prepared"
+    log "Environment already prepared"
     
 fi
-echo "Finished Preparing Environment for Minio"
+log "Finished Preparing Environment for Minio"
 
 
 
 /tmp/minio-binaries/mc alias set dst $S3_HOST_URL $S3_ACCESS_KEY $S3_SECRET_KEY
 
 echo "### Starting Minio ###"
+log "Starting Minio"
 if [[ -z $S3_MIRROR_PATH || -z $S3_MIRROR_TO_BUCKET ]]; then
     log "ENV S3_MIRROR_PATH or S3_MIRROR_TO_BUCKET not provided, skipping minio mirror"
 else
@@ -41,5 +43,6 @@ else
     nohup /tmp/minio-binaries/mc mirror --overwrite --watch --quiet $S3_MIRROR_PATH dst/$S3_MIRROR_TO_BUCKET > /tmp/minio_mirror.log 2>&1 &
     echo $! > /tmp/minio.pid
 fi
-log "Minio Started"
+
+send_to_discord "Minio Started"
 echo "### Done ###"

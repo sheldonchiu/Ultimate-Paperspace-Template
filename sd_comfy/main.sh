@@ -10,6 +10,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 
 echo "### Setting up Stable Diffusion Comfy ###"
+log "Setting up Stable Diffusion Comfy"
 symlinks=(
     "$REPO_DIR:$WORKING_DIR/stable-diffusion-comfy"
     "$OUTPUTS_DIR:$WORKING_DIR/storage"
@@ -41,18 +42,21 @@ else
     source /tmp/sd_comfy-env/bin/activate
     
 fi
-echo "Finished Preparing Environment for Stable Diffusion Comfy"
+log "Finished Preparing Environment for Stable Diffusion Comfy"
 
 
-log "### Downloading Model for Stable Diffusion Comfy ###"
+echo "### Downloading Model for Stable Diffusion Comfy ###"
+log "Downloading Model for Stable Diffusion Comfy"
 bash $current_dir/../utils/model_download/main.sh
 python $current_dir/../utils/model_download/link_model.py
 log "Finished Downloading Models for Stable Diffusion Comfy"
 
 
 echo "### Starting Stable Diffusion Comfy ###"
+log "Starting Stable Diffusion Comfy"
 cd "$REPO_DIR"
 nohup python main.py --dont-print-server > /tmp/sd_comfy.log 2>&1 &
 echo $! > /tmp/sd_comfy.pid
-log "Stable Diffusion Comfy Started"
+
+send_to_discord "Stable Diffusion Comfy Started"
 echo "### Done ###"

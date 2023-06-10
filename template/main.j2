@@ -10,6 +10,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 
 echo "### Setting up {{ title }} ###"
+log "Setting up {{ title }}"
 {{ prepare_repo }}
 if ! [[ -e "/tmp/{{ name }}.prepared" ]]; then
     {% if use_python %}
@@ -26,13 +27,14 @@ else
     {% if use_python %}
     source /tmp/{{ name }}-env/bin/activate
     {% else %}
-    echo "Environment already prepared"
+    log "Environment already prepared"
     {% endif %}
 fi
-echo "Finished Preparing Environment for {{ title }}"
+log "Finished Preparing Environment for {{ title }}"
 
 {% if download_model %}
-log "### Downloading Model for {{ title }} ###"
+echo "### Downloading Model for {{ title }} ###"
+log "Downloading Model for {{ title }}"
 {{ download_model }}
 log "Finished Downloading Models for {{ title }}"
 {% endif %}
@@ -40,6 +42,8 @@ log "Finished Downloading Models for {{ title }}"
 {{ action_before_start }}
 {% endif%}
 echo "### Starting {{ title }} ###"
+log "Starting {{ title }}"
 {{ start }}
-log "{{ title }} Started"
+
+send_to_discord "{{ title }} Started"
 echo "### Done ###"

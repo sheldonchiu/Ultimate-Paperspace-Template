@@ -8,7 +8,7 @@ format_log() {
     script_path=$(realpath "${BASH_SOURCE[1]}")
 
     # Output the log message
-    printf "[$timestamp] [$script_path] $1"
+    printf "[$timestamp] [$script_path] $1\n"
 }
 
 log() {

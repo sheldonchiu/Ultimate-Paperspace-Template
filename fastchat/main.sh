@@ -10,6 +10,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 
 echo "### Setting up FastChat ###"
+log "Setting up FastChat"
 
 if ! [[ -e "/tmp/fastchat.prepared" ]]; then
     
@@ -28,10 +29,11 @@ else
     source /tmp/fastchat-env/bin/activate
     
 fi
-echo "Finished Preparing Environment for FastChat"
+log "Finished Preparing Environment for FastChat"
 
 
-log "### Downloading Model for FastChat ###"
+echo "### Downloading Model for FastChat ###"
+log "Downloading Model for FastChat"
 model_paths=""
 model_args = ()
 IFS=',' read -ra models <<< "$FASTCHAT_MODEL"
@@ -64,6 +66,7 @@ log "Finished Downloading Models for FastChat"
 
 
 echo "### Starting FastChat ###"
+log "Starting FastChat"
 if [[ -n $1 ]]; then
     case $1 in
         "controller")
@@ -121,5 +124,6 @@ else
     echo $! > /tmp/fastchat_server.pid
     
 fi
-log "FastChat Started"
+
+send_to_discord "FastChat Started"
 echo "### Done ###"
