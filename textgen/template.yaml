@@ -3,6 +3,9 @@ name: textgen
 use_python: true
 
 prepare_repo: |-
+  # Remove stale symlink to avoid pull conflicts
+  rm -rf $LINK_MODEL_TO
+
   TARGET_REPO_DIR=$REPO_DIR \
   TARGET_REPO_BRANCH="main" \
   TARGET_REPO_URL="https://github.com/oobabooga/text-generation-webui" \
@@ -26,17 +29,20 @@ prepare_env: |-
   python setup_cuda.py install
 
   pip install deepspeed
-  
-  # Temp fix for graio 3.25.0 cannot restart on GUI
-  pip install gradio>=3.28.0
+
+  pip install xformers
 
 download_model: |-
   # Prepare model dir and link it under the models folder inside the repo
   mkdir -p $MODEL_DIR
   rm -rf $LINK_MODEL_TO
   ln -s $MODEL_DIR $LINK_MODEL_TO
-  if [[ ! -f $model_dir/config.yaml ]]; then  
-      wget -q https://raw.githubusercontent.com/oobabooga/text-generation-webui/main/models/config.yaml -P $model_dir
+  if [[ ! -f $MODEL_DIR/config.yaml ]]; then 
+      current_dir_save=$(pwd) 
+      cd $REPO_DIR
+      commit=$(git rev-parse HEAD)
+      wget -q https://raw.githubusercontent.com/oobabooga/text-generation-webui/$commit/models/config.yaml -P $MODEL_DIR
+      cd $current_dir_save
   fi
 
   args=""
@@ -76,4 +82,4 @@ other_commands: |-
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
   export HUGGINGFACE_TOKEN=$HF_TOKEN
 
-  export LINK_MODEL_TO=${TEXTGEN_LINK_MODEL_TO:-"${REPO_DIR}/models/"}
+  export LINK_MODEL_TO=${TEXTGEN_LINK_MODEL_TO:-"$REPO_DIR/models"}

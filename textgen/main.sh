@@ -11,6 +11,9 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Text generation Webui ###"
 log "Setting up Text generation Webui"
+# Remove stale symlink to avoid pull conflicts
+rm -rf $LINK_MODEL_TO
+
 TARGET_REPO_DIR=$REPO_DIR \
 TARGET_REPO_BRANCH="main" \
 TARGET_REPO_URL="https://github.com/oobabooga/text-generation-webui" \
@@ -41,8 +44,7 @@ if ! [[ -e "/tmp/textgen.prepared" ]]; then
 
     pip install deepspeed
 
-    # Temp fix for graio 3.25.0 cannot restart on GUI
-    pip install gradio>=3.28.0
+    pip install xformers
     
     touch /tmp/textgen.prepared
 else
@@ -59,8 +61,12 @@ log "Downloading Model for Text generation Webui"
 mkdir -p $MODEL_DIR
 rm -rf $LINK_MODEL_TO
 ln -s $MODEL_DIR $LINK_MODEL_TO
-if [[ ! -f $model_dir/config.yaml ]]; then  
-    wget -q https://raw.githubusercontent.com/oobabooga/text-generation-webui/main/models/config.yaml -P $model_dir
+if [[ ! -f $MODEL_DIR/config.yaml ]]; then 
+    current_dir_save=$(pwd) 
+    cd $REPO_DIR
+    commit=$(git rev-parse HEAD)
+    wget -q https://raw.githubusercontent.com/oobabooga/text-generation-webui/$commit/models/config.yaml -P $MODEL_DIR
+    cd $current_dir_save
 fi
 
 args=""
