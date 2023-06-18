@@ -77,11 +77,11 @@ do
     if [[ "$model" == "vicuna-13B-1.1" ]]; then
         model_name="vicuna-13B-1.1-GPTQ-4bit-128g"
         download_from_hf  "TheBloke" "$model_name" "main"
-        args="--wbits 4 --groupsize 128 --model_type Llama"
+        args="--wbits 4 --groupsize 128 --model_type Llama --loader gptq-for-llama"
     elif [[ "$model" == "stable-vicuna-13B" ]]; then
         model_name="stable-vicuna-13B-GPTQ"
         download_from_hf  "TheBloke" "$model_name" "latest"
-        args="--wbits 4 --groupsize 128 --model_type Llama"
+        args="--wbits 4 --groupsize 128 --model_type Llama --loader gptq-for-llama"
     fi
 done
 log "Finished Downloading Models for Text generation Webui"
