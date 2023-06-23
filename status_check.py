@@ -1,4 +1,13 @@
 import os
+import subprocess
+
+try:
+    from prettytable import PrettyTable
+except ImportError:
+    # Use subprocess to run the pip command
+    subprocess.check_call(['pip', 'install', 'prettytable'])
+    from prettytable import PrettyTable
+
 
 # Function to check if a process is running
 def is_process_running(pid):
@@ -12,7 +21,8 @@ def is_process_running(pid):
 pid_files = [f for f in os.listdir('/tmp') if f.endswith('.pid')]
 
 # Initialize the table
-table = [['Program', 'Running']]
+table = PrettyTable()
+table.field_names = ['Program', 'Running', "URL"]
 
 # Process each pid file
 for pid_file in pid_files:
@@ -23,14 +33,15 @@ for pid_file in pid_files:
     # Check if the process is running
     
     running = is_process_running(pid)
+    
+    host_file = os.path.join('/tmp', pid_file.replace('.pid', '.host'))
+    if os.path.isfile(host_file):
+        with open(host_file, 'r') as f:
+            host = f"https://{f.read().strip()}"
+    else:
+        host = ""
 
     # Add a row to the table
-    table.append([pid_file.replace('.pid', ''), running])
+    table.add_row([pid_file.replace('.pid', ''), running, host])
 
-# Determine the maximum width of each column
-max_widths = [max(len(str(row[i])) for row in table) for i in range(len(table[0]))]
-# Print the table
-print('{:>{}}      {}'.format(table[0][0], max_widths[0], table[0][1]))
-print('-' * (max_widths[0] + max_widths[1] + 8))
-for row in table[1:]:
-    print('{:>{}}      {}'.format(row[0], max_widths[0], 'Yes' if row[1] else 'No'))
+print(table)
