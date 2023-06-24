@@ -38,7 +38,9 @@ apt-get install -qq curl git-lfs zip python3.10 python3.10-venv python3.10-dev -
 
 # Prepare required path
 mkdir -p $IMAGE_OUTPUTS_DIR
-ln -s $IMAGE_OUTPUTS_DIR $WORKING_DIR/image_outputs
+if [[ ! -d $WORKING_DIR/image_outputs ]]; then
+  ln -s $IMAGE_OUTPUTS_DIR $WORKING_DIR/image_outputs
+fi
 
 # Loop through each script and execute the corresponding case
 echo "Starting script(s)"
