@@ -1,4 +1,5 @@
 import os
+import psutil
 import subprocess
 
 try:
@@ -23,6 +24,23 @@ pid_files = [f for f in os.listdir('/tmp') if f.endswith('.pid')]
 # Initialize the table
 table = PrettyTable()
 table.field_names = ['Program', 'Running', "URL"]
+
+running = "Completed"
+# Get a list of all running processes
+all_processes = psutil.process_iter()
+# Check if the target process is still running
+for proc in all_processes:
+    try:
+        # Get process information as a Process object
+        pinfo = proc.as_dict(attrs=['pid', 'cmdline'])
+        # Check if the process command line matches "bash entry.sh"
+        if pinfo['cmdline'] and " ".join(pinfo['cmdline']) == "bash entry.sh":
+            # The process is still running
+            running = True
+            break
+    except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+        pass  # Ignore errors when accessing process information
+table.add_row(["Start script", running, ""])
 
 # Process each pid file
 for pid_file in pid_files:
