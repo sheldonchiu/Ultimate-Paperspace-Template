@@ -2,7 +2,7 @@ title: Command Server
 name: command
 use_python: true
 
-prepare_env: "pip install fastapi uvicorn[standard]"
+prepare_env: "pip install fastapi uvicorn[standard] psutil"
 
 start: |-
   nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > /tmp/{{ name }}.log 2>&1 &

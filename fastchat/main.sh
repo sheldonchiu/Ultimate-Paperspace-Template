@@ -21,7 +21,6 @@ if ! [[ -e "/tmp/fastchat.prepared" ]]; then
     pip install --upgrade wheel setuptools
     
     pip3 install fschat bitsandbytes
-    pip3 install git+https://github.com/huggingface/transformers
     
     touch /tmp/fastchat.prepared
 else
@@ -34,6 +33,7 @@ log "Finished Preparing Environment for FastChat"
 
 echo "### Downloading Model for FastChat ###"
 log "Downloading Model for FastChat"
+mkdir -p $MODEL_DIR
 model_paths=""
 model_args = ()
 IFS=',' read -ra models <<< "$FASTCHAT_MODEL"

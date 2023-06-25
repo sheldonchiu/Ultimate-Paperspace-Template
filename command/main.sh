@@ -20,7 +20,7 @@ if ! [[ -e "/tmp/command.prepared" ]]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
     
-    pip install fastapi uvicorn[standard]
+    pip install fastapi uvicorn[standard] psutil
     
     touch /tmp/command.prepared
 else

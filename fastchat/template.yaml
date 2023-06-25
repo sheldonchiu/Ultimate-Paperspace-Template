@@ -5,9 +5,9 @@ use_python: true
 prepare_repo: ""
 prepare_env: |-
   pip3 install fschat bitsandbytes
-  pip3 install git+https://github.com/huggingface/transformers
 
 download_model: |-
+  mkdir -p $MODEL_DIR
   model_paths=""
   model_args = ()
   IFS=',' read -ra models <<< "$FASTCHAT_MODEL"
@@ -153,6 +153,7 @@ custom_stop: |-
 
 export_required_env: ""
 other_commands: |-
+  export MODEL_DIR=${FASTCHAT_MODEL_DIR:-"$DATA_DIR/llm-models"}
   export FASTCHAT_MODEL=${FASTCHAT_MODEL:-"vicuna-7b"}
   export FASTCHAT_PORT=${FASTCHAT_PORT:-7861}
   export EXPOSE_PORTS="$EXPOSE_PORTS:$FASTCHAT_PORT"
