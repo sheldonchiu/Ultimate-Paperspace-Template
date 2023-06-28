@@ -11,17 +11,11 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Stable Diffusion WebUI ###"
 log "Setting up Stable Diffusion WebUI"
-symlinks=(
-    "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-webui"
-    "$REPO_DIR/log:$REPO_DIR/outputs/log"
-    "$OUTPUTS_DIR:$WORKING_DIR/storage"
-    "$MODEL_DIR:$WORKING_DIR/models"
-)
 TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \
 TARGET_REPO_DIR=$REPO_DIR \
 UPDATE_REPO=$SD_WEBUI_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$SD_WEBUI_UPDATE_REPO_COMMIT \
-bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
+bash $current_dir/../utils/prepare_repo.sh 
 
 # git clone extensions that has their own model folder
 if [[ ! -d "${REPO_DIR}/extensions/sd-webui-controlnet" ]]; then
@@ -30,6 +24,20 @@ fi
 if [[ ! -d "${REPO_DIR}/extensions/sd-webui-additional-networks" ]]; then
     git clone https://github.com/kohya-ss/sd-webui-additional-networks.git  "${REPO_DIR}/extensions/sd-webui-additional-networks"
 fi
+
+symlinks=(
+    "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-webui"
+    "$REPO_DIR/log:$REPO_DIR/outputs/log"
+    "$OUTPUTS_DIR:$WORKING_DIR/storage"
+    "$MODEL_DIR:$WORKING_DIR/models"
+    "$MODEL_DIR/sd:$LINK_MODEL_TO"
+    "$MODEL_DIR/lora:$LINK_LORA_TO"
+    "$MODEL_DIR/vae:$LINK_VAE_TO"
+    "$MODEL_DIR/hypernetwork:$LINK_HYPERNETWORK_TO"
+    "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
+    "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
+)
+bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
 if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     
     python3.10 -m venv /tmp/sd_webui-env
@@ -61,8 +69,7 @@ log "Finished Preparing Environment for Stable Diffusion WebUI"
 
 echo "### Downloading Model for Stable Diffusion WebUI ###"
 log "Downloading Model for Stable Diffusion WebUI"
-bash $current_dir/../utils/model_download/main.sh
-python $current_dir/../utils/model_download/link_model.py
+bash $current_dir/../utils/sd_model_download/main.sh
 log "Finished Downloading Models for Stable Diffusion WebUI"
 
 

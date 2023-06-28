@@ -112,7 +112,7 @@ def downlaod_model(model_uri):
         # clean exit here
 
 os.makedirs(model_storage_dir,exist_ok=True)
-os.chdir(model_storage_dir)
+os.chdir(f"{model_storage_dir}/sd")  
 model_list = os.environ.get('MODEL_LIST', "").split(',')
 for uri in model_list:
     if uri != '':

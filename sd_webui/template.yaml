@@ -3,17 +3,11 @@ name: sd_webui
 use_python: true
 
 prepare_repo: |-
-  symlinks=(
-      "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-webui"
-      "$REPO_DIR/log:$REPO_DIR/outputs/log"
-      "$OUTPUTS_DIR:$WORKING_DIR/storage"
-      "$MODEL_DIR:$WORKING_DIR/models"
-  )
   TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \
   TARGET_REPO_DIR=$REPO_DIR \
   UPDATE_REPO=$SD_WEBUI_UPDATE_REPO \
   UPDATE_REPO_COMMIT=$SD_WEBUI_UPDATE_REPO_COMMIT \
-  bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
+  bash $current_dir/../utils/prepare_repo.sh 
 
   # git clone extensions that has their own model folder
   if [[ ! -d "${REPO_DIR}/extensions/sd-webui-controlnet" ]]; then
@@ -22,6 +16,20 @@ prepare_repo: |-
   if [[ ! -d "${REPO_DIR}/extensions/sd-webui-additional-networks" ]]; then
       git clone https://github.com/kohya-ss/sd-webui-additional-networks.git  "${REPO_DIR}/extensions/sd-webui-additional-networks"
   fi
+
+  symlinks=(
+      "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-webui"
+      "$REPO_DIR/log:$REPO_DIR/outputs/log"
+      "$OUTPUTS_DIR:$WORKING_DIR/storage"
+      "$MODEL_DIR:$WORKING_DIR/models"
+      "$MODEL_DIR/sd:$LINK_MODEL_TO"
+      "$MODEL_DIR/lora:$LINK_LORA_TO"
+      "$MODEL_DIR/vae:$LINK_VAE_TO"
+      "$MODEL_DIR/hypernetwork:$LINK_HYPERNETWORK_TO"
+      "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
+      "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
+  )
+  bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
 
 prepare_env: |-
   # fix install issue with pycairo, which is needed by sd-webui-controlnet
@@ -37,19 +45,11 @@ prepare_env: |-
   pip install xformers
 
 download_model: |-
-  bash $current_dir/../utils/model_download/main.sh
-  python $current_dir/../utils/model_download/link_model.py
+  bash $current_dir/../utils/sd_model_download/main.sh
 
 action_before_start: ""
 
 start: "bash start.sh"
-
-additional_condition: |-
-  elif [[ $1 == "download_model" ]]; then
-      echo "### Downloading Models ###"
-      bash $current_dir/../utils/model_download/main.sh
-      python $current_dir/../utils/model_download/link_model.py
-      echo "Finished Downloading Models for Stable Diffusion WebUI"
 
 export_required_env: ""
 other_commands: |-

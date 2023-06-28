@@ -11,18 +11,25 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Stable Diffusion Comfy ###"
 log "Setting up Stable Diffusion Comfy"
-symlinks=(
-    "$REPO_DIR:$WORKING_DIR/stable-diffusion-comfy"
-    "$OUTPUTS_DIR:$WORKING_DIR/storage"
-    "$REPO_DIR/output:$IMAGE_OUTPUTS_DIR/stable-diffusion-comfy"
-    "$MODEL_DIR:$WORKING_DIR/models"
-)
 
 TARGET_REPO_URL="https://github.com/comfyanonymous/ComfyUI.git" \
 TARGET_REPO_DIR=$REPO_DIR \
 UPDATE_REPO=$SD_COMFY_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$SD_COMFY_UPDATE_REPO_COMMIT \
-bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
+bash $current_dir/../utils/prepare_repo.sh 
+
+symlinks=(
+  "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-comfy"
+  "$OUTPUTS_DIR:$WORKING_DIR/storage"
+  "$MODEL_DIR:$WORKING_DIR/models"
+  "$MODEL_DIR/sd:$LINK_MODEL_TO"
+  "$MODEL_DIR/lora:$LINK_LORA_TO"
+  "$MODEL_DIR/vae:$LINK_VAE_TO"
+  "$MODEL_DIR/upscaler:$LINK_UPSCALER_TO"
+  "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
+  "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
+)
+bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
 if ! [[ -e "/tmp/sd_comfy.prepared" ]]; then
     
     python3.10 -m venv /tmp/sd_comfy-env
@@ -47,8 +54,7 @@ log "Finished Preparing Environment for Stable Diffusion Comfy"
 
 echo "### Downloading Model for Stable Diffusion Comfy ###"
 log "Downloading Model for Stable Diffusion Comfy"
-bash $current_dir/../utils/model_download/main.sh
-python $current_dir/../utils/model_download/link_model.py
+bash $current_dir/../utils/sd_model_download/main.sh
 log "Finished Downloading Models for Stable Diffusion Comfy"
 
 

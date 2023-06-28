@@ -3,6 +3,7 @@ set -e
 
 current_dir=$(dirname "$(realpath "$0")")
 source $current_dir/log.sh
+
 if [[ -n $TARGET_REPO_DIR ]]; then
     if [[ ! -d "$TARGET_REPO_DIR/.git" ]]; then
         mkdir -p "$TARGET_REPO_DIR"
@@ -27,23 +28,4 @@ if [[ -n $TARGET_REPO_DIR ]]; then
         git fetch
         git checkout $UPDATE_REPO_COMMIT
     fi
-fi
-
-if [[ $# -gt 0 ]]; then
-    log -e "\nCreating Symlinks..."
-    for symlink in "$@"; do
-        log "Symlink: $symlink"
-        src="${symlink%%:*}"
-        dest="${symlink#*:}"
-
-        mkdir -p $src
-        if [[ -L $dest ]] && [[ ! -e $dest ]]; then # -e validates a symlink
-            log "Symlink broken, removing: $dest"
-            rm $dest
-        fi
-        if [[ ! -e $dest ]]; then
-            ln -s $src $dest
-        fi
-        log "$(realpath $dest) -> $dest"
-    done
 fi

@@ -3,18 +3,25 @@ name: sd_comfy
 use_python: true
 
 prepare_repo: |-
-  symlinks=(
-      "$REPO_DIR:$WORKING_DIR/stable-diffusion-comfy"
-      "$OUTPUTS_DIR:$WORKING_DIR/storage"
-      "$REPO_DIR/output:$IMAGE_OUTPUTS_DIR/stable-diffusion-comfy"
-      "$MODEL_DIR:$WORKING_DIR/models"
-  )
 
   TARGET_REPO_URL="https://github.com/comfyanonymous/ComfyUI.git" \
   TARGET_REPO_DIR=$REPO_DIR \
   UPDATE_REPO=$SD_COMFY_UPDATE_REPO \
   UPDATE_REPO_COMMIT=$SD_COMFY_UPDATE_REPO_COMMIT \
-  bash $current_dir/../utils/prepare_repo.sh "${symlinks[@]}"
+  bash $current_dir/../utils/prepare_repo.sh 
+
+  symlinks=(
+    "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-comfy"
+    "$OUTPUTS_DIR:$WORKING_DIR/storage"
+    "$MODEL_DIR:$WORKING_DIR/models"
+    "$MODEL_DIR/sd:$LINK_MODEL_TO"
+    "$MODEL_DIR/lora:$LINK_LORA_TO"
+    "$MODEL_DIR/vae:$LINK_VAE_TO"
+    "$MODEL_DIR/upscaler:$LINK_UPSCALER_TO"
+    "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
+    "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
+  )
+  bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
 
 prepare_env: |-
   cd $REPO_DIR
@@ -23,8 +30,7 @@ prepare_env: |-
   pip install -r requirements.txt
 
 download_model: |-
-  bash $current_dir/../utils/model_download/main.sh
-  python $current_dir/../utils/model_download/link_model.py
+  bash $current_dir/../utils/sd_model_download/main.sh
 
 action_before_start: ""
 
