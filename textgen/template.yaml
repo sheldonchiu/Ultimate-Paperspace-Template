@@ -28,6 +28,9 @@ prepare_env: |-
   cd GPTQ-for-LLaMa
   python setup_cuda.py install
 
+  pip uninstall -y llama-cpp-python
+  CMAKE_ARGS="-DLLAMA_CUBLAS=on" FORCE_CMAKE=1 pip install llama-cpp-python --no-cache-dir
+
   pip install deepspeed
 
   pip install xformers
@@ -45,27 +48,11 @@ download_model: |-
       cd $current_dir_save
   fi
 
-  args=""
-  IFS=',' read -ra models <<< "$TEXTGEN_MODEL"
-  for model in "${models[@]}"
-  do
-      cd /tmp
-      if [[ "$model" == "vicuna-13B-1.1" ]]; then
-          model_name="vicuna-13B-1.1-GPTQ-4bit-128g"
-          download_from_hf  "TheBloke" "$model_name" "main"
-          args="--wbits 4 --groupsize 128 --model_type Llama --loader gptq-for-llama"
-      elif [[ "$model" == "stable-vicuna-13B" ]]; then
-          model_name="stable-vicuna-13B-GPTQ"
-          download_from_hf  "TheBloke" "$model_name" "latest"
-          args="--wbits 4 --groupsize 128 --model_type Llama --loader gptq-for-llama"
-      fi
-  done
-
 action_before_start: ""
 
 start: |-
   cd $REPO_DIR
-  nohup python server.py  --listen-port $TEXTGEN_PORT --model $model_name $args --xformers > /tmp/{{ name }}.log 2>&1 &
+  nohup python server.py  --listen-port $TEXTGEN_PORT --xformers ${EXTRA_TEXTGEN_ARGS} > /tmp/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 custom_start: ""

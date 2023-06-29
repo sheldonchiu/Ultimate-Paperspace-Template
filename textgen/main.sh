@@ -42,6 +42,9 @@ if ! [[ -e "/tmp/textgen.prepared" ]]; then
     cd GPTQ-for-LLaMa
     python setup_cuda.py install
 
+    pip uninstall -y llama-cpp-python
+    CMAKE_ARGS="-DLLAMA_CUBLAS=on" FORCE_CMAKE=1 pip install llama-cpp-python --no-cache-dir
+
     pip install deepspeed
 
     pip install xformers
@@ -68,29 +71,13 @@ if [[ ! -f $MODEL_DIR/config.yaml ]]; then
     wget -q https://raw.githubusercontent.com/oobabooga/text-generation-webui/$commit/models/config.yaml -P $MODEL_DIR
     cd $current_dir_save
 fi
-
-args=""
-IFS=',' read -ra models <<< "$TEXTGEN_MODEL"
-for model in "${models[@]}"
-do
-    cd /tmp
-    if [[ "$model" == "vicuna-13B-1.1" ]]; then
-        model_name="vicuna-13B-1.1-GPTQ-4bit-128g"
-        download_from_hf  "TheBloke" "$model_name" "main"
-        args="--wbits 4 --groupsize 128 --model_type Llama --loader gptq-for-llama"
-    elif [[ "$model" == "stable-vicuna-13B" ]]; then
-        model_name="stable-vicuna-13B-GPTQ"
-        download_from_hf  "TheBloke" "$model_name" "latest"
-        args="--wbits 4 --groupsize 128 --model_type Llama --loader gptq-for-llama"
-    fi
-done
 log "Finished Downloading Models for Text generation Webui"
 
 
 echo "### Starting Text generation Webui ###"
 log "Starting Text generation Webui"
 cd $REPO_DIR
-nohup python server.py  --listen-port $TEXTGEN_PORT --model $model_name $args --xformers > /tmp/textgen.log 2>&1 &
+nohup python server.py  --listen-port $TEXTGEN_PORT --xformers ${EXTRA_TEXTGEN_ARGS} > /tmp/textgen.log 2>&1 &
 echo $! > /tmp/textgen.pid
 
 send_to_discord "Text generation Webui Started"

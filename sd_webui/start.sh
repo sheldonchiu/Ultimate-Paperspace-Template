@@ -28,7 +28,7 @@ fi
 
 auth=""
 if [[ -n "${GRADIO_AUTH}" ]]; then
-  auth="--gradio-auth ${GRADIO_AUTH} --enable-insecure-extension-access"
+  auth="--gradio-auth ${GRADIO_AUTH}"
 fi
 
 theme=""
@@ -46,5 +46,5 @@ if [[ -n "${GRADIO_QUEUE}" ]]; then
   queue="--gradio-queue"
 fi
 
-nohup python webui.py ${x_arg} ${dd_arg} ${mvram_arg} ${pickled} ${port} ${auth} ${theme} ${queue} ${gradio_link} --enable-insecure-extension-access > /tmp/sd_webui.log 2>&1 &
+nohup python webui.py ${x_arg} ${dd_arg} ${mvram_arg} ${pickled} ${port} ${auth} ${theme} ${queue} ${gradio_link} --enable-insecure-extension-access ${EXTRA_SD_WEBUI_ARGS} > /tmp/sd_webui.log 2>&1 &
 echo $! > /tmp/sd_webui.pid

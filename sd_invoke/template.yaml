@@ -30,7 +30,7 @@ action_before_start: ""
 
 start: |-
   cd "$REPO_DIR"
-  nohup invokeai --web --autoconvert $MODEL_DIR > /tmp/{{ name }}.log 2>&1 &
+  nohup invokeai --web --autoconvert $MODEL_DIR ${EXTRA_INVOKE_ARGS} > /tmp/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
