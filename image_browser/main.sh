@@ -51,7 +51,7 @@ if [ -n IMAGE_OUTPUTS_DIR ]; then
 else
     cd $REPO_DIR
 fi
-nohup python $REPO_DIR/app.py --port=$IMAGE_BROWSER_PORT > /tmp/image_browser.log 2>&1 &
+nohup python $REPO_DIR/app.py --port=$IMAGE_BROWSER_PORT ${EXTRA_IMAGE_BROWSER_ARGS} > /tmp/image_browser.log 2>&1 &
 echo $! > /tmp/image_browser.pid
 
 send_to_discord "Image Browser Started"

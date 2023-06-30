@@ -1,0 +1,32 @@
+title: Flowise
+name: flowise
+use_python: false
+
+prepare_repo: ""
+
+prepare_env: |-
+  curl -fsSL https://deb.nodesource.com/setup_20.x | bash - &&\
+  apt-get install -y nodejs
+
+  npm install -g flowise
+
+download_model: ""
+
+action_before_start: ""
+
+start: |-
+  nohup PORT=${{ name|upper }}_PORT npx flowise start > /tmp/{{ name }}.log 2>&1 &
+  echo $! > /tmp/{{ name }}.pid
+
+custom_start: ""
+custom_reload: ""
+custom_stop: ""
+
+export_required_env: |-
+  export REQUIRED_ENV="FLOWISE_USERNAME,FLOWISE_PASSWORD"
+
+other_commands: |-
+
+  export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7010}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:{{ name|upper }}_PORT"
+  export PORT_MAPPING="$PORT_MAPPING:{{ name }}"

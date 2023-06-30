@@ -5,13 +5,13 @@ use_python: true
 prepare_env: "pip install fastapi uvicorn[standard] psutil"
 
 start: |-
-  nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > /tmp/{{ name }}.log 2>&1 &
+  nohup uvicorn main:app --host 0.0.0.0 --port ${{ name|upper }}_PORT > /tmp/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: |-
   export REQUIRED_ENV="COMMAND_USERNAME,COMMAND_PASSWORD"
 
 other_commands: |-
-  export COMMAND_PORT=${COMMAND_PORT:-"8022"}
-  export EXPOSE_PORTS="$EXPOSE_PORTS:$COMMAND_PORT"
+  export {{ name|upper }}_PORT=${{ '{' ~  name|upper }}_PORT:-"7000"}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"

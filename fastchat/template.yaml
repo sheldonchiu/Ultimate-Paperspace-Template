@@ -10,7 +10,7 @@ download_model: |-
   mkdir -p $MODEL_DIR
   model_paths=""
   model_args = ()
-  IFS=',' read -ra models <<< "$FASTCHAT_MODEL"
+  IFS=',' read -ra models <<< "${{ name|upper }}_MODEL"
   for model in "${models[@]}"
   do
   if [[ $model == "vicuna-7b" ]]; then
@@ -32,7 +32,7 @@ download_model: |-
       model_paths="$model_paths,/tmp/chatglm-6b"
       model_args += ("")
   else
-      log "Invalid model name. Please set FASTCHAT_MODEL to vicuna-7b, vicuna-13b or chatglm-6b"
+      log "Invalid model name. Please set {{ name|upper }}_MODEL to vicuna-7b, vicuna-13b or chatglm-6b"
       exit 1
   fi
   done
@@ -61,7 +61,7 @@ start: |-
               done
               ;;
           "server")
-              nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT > /tmp/fastchat_server.log 2>&1 &
+              nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port ${{ name|upper }}_PORT > /tmp/fastchat_server.log 2>&1 &
               echo $! > /tmp/fastchat_server.pid
               ;;
           *)
@@ -93,7 +93,7 @@ start: |-
           fi
       done
 
-      nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT > /tmp/fastchat_server.log 2>&1 &
+      nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port ${{ name|upper }}_PORT > /tmp/fastchat_server.log 2>&1 &
       echo $! > /tmp/fastchat_server.pid
       
   fi
@@ -153,8 +153,8 @@ custom_stop: |-
 
 export_required_env: ""
 other_commands: |-
-  export MODEL_DIR=${FASTCHAT_MODEL_DIR:-"$DATA_DIR/llm-models"}
-  export FASTCHAT_MODEL=${FASTCHAT_MODEL:-"vicuna-7b"}
-  export FASTCHAT_PORT=${FASTCHAT_PORT:-7861}
-  export EXPOSE_PORTS="$EXPOSE_PORTS:$FASTCHAT_PORT"
+  export MODEL_DIR=${{ '{' ~ name|upper }}_MODEL_DIR:-"$DATA_DIR/llm-models"}
+  export {{ name|upper }}_MODEL=${{ '{' ~ name|upper }}_MODEL:-"vicuna-7b"}
+  export {{ name|upper }}_PORT=${{  '{' ~ name|upper }}_PORT:-7001}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"

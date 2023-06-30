@@ -6,8 +6,8 @@ prepare_repo: |-
   TARGET_REPO_URL="https://github.com/VoltaML/voltaML-fast-stable-diffusion.git" \
   TARGET_REPO_DIR=$REPO_DIR \
   TARGET_REPO_BRANCH=main \
-  UPDATE_REPO=$SD_VOLTA_UPDATE_REPO \
-  UPDATE_REPO_COMMIT=$SD_VOLTA_UPDATE_REPO_COMMIT \
+  UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
+  UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
   bash $current_dir/../utils/prepare_repo.sh
 
   symlinks=(
@@ -32,18 +32,18 @@ action_before_start: ""
 
 start: |-
   cd "$REPO_DIR"
-  nohup python main.py ${EXTRA_VOltA_ARGS} > /tmp/{{ name }}.log 2>&1 &
+  nohup python main.py --port {{ name|upper }}_PORT ${EXTRA_{{ name|upper }}_ARGS} > /tmp/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
 other_commands: |-
-  export MODEL_DIR=${SD_VOLTA_MODEL_DIR:-"$DATA_DIR/stable-diffusion-models"}
-  export REPO_DIR=${SD_VOLTA_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-volta"}
+  export MODEL_DIR=${{ '{' ~ name|upper }}_MODEL_DIR:-"$DATA_DIR/stable-diffusion-models"}
+  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-volta"}
 
-  export SD_VOLTA_PORT=${SD_VOLTA_PORT:-"5003"}
-  export EXPOSE_PORTS="$EXPOSE_PORTS:$SD_VOLTA_PORT"
+  export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-"7007"}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:{{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
   export HUGGINGFACE_TOKEN=$HF_TOKEN
 
-  export LINK_MODEL_TO=${SD_VOLTA_LINK_MODEL_TO:-"${REPO_DIR}/data/models/"}
-  export LINK_LORA_TO=${SD_VOLTA_LINK_LORA_TO:-"${REPO_DIR}/data/lora"}
+  export LINK_MODEL_TO=${{ '{' ~ name|upper }}_LINK_MODEL_TO:-"${REPO_DIR}/data/models/"}
+  export LINK_LORA_TO=${{ '{' ~ name|upper }}_LINK_LORA_TO:-"${REPO_DIR}/data/lora"}

@@ -5,8 +5,8 @@ use_python: true
 prepare_repo: |-
   TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \
   TARGET_REPO_DIR=$REPO_DIR \
-  UPDATE_REPO=$SD_WEBUI_UPDATE_REPO \
-  UPDATE_REPO_COMMIT=$SD_WEBUI_UPDATE_REPO_COMMIT \
+  UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
+  UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
   bash $current_dir/../utils/prepare_repo.sh 
 
   # git clone extensions that has their own model folder
@@ -49,20 +49,22 @@ download_model: |-
 
 action_before_start: ""
 
-start: "bash start.sh"
+start: |-
+  nohup python webui.py  --port {{ name|upper }}_PORT --enable-insecure-extension-access ${EXTRA_{{ name|upper }}_ARGS} > /tmp/{{ name }}.log 2>&1 &
+  echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
 other_commands: |-
-  export MODEL_DIR=${SD_WEBUI_MODEL_DIR:-"$DATA_DIR/stable-diffusion-models"}
-  export REPO_DIR=${SD_WEBUI_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-webui"}
+  export MODEL_DIR=${{ '{' ~ name|upper }}_MODEL_DIR:-"$DATA_DIR/stable-diffusion-models"}
+  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-webui"}
 
-  export SD_WEBUI_PORT=${SD_WEBUI_PORT:-"7860"}
-  export EXPOSE_PORTS="$EXPOSE_PORTS:$SD_WEBUI_PORT"
+  export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-"7008"}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
 
-  export LINK_MODEL_TO=${SD_WEBUI_LINK_MODEL_TO:-"${REPO_DIR}/models/Stable-diffusion"}
-  export LINK_VAE_TO=${SD_WEBUI_LINK_VAE_TO:-"${REPO_DIR}/models/VAE"}
-  export LINK_HYPERNETWORK_TO=${SD_WEBUI_LINK_HYPERNETWORK_TO:-"${REPO_DIR}/models/hypernetworks"}
-  export LINK_LORA_TO=${SD_WEBUI_LINK_LORA_TO:-"${REPO_DIR}/extensions/sd-webui-additional-networks/models/lora,${REPO_DIR}/models/Lora"}
-  export LINK_CONTROLNET_TO=${SD_WEBUI_LINK_CONTROLNET_TO:-"${REPO_DIR}/extensions/sd-webui-controlnet/models"}
-  export LINK_EMBEDDING_TO=${SD_WEBUI_LINK_EMBEDDING_TO:-"${REPO_DIR}/embeddings"}
+  export LINK_MODEL_TO=${{ '{' ~ name|upper }}_LINK_MODEL_TO:-"${REPO_DIR}/models/Stable-diffusion"}
+  export LINK_VAE_TO=${{ '{' ~ name|upper }}_LINK_VAE_TO:-"${REPO_DIR}/models/VAE"}
+  export LINK_HYPERNETWORK_TO=${{ '{' ~ name|upper }}_LINK_HYPERNETWORK_TO:-"${REPO_DIR}/models/hypernetworks"}
+  export LINK_LORA_TO=${{ '{' ~ name|upper }}_LINK_LORA_TO:-"${REPO_DIR}/extensions/sd-webui-additional-networks/models/lora,${REPO_DIR}/models/Lora"}
+  export LINK_CONTROLNET_TO=${{ '{' ~ name|upper }}_LINK_CONTROLNET_TO:-"${REPO_DIR}/extensions/sd-webui-controlnet/models"}
+  export LINK_EMBEDDING_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/embeddings"}

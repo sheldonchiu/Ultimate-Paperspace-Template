@@ -21,6 +21,6 @@ send_to_discord() {
     curl -H "Content-Type: application/json" \
         -X POST \
         -d "{\"content\":\"$output\"}" \
-        "${DISCORD_WEBHOOK_URL}"
+        "${DISCORD_WEBHOOK_URL}" 2>&1 > /dev/null
   fi
 }

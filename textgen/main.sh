@@ -71,13 +71,16 @@ if [[ ! -f $MODEL_DIR/config.yaml ]]; then
     wget -q https://raw.githubusercontent.com/oobabooga/text-generation-webui/$commit/models/config.yaml -P $MODEL_DIR
     cd $current_dir_save
 fi
+
+
+bash $current_dir/../utils/llm_model_download.sh
 log "Finished Downloading Models for Text generation Webui"
 
 
 echo "### Starting Text generation Webui ###"
 log "Starting Text generation Webui"
 cd $REPO_DIR
-nohup python server.py  --listen-port $TEXTGEN_PORT --xformers ${EXTRA_TEXTGEN_ARGS} > /tmp/textgen.log 2>&1 &
+nohup python server.py  --listen-port $TEXTGEN_PORT --xformers --chat ${EXTRA_TEXTGEN_ARGS} > /tmp/textgen.log 2>&1 &
 echo $! > /tmp/textgen.pid
 
 send_to_discord "Text generation Webui Started"

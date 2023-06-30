@@ -6,8 +6,8 @@ prepare_repo: |-
 
   TARGET_REPO_URL="https://github.com/comfyanonymous/ComfyUI.git" \
   TARGET_REPO_DIR=$REPO_DIR \
-  UPDATE_REPO=$SD_COMFY_UPDATE_REPO \
-  UPDATE_REPO_COMMIT=$SD_COMFY_UPDATE_REPO_COMMIT \
+  UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
+  UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
   bash $current_dir/../utils/prepare_repo.sh 
 
   symlinks=(
@@ -36,22 +36,22 @@ action_before_start: ""
 
 start: |-
   cd "$REPO_DIR"
-  nohup python main.py --dont-print-server ${EXTRA_COMFY_ARGS} > /tmp/{{ name }}.log 2>&1 &
+  nohup python main.py --dont-print-server --port ${{ name|upper }}_PORT ${EXTRA_{{ name|upper }}_ARGS} > /tmp/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
 other_commands: |-
-  export MODEL_DIR=${SD_COMFY_MODEL_DIR:-"$DATA_DIR/stable-diffusion-models"}
-  export REPO_DIR=${SD_COMFY_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-comfy"}
+  export MODEL_DIR=${{ '{' ~ name|upper }}_MODEL_DIR:-"$DATA_DIR/stable-diffusion-models"}
+  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-comfy"}
 
-  export SD_COMFY_PORT=${SD_COMFY_PORT:-"8188"}
-  export EXPOSE_PORTS="$EXPOSE_PORTS:$SD_COMFY_PORT"
+  export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-"7005"}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
   export HUGGINGFACE_TOKEN=$HF_TOKEN
 
-  export LINK_MODEL_TO=${SD_COMFY_LINK_MODEL_TO:-"${REPO_DIR}/models/checkpoints"}
-  export LINK_VAE_TO=${SD_COMFY_LINK_VAE_TO:-"${REPO_DIR}/models/vae"}
-  export LINK_LORA_TO=${SD_COMFY_LINK_LORA_TO:-"${REPO_DIR}/models/loras"}
-  export LINK_CONTROLNET_TO=${SD_COMFY_LINK_CONTROLNET_TO:-"${REPO_DIR}/models/controlnet"}
-  export LINK_EMBEDDING_TO=${SD_COMFY_LINK_EMBEDDING_TO:-"${REPO_DIR}/models/embeddings"}
-  export LINK_UPSCALER_TO=${SD_COMFY_LINK_EMBEDDING_TO:-"${REPO_DIR}/models/upscale_models"}
+  export LINK_MODEL_TO=${{ '{' ~ name|upper }}_LINK_MODEL_TO:-"${REPO_DIR}/models/checkpoints"}
+  export LINK_VAE_TO=${{ '{' ~ name|upper }}_LINK_VAE_TO:-"${REPO_DIR}/models/vae"}
+  export LINK_LORA_TO=${{ '{' ~ name|upper }}_LINK_LORA_TO:-"${REPO_DIR}/models/loras"}
+  export LINK_CONTROLNET_TO=${{ '{' ~ name|upper }}_LINK_CONTROLNET_TO:-"${REPO_DIR}/models/controlnet"}
+  export LINK_EMBEDDING_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/models/embeddings"}
+  export LINK_UPSCALER_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/models/upscale_models"}

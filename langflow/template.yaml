@@ -1,0 +1,28 @@
+title: Langflow
+name: langflow
+use_python: true
+
+prepare_repo: ""
+
+prepare_env: |-
+  pip install langflow
+
+download_model: ""
+
+action_before_start: ""
+
+start: |-
+  nohup python -m langflow --port ${{ name|upper }}_PORT > /tmp/{{ name }}.log 2>&1 &
+  echo $! > /tmp/{{ name }}.pid
+
+custom_start: ""
+custom_reload: ""
+custom_stop: ""
+
+export_required_env: ""
+
+other_commands: |-
+
+  export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7011}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:{{ name|upper }}_PORT"
+  export PORT_MAPPING="$PORT_MAPPING:{{ name }}"

@@ -1,0 +1,37 @@
+title: Musicgen
+name: musicgen
+use_python: true
+
+prepare_repo: |-
+  TARGET_REPO_DIR=$REPO_DIR \
+  TARGET_REPO_BRANCH="main" \
+  TARGET_REPO_URL="https://github.com/facebookresearch/audiocraft.git" \
+  UPDATE_REPO={{ name|upper }}_UPDATE_REPO \
+  UPDATE_REPO_COMMIT={{ name|upper }}_UPDATE_REPO_COMMIT \
+  bash $current_dir/../utils/prepare_repo.sh
+
+prepare_env: |-
+  cd $REPO_DIR
+  pip install 'torch>=2.0'
+  pip install -r requirements.txt
+
+download_model: ""
+
+action_before_start: ""
+
+start: |-
+  cd $REPO_DIR
+  nohup python app.py --server_port {{ name|upper }}_PORT  ${EXTRA_{{ name|upper }}_ARGS} > /tmp/{{ name }}.log 2>&1 &
+  echo $! > /tmp/{{ name }}.pid
+
+custom_start: ""
+custom_reload: ""
+custom_stop: ""
+
+export_required_env: ""
+other_commands: |-
+  export REPO_DIR=${ {{ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/audiocraft"}
+
+  export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7003}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
+  export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
