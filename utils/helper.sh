@@ -6,6 +6,19 @@ error_exit() {
     exit 1
 }
 
+# Define a recursive function to kill all descendant processes
+kill_descendants() {
+  local parent_pid="$1"
+  local child_pids=$(pgrep -P "${parent_pid}")
+  for child_pid in ${child_pids}; do
+    kill_descendants "${child_pid}"
+  done
+  echo "Killing descendant processes of PID ${parent_pid}: ${child_pids}"
+  if [[ -n "${child_pids}" ]]; then
+    kill "${child_pids}" >/dev/null 2>&1
+  fi
+}
+
 kill_pid() {
     # Read the pid from a file
     if [[ -f $1 ]]; then
@@ -22,7 +35,7 @@ kill_pid() {
     fi
 
     # Kill the process
-    kill -TERM $pid
+    kill_descendants $pid
 
     echo "Process $pid has been killed."
 }
