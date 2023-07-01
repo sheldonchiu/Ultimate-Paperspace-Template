@@ -31,7 +31,7 @@ log "Finished Preparing Environment for Flowise"
 
 echo "### Starting Flowise ###"
 log "Starting Flowise"
-nohup PORT=$FLOWISE_PORT npx flowise start > /tmp/flowise.log 2>&1 &
+PORT=$FLOWISE_PORT nohup npx flowise start > /tmp/flowise.log 2>&1 &
 echo $! > /tmp/flowise.pid
 
 send_to_discord "Flowise Started"

@@ -34,7 +34,7 @@ IFS=',' read -ra scripts <<< "$run_script"
 
 echo "Installing common dependencies"
 apt-get update -qq
-apt-get install -qq curl git-lfs zip python3.10 python3.10-venv python3.10-dev -y > /dev/null
+apt-get install -qq curl git-lfs zip python3.10 python3.10-venv python3.10-dev python3-tk -y > /dev/null
 
 # Prepare required path
 mkdir -p $IMAGE_OUTPUTS_DIR

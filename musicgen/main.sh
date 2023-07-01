@@ -14,8 +14,8 @@ log "Setting up Musicgen"
 TARGET_REPO_DIR=$REPO_DIR \
 TARGET_REPO_BRANCH="main" \
 TARGET_REPO_URL="https://github.com/facebookresearch/audiocraft.git" \
-UPDATE_REPO=MUSICGEN_UPDATE_REPO \
-UPDATE_REPO_COMMIT=MUSICGEN_UPDATE_REPO_COMMIT \
+UPDATE_REPO=${ name|upper }}_UPDATE_REPO \
+UPDATE_REPO_COMMIT=$MUSICGEN_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh
 if ! [[ -e "/tmp/musicgen.prepared" ]]; then
     
