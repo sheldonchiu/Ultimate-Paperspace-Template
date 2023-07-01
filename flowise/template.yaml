@@ -15,7 +15,7 @@ download_model: ""
 action_before_start: ""
 
 start: |-
-  PORT=${{ name|upper }}_PORT nohup npx flowise start > /tmp/log/{{ name }}.log 2>&1 &
+  PORT=${{ name|upper }}_PORT nohup npx flowise start > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 custom_start: ""

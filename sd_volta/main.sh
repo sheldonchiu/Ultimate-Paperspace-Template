@@ -57,7 +57,7 @@ log "Finished Downloading Models for Stable Diffusion Volta"
 echo "### Starting Stable Diffusion Volta ###"
 log "Starting Stable Diffusion Volta"
 cd "$REPO_DIR"
-PYTHONUNBUFFERED=1 nohup python main.py --port SD_VOLTA_PORT ${EXTRA_SD_VOLTA_ARGS} > /tmp/log/sd_volta.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup python main.py --port SD_VOLTA_PORT ${EXTRA_SD_VOLTA_ARGS} > $LOG_DIR/sd_volta.log 2>&1 &
 echo $! > /tmp/sd_volta.pid
 
 send_to_discord "Stable Diffusion Volta Started"
