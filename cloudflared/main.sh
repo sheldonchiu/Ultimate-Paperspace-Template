@@ -44,7 +44,7 @@ if [[ $CF_TOKEN == "quick" ]]; then
 
         # Generate PID file and log file names using a different delimiter
         pidfile="/tmp/cloudflared_${name}.pid"
-        logfile="/tmp/cloudflared_${name}.log"
+        logfile="$LOG_DIR/cloudflared_${name}.log"
         hostfile="/tmp/cloudflared_${name}.host"
         
         # Check if tunnel is already running

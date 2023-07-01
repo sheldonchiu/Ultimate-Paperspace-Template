@@ -50,7 +50,7 @@ download_model: |-
 action_before_start: ""
 
 start: |-
-  PYTHONUNBUFFERED=1 nohup python webui.py  --port {{ name|upper }}_PORT --enable-insecure-extension-access ${EXTRA_{{ name|upper }}_ARGS} > /tmp/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 nohup python webui.py  --port {{ name|upper }}_PORT --enable-insecure-extension-access ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""

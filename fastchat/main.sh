@@ -70,7 +70,7 @@ log "Starting FastChat"
 if [[ -n $1 ]]; then
     case $1 in
         "controller")
-            nohup python3 -m fastchat.serve.controller --host 127.0.0.1 > /tmp/fastchat_controller.log 2>&1 &
+            nohup python3 -m fastchat.serve.controller --host 127.0.0.1 > $LOG_DIR/fastchat_controller.log 2>&1 &
             echo $! > /tmp/fastchat_controller.pid
             ;;
         "worker")
@@ -81,14 +81,14 @@ if [[ -n $1 ]]; then
             do
                 if [ -n "$model" ]; then
                     (( port++ ))
-                    nohup python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model --load-8bit ${model_args[$model_args_id]} > /tmp/fastchat_worker_$port.log 2>&1 &
+                    nohup python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model --load-8bit ${model_args[$model_args_id]} > $LOG_DIR/fastchat_worker_$port.log 2>&1 &
                     echo $! > /tmp/fastchat_worker_$port.pid
                     (( model_args_id++ ))
                 fi
             done
             ;;
         "server")
-            nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT > /tmp/fastchat_server.log 2>&1 &
+            nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT > $LOG_DIR/fastchat_server.log 2>&1 &
             echo $! > /tmp/fastchat_server.pid
             ;;
         *)
@@ -96,7 +96,7 @@ if [[ -n $1 ]]; then
             ;;
     esac
 else
-    nohup python3 -m fastchat.serve.controller --host 127.0.0.1 > /tmp/fastchat_controller.log 2>&1 &
+    nohup python3 -m fastchat.serve.controller --host 127.0.0.1 > $LOG_DIR/fastchat_controller.log 2>&1 &
     echo $! > /tmp/fastchat_controller.pid
     
     port=21001
@@ -106,7 +106,7 @@ else
     do
     if [ -n "$model" ]; then
         (( port++ ))
-        nohup python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model --load-8bit ${model_args[$model_args_id]} > /tmp/fastchat_worker_$port.log 2>&1 &
+        nohup python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model --load-8bit ${model_args[$model_args_id]} > $LOG_DIR/fastchat_worker_$port.log 2>&1 &
         echo $! > /tmp/fastchat_worker_$port.pid
         (( model_args_id++ ))
     fi
@@ -120,7 +120,7 @@ else
         fi
     done
 
-    nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT > /tmp/fastchat_server.log 2>&1 &
+    nohup python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT > $LOG_DIR/fastchat_server.log 2>&1 &
     echo $! > /tmp/fastchat_server.pid
     
 fi

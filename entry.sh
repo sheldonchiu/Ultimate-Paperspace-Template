@@ -42,6 +42,8 @@ if [[ ! -d $WORKING_DIR/image_outputs ]]; then
   ln -s $IMAGE_OUTPUTS_DIR $WORKING_DIR/image_outputs
 fi
 
+mkdir $LOG_DIR
+
 # Loop through each script and execute the corresponding case
 echo "Starting script(s)"
 for script in "${scripts[@]}"

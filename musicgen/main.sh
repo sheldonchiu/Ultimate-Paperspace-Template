@@ -42,7 +42,7 @@ log "Finished Preparing Environment for Musicgen"
 echo "### Starting Musicgen ###"
 log "Starting Musicgen"
 cd $REPO_DIR
-PYTHONUNBUFFERED=1 nohup python app.py --server_port MUSICGEN_PORT  ${EXTRA_MUSICGEN_ARGS} > /tmp/musicgen.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup python app.py --server_port MUSICGEN_PORT  ${EXTRA_MUSICGEN_ARGS} > $LOG_DIR/musicgen.log 2>&1 &
 echo $! > /tmp/musicgen.pid
 
 send_to_discord "Musicgen Started"

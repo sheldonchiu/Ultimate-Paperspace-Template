@@ -5,7 +5,7 @@ use_python: true
 prepare_env: "pip install fastapi uvicorn[standard] psutil"
 
 start: |-
-  PYTHONUNBUFFERED=1 nohup uvicorn main:app --host 0.0.0.0 --port ${{ name|upper }}_PORT > /tmp/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 nohup uvicorn main:app --host 0.0.0.0 --port ${{ name|upper }}_PORT > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: |-

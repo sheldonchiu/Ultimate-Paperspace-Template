@@ -61,7 +61,7 @@ log "Finished Downloading Models for Stable Diffusion Comfy"
 echo "### Starting Stable Diffusion Comfy ###"
 log "Starting Stable Diffusion Comfy"
 cd "$REPO_DIR"
-PYTHONUNBUFFERED=1 nohup python main.py --dont-print-server --port $SD_COMFY_PORT ${EXTRA_SD_COMFY_ARGS} > /tmp/sd_comfy.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup python main.py --dont-print-server --port $SD_COMFY_PORT ${EXTRA_SD_COMFY_ARGS} > $LOG_DIR/sd_comfy.log 2>&1 &
 echo $! > /tmp/sd_comfy.pid
 
 send_to_discord "Stable Diffusion Comfy Started"

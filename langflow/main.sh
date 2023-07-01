@@ -34,7 +34,9 @@ log "Finished Preparing Environment for Langflow"
 
 echo "### Starting Langflow ###"
 log "Starting Langflow"
-PYTHONUNBUFFERED=1 nohup python -m langflow --port $LANGFLOW_PORT > /tmp/langflow.log 2>&1 &
+mkdir -p $REPO_DIR
+cd $REPO_DIR
+PYTHONUNBUFFERED=1 nohup python -m langflow --port $LANGFLOW_PORT > $LOG_DIR/langflow.log 2>&1 &
 echo $! > /tmp/langflow.pid
 
 send_to_discord "Langflow Started"

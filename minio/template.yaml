@@ -18,7 +18,7 @@ start: |-
       log "ENV S3_MIRROR_PATH or S3_MIRROR_TO_BUCKET not provided, skipping minio mirror"
   else
       mkdir -p $S3_MIRROR_PATH
-      nohup /tmp/minio-binaries/mc mirror --overwrite --watch --quiet $S3_MIRROR_PATH dst/$S3_MIRROR_TO_BUCKET ${EXTRA_{{ name|upper }}_ARGS} > /tmp/{{ name }}_mirror.log 2>&1 &
+      nohup /tmp/minio-binaries/mc mirror --overwrite --watch --quiet $S3_MIRROR_PATH dst/$S3_MIRROR_TO_BUCKET ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}_mirror.log 2>&1 &
       echo $! > /tmp/{{ name }}.pid
   fi
 
