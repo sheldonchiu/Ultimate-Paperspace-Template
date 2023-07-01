@@ -47,7 +47,7 @@ log "Finished Preparing Environment for Kohya SD Trainer"
 echo "### Starting Kohya SD Trainer ###"
 log "Starting Kohya SD Trainer"
 cd $REPO_DIR
-PYTHONUNBUFFERED=1 nohup python kohya_gui.py --headless --server_port=$KOHYA_SS_PORT --username $KOHYA_USERNAME --password $KOHYA_PASSWORD ${EXTRA_KOHYA_SS_ARGS} > /tmp/kohya_ss.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup python kohya_gui.py --headless --server_port=$KOHYA_SS_PORT --username $KOHYA_USERNAME --password $KOHYA_PASSWORD ${EXTRA_KOHYA_SS_ARGS} > /tmp/log/kohya_ss.log 2>&1 &
 echo $! > /tmp/kohya_ss.pid
 
 send_to_discord "Kohya SD Trainer Started"

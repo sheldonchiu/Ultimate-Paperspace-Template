@@ -12,7 +12,9 @@ download_model: ""
 action_before_start: ""
 
 start: |-
-  PYTHONUNBUFFERED=1 nohup python -m langflow --port ${{ name|upper }}_PORT > /tmp/{{ name }}.log 2>&1 &
+  mkdir -p $REPO_DIR
+  cd $REPO_DIR
+  PYTHONUNBUFFERED=1 nohup python -m langflow --port ${{ name|upper }}_PORT > /tmp/log/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 custom_start: ""
@@ -22,7 +24,7 @@ custom_stop: ""
 export_required_env: ""
 
 other_commands: |-
-
+  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/langflow"}
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7011}
   export EXPOSE_PORTS="$EXPOSE_PORTS:{{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
