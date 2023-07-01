@@ -12,7 +12,7 @@ download_model: ""
 action_before_start: ""
 
 start: |-
-  nohup python -m langflow --port ${{ name|upper }}_PORT > /tmp/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 nohup python -m langflow --port ${{ name|upper }}_PORT > /tmp/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 custom_start: ""

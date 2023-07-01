@@ -32,7 +32,7 @@ action_before_start: ""
 
 start: |-
   cd "$REPO_DIR"
-  nohup python main.py --port {{ name|upper }}_PORT ${EXTRA_{{ name|upper }}_ARGS} > /tmp/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 nohup python main.py --port {{ name|upper }}_PORT ${EXTRA_{{ name|upper }}_ARGS} > /tmp/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
