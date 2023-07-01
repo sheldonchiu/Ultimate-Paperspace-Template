@@ -27,7 +27,10 @@ if ! [ -v "MODEL_DIR" ]; then
     source $current_dir/../../.env
     export MODEL_DIR="$DATA_DIR/stable-diffusion-models"
 fi
-env | grep -v '^_' | sed 's/\([^=]*\)=\(.*\)/\1='\''\2'\''/' > $current_dir/.env
+# This only happen when directly using this script
+if ! [ -v "MODEL_LIST" ]; then
+    env | grep -v '^_' | sed 's/\([^=]*\)=\(.*\)/\1='\''\2'\''/' > $current_dir/.env
+fi
 
 echo "### Starting Model Download ###"
 

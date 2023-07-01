@@ -19,7 +19,7 @@ UPDATE_REPO_COMMIT=$SD_COMFY_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh 
 
 symlinks=(
-  "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-comfy"
+  "$REPO_DIR/output:$IMAGE_OUTPUTS_DIR/stable-diffusion-comfy"
   "$OUTPUTS_DIR:$WORKING_DIR/storage"
   "$MODEL_DIR:$WORKING_DIR/models"
   "$MODEL_DIR/sd:$LINK_MODEL_TO"
@@ -61,7 +61,7 @@ log "Finished Downloading Models for Stable Diffusion Comfy"
 echo "### Starting Stable Diffusion Comfy ###"
 log "Starting Stable Diffusion Comfy"
 cd "$REPO_DIR"
-nohup python main.py --dont-print-server --port $SD_COMFY_PORT ${EXTRA_SD_COMFY_ARGS} > /tmp/sd_comfy.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup python main.py --dont-print-server --port $SD_COMFY_PORT ${EXTRA_SD_COMFY_ARGS} > /tmp/sd_comfy.log 2>&1 &
 echo $! > /tmp/sd_comfy.pid
 
 send_to_discord "Stable Diffusion Comfy Started"

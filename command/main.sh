@@ -34,7 +34,7 @@ log "Finished Preparing Environment for Command Server"
 
 echo "### Starting Command Server ###"
 log "Starting Command Server"
-nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > /tmp/command.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > /tmp/command.log 2>&1 &
 echo $! > /tmp/command.pid
 
 send_to_discord "Command Server Started"

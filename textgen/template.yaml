@@ -55,7 +55,18 @@ action_before_start: ""
 
 start: |-
   cd $REPO_DIR
-  nohup python server.py  --listen-port ${{ name|upper }}_PORT --xformers --chat ${EXTRA_{{ name|upper }}_ARGS} > /tmp/{{ name }}.log 2>&1 &
+  if [ -v {{ name|upper }}_ENABLE_OPENAI_API ] && [ ! -z "${{ name|upper }}_ENABLE_OPENAI_API" ];then
+    loader_arg=""
+    if echo "${{ name|upper }}_OPENAI_MODEL" | grep -q "GPTQ"; then
+      loader_arg="--loader exllama"
+    fi
+    if echo "${{ name|upper }}_OPENAI_MODEL" | grep -q "LongChat"; then
+      loader_arg+=" --max_seq_len 8192 --compress_pos_emb 4"
+    fi
+    PYTHONUNBUFFERED=1 OPENEDAI_PORT=7013 nohup python server.py --listen-port ${{ name|upper }}_PORT --xformers --model ${{ name|upper }}_OPENAI_MODEL $loader_arg --extensions openai ${EXTRA_{{ name|upper }}_ARGS} > /tmp/{{ name }}.log 2>&1 &
+  else
+    PYTHONUNBUFFERED=1 nohup python server.py  --listen-port ${{ name|upper }}_PORT --xformers --chat ${EXTRA_{{ name|upper }}_ARGS} > /tmp/{{ name }}.log 2>&1 &
+  fi
   echo $! > /tmp/{{ name }}.pid
 
 custom_start: ""
@@ -68,8 +79,9 @@ other_commands: |-
   export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/text-generation-webui"}
 
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7009}
-  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
-  export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
+  export {{ name|upper }}_OPENAI_API_PORT=${{ '{' ~ name|upper }}_OPENAI_API_PORT:-7013}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT:{{ name|upper }}_OPENAI_API_PORT"
+  export PORT_MAPPING="$PORT_MAPPING:{{ name }}:{{ name }}_openai_api"
   export HUGGINGFACE_TOKEN=$HF_TOKEN
 
   export LINK_MODEL_TO=${{ '{' ~ name|upper }}_LINK_MODEL_TO:-"$REPO_DIR/models"}

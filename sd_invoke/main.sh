@@ -55,7 +55,7 @@ log "Finished Downloading Models for Stable Diffusion InvokeAI"
 echo "### Starting Stable Diffusion InvokeAI ###"
 log "Starting Stable Diffusion InvokeAI"
 cd "$REPO_DIR"
-nohup invokeai --web --port SD_INVOKE_PORT --autoconvert $MODEL_DIR ${EXTRA_SD_INVOKE_ARGS} > /tmp/sd_invoke.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup invokeai --web --port SD_INVOKE_PORT --autoconvert $MODEL_DIR ${EXTRA_SD_INVOKE_ARGS} > /tmp/sd_invoke.log 2>&1 &
 echo $! > /tmp/sd_invoke.pid
 
 send_to_discord "Stable Diffusion InvokeAI Started"
