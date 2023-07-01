@@ -5,6 +5,9 @@ import gdown
 import json
 from bs4 import BeautifulSoup
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 model_storage_dir = os.environ['MODEL_DIR']
 hf_token = os.environ.get('HF_TOKEN', None)
@@ -111,36 +114,35 @@ def downlaod_model(model_uri):
         print('Could not parse your URI.')
         # clean exit here
 
-os.makedirs(model_storage_dir,exist_ok=True)
-os.chdir(f"{model_storage_dir}/sd")  
+def prepare_folder(name):
+    os.makedirs(f"{model_storage_dir}/{name}",exist_ok=True)
+    os.chdir(f"{model_storage_dir}/{name}")  
+
+prepare_folder("sd")
 model_list = os.environ.get('MODEL_LIST', "").split(',')
 for uri in model_list:
     if uri != '':
         downlaod_model(uri)
 
-os.makedirs(f"{model_storage_dir}/lora",exist_ok=True)
-os.chdir(f"{model_storage_dir}/lora")    
+prepare_folder("lora")
 lora_list = os.environ.get('LORA_LIST', "").split(',')
 for uri in lora_list:
     if uri != '':
         downlaod_model(uri)
 
-os.makedirs(f"{model_storage_dir}/controlnet",exist_ok=True)
-os.chdir(f"{model_storage_dir}/controlnet")    
+prepare_folder("controlnet")
 controlnet_list = os.environ.get('CONTROLNET_LIST', "").split(',')
 for uri in controlnet_list:
     if uri != '':
         downlaod_model(uri)
 
-os.makedirs(f"{model_storage_dir}/vae",exist_ok=True)
-os.chdir(f"{model_storage_dir}/vae")    
+prepare_folder("vae")
 vae_list = os.environ.get('VAE_LIST', "").split(',')
 for uri in vae_list:
     if uri != '':
         downlaod_model(uri)
         
-os.makedirs(f"{model_storage_dir}/embedding",exist_ok=True)
-os.chdir(f"{model_storage_dir}/embedding")    
+prepare_folder("embedding") 
 embedding_list = os.environ.get('EMBEDDING_LIST', "").split(',')
 for uri in embedding_list:
     if uri != '':

@@ -1,10 +1,19 @@
 #!/bin/bash
+set -e
 
+current_dir=$(dirname "$(realpath "$0")")
+source $current_dir/../log.sh
+source $current_dir/../helper.sh
+
+# Set up a trap to call the error_exit function on ERR signal
+trap 'error_exit "### ERROR ###"' ERR
+
+echo "### Setting up Model Download ###"
 if ! dpkg -s aria2 >/dev/null 2>&1; then
     apt-get install -qq aria2 -y > /dev/null
 fi
 
-MODULES=("requests" "gdown" "bs4")
+MODULES=("requests" "gdown" "bs4" "python-dotenv")
 # Loop through the modules and check if they are installed
 for module in "${MODULES[@]}"; do
     if ! pip show $module >/dev/null 2>&1; then
@@ -14,4 +23,13 @@ for module in "${MODULES[@]}"; do
     fi
 done
 
-python $(dirname "$(realpath "$0")")/download_model.py
+if ! [ -v "MODEL_DIR" ]; then
+    source $current_dir/../../.env
+    export MODEL_DIR="$DATA_DIR/stable-diffusion-models"
+fi
+env | grep -v '^_' | sed 's/\([^=]*\)=\(.*\)/\1='\''\2'\''/' > $current_dir/.env
+
+echo "### Starting Model Download ###"
+
+python $current_dir/download_model.py
+echo "### Finished Model Download ###"
