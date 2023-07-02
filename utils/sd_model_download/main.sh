@@ -32,7 +32,7 @@ if ! [ -v "MODEL_LIST" ]; then
     env | grep -v '^_' | sed 's/\([^=]*\)=\(.*\)/\1='\''\2'\''/' > $current_dir/.env
 fi
 
-echo "### Starting Model Download ###"
+echo "### Downloading Models ###"
 
 python $current_dir/download_model.py
 echo "### Finished Model Download ###"

@@ -15,6 +15,7 @@ if ! [ -v "MODEL_DIR" ]; then
     export MODEL_DIR="$DATA_DIR/llm-models"
 fi
 
+echo "### Downloading Models ###"
 IFS=',' read -ra models <<< "$LLM_MODEL_TO_DOWNLOAD"
 for model in "${models[@]}"
 do
