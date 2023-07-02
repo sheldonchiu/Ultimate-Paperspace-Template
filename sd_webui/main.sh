@@ -75,6 +75,7 @@ log "Finished Downloading Models for Stable Diffusion WebUI"
 
 echo "### Starting Stable Diffusion WebUI ###"
 log "Starting Stable Diffusion WebUI"
+cd $REPO_DIR
 PYTHONUNBUFFERED=1 nohup python webui.py  --port SD_WEBUI_PORT --enable-insecure-extension-access ${EXTRA_SD_WEBUI_ARGS} > $LOG_DIR/sd_webui.log 2>&1 &
 echo $! > /tmp/sd_webui.pid
 
