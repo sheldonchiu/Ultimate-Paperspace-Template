@@ -34,10 +34,13 @@ symlinks=(
     "$MODEL_DIR/lora:$LINK_LORA_TO"
     "$MODEL_DIR/vae:$LINK_VAE_TO"
     "$MODEL_DIR/hypernetwork:$LINK_HYPERNETWORK_TO"
-    "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
+    # "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
     "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
 )
 bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
+
+#Prepare the controlnet model dir
+cp $LINK_CONTROLNET_TO/*.yaml $MODEL_DIR/controlnet/
 if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     
     python3.10 -m venv /tmp/sd_webui-env
@@ -80,7 +83,7 @@ auth=""
 if [[ -n "${SD_WEBUI_GRADIO_AUTH}" ]]; then
   auth="--gradio-auth ${SD_WEBUI_GRADIO_AUTH}"
 fi
-PYTHONUNBUFFERED=1 nohup python webui.py --xformers --port $SD_WEBUI_PORT $auth --enable-insecure-extension-access ${EXTRA_SD_WEBUI_ARGS} > $LOG_DIR/sd_webui.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup python webui.py --xformers --port $SD_WEBUI_PORT $auth --controlnet-dir $MODEL_DIR/controlnet/ --enable-insecure-extension-access ${EXTRA_SD_WEBUI_ARGS} > $LOG_DIR/sd_webui.log 2>&1 &
 echo $! > /tmp/sd_webui.pid
 
 send_to_discord "Stable Diffusion WebUI Started"
