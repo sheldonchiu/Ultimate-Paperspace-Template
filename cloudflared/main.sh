@@ -40,7 +40,7 @@ if [[ $CF_TOKEN == "quick" ]]; then
         if [[ $port == "" ]]; then
             continue
         fi
-        metrics_port=$((port+1))
+        metrics_port=$((port-1000))
 
         # Generate PID file and log file names using a different delimiter
         pidfile="/tmp/cloudflared_${name}.pid"
