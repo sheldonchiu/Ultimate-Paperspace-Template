@@ -81,7 +81,7 @@ other_commands: |-
 
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7009}
   export {{ name|upper }}_OPENAI_API_PORT=${{ '{' ~ name|upper }}_OPENAI_API_PORT:-7013}
-  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT:{{ name|upper }}_OPENAI_API_PORT"
+  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT:${{ name|upper }}_OPENAI_API_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}:{{ name }}_openai_api"
   export HUGGINGFACE_TOKEN=$HF_TOKEN
 
