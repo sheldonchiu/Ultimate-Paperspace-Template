@@ -40,7 +40,7 @@ symlinks=(
 bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
 
 #Prepare the controlnet model dir
-mkdir $MODEL_DIR/controlnet/
+mkdir -p $MODEL_DIR/controlnet/
 cp $LINK_CONTROLNET_TO/*.yaml $MODEL_DIR/controlnet/
 if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     
