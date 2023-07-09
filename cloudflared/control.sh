@@ -14,7 +14,9 @@ if [[ $1 == "reload" ]]; then
     log "Reloading Cloudflare Tunnel"
     
     # Kill all and restart is not a good idea, only start tunnel if it's not running
-    bash main.sh
+    if [[ $CF_TOKEN == "quick" ]]; then
+      bash main.sh
+    fi
     
 elif [[ $1 == "start" ]]; then
     log "Starting Cloudflare Tunnel"

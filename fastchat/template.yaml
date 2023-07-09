@@ -1,6 +1,7 @@
 title: FastChat
 name: fastchat
 use_python: true
+expose: true
 
 prepare_repo: ""
 prepare_env: |-

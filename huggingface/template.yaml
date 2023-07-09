@@ -1,6 +1,7 @@
 title: HuggingFace Hub
 name: huggingface
 use_python: true
+expose: false
 
 prepare_repo: ""
 prepare_env: "pip install --upgrade huggingface_hub"

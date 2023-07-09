@@ -1,6 +1,7 @@
 title: Text generation Webui
 name: textgen
 use_python: true
+expose: true
 
 prepare_repo: |-
   # Remove stale symlink to avoid pull conflicts

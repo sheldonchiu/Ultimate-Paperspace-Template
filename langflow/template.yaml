@@ -1,6 +1,7 @@
 title: Langflow
 name: langflow
 use_python: true
+expose: true
 
 prepare_repo: ""
 

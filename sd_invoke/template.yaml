@@ -1,6 +1,7 @@
 title: Stable Diffusion InvokeAI
 name: sd_invoke
 use_python: true
+expose: true
 
 prepare_repo: |-
   mkdir -p $INVOKEAI_ROOT

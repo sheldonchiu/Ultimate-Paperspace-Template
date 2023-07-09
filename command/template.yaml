@@ -1,6 +1,7 @@
 title: Command Server
 name: command
 use_python: true
+expose: true
 
 prepare_env: "pip install fastapi uvicorn[standard] psutil"
 

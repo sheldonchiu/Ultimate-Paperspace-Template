@@ -1,6 +1,7 @@
 title: Stable Diffusion WebUI
 name: sd_webui
 use_python: true
+expose: true
 
 prepare_repo: |-
   TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \

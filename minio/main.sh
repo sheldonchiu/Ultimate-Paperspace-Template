@@ -46,6 +46,4 @@ fi
 
 send_to_discord "Minio Started"
 
-bash $current_dir/../cloudflare_reload.sh
-
 echo "### Done ###"

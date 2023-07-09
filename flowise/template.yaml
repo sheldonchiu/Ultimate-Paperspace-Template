@@ -1,6 +1,7 @@
 title: Flowise
 name: flowise
 use_python: false
+expose: true
 
 prepare_repo: ""
 

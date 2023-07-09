@@ -1,6 +1,7 @@
 title: Stable Diffusion Volta
 name: sd_volta
 use_python: true
+expose: true
 
 prepare_repo: |-
   TARGET_REPO_URL="https://github.com/VoltaML/voltaML-fast-stable-diffusion.git" \

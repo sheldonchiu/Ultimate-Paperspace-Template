@@ -38,6 +38,4 @@ python $current_dir/upload.py
 
 send_to_discord "HuggingFace Hub Started"
 
-bash $current_dir/../cloudflare_reload.sh
-
 echo "### Done ###"

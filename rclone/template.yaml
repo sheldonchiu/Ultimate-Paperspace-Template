@@ -1,6 +1,7 @@
 title: Rclone
 name: rclone
 use_python: False
+expose: true
 
 prepare_repo: ""
 prepare_env: |-
