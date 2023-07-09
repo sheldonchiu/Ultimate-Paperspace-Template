@@ -57,4 +57,5 @@ echo $! > /tmp/image_browser.pid
 send_to_discord "Image Browser Started"
 
 bash $current_dir/../cloudflare_reload.sh
+
 echo "### Done ###"

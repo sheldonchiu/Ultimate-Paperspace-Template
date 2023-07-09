@@ -46,6 +46,7 @@ log "Starting {{ title }}"
 {{ start }}
 
 send_to_discord "{{ title }} Started"
-
+{% if name != "cloudflared" %}
 bash $current_dir/../cloudflare_reload.sh
+{% endif %}
 echo "### Done ###"

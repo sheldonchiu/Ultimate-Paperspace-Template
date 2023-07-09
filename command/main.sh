@@ -40,4 +40,5 @@ echo $! > /tmp/command.pid
 send_to_discord "Command Server Started"
 
 bash $current_dir/../cloudflare_reload.sh
+
 echo "### Done ###"

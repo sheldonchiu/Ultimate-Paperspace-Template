@@ -35,4 +35,5 @@ echo $! > /tmp/rclone.pid
 send_to_discord "Rclone Started"
 
 bash $current_dir/../cloudflare_reload.sh
+
 echo "### Done ###"
