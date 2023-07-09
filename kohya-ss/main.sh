@@ -51,4 +51,6 @@ PYTHONUNBUFFERED=1 nohup python kohya_gui.py --headless --server_port=$KOHYA_SS_
 echo $! > /tmp/kohya_ss.pid
 
 send_to_discord "Kohya SD Trainer Started"
+
+bash $current_dir/../cloudflare_reload.sh
 echo "### Done ###"

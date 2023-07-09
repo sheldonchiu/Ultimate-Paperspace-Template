@@ -46,4 +46,6 @@ log "Starting {{ title }}"
 {{ start }}
 
 send_to_discord "{{ title }} Started"
+
+bash $current_dir/../cloudflare_reload.sh
 echo "### Done ###"

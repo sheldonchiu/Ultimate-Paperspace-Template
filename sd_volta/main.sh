@@ -61,4 +61,6 @@ PYTHONUNBUFFERED=1 nohup python main.py --port SD_VOLTA_PORT ${EXTRA_SD_VOLTA_AR
 echo $! > /tmp/sd_volta.pid
 
 send_to_discord "Stable Diffusion Volta Started"
+
+bash $current_dir/../cloudflare_reload.sh
 echo "### Done ###"

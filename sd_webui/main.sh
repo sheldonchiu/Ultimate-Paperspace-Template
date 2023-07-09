@@ -88,4 +88,6 @@ PYTHONUNBUFFERED=1 nohup python webui.py --xformers --port $SD_WEBUI_PORT $auth 
 echo $! > /tmp/sd_webui.pid
 
 send_to_discord "Stable Diffusion WebUI Started"
+
+bash $current_dir/../cloudflare_reload.sh
 echo "### Done ###"
