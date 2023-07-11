@@ -14,7 +14,9 @@ log "Setting up Langflow"
 
 if ! [[ -e "/tmp/langflow.prepared" ]]; then
     
+    
     python3.10 -m venv /tmp/langflow-env
+    
     source /tmp/langflow-env/bin/activate
 
     pip install --upgrade pip

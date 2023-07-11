@@ -14,7 +14,9 @@ log "Setting up HuggingFace Hub"
 
 if ! [[ -e "/tmp/huggingface.prepared" ]]; then
     
-    python3.10 -m venv /tmp/huggingface-env
+    
+    python3 -m venv /tmp/huggingface-env
+    
     source /tmp/huggingface-env/bin/activate
 
     pip install --upgrade pip

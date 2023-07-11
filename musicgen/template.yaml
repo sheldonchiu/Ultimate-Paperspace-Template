@@ -1,6 +1,7 @@
 title: Musicgen
 name: musicgen
 use_python: true
+python_version: 10
 
 prepare_repo: |-
   TARGET_REPO_DIR=$REPO_DIR \

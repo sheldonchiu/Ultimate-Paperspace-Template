@@ -19,7 +19,9 @@ UPDATE_REPO_COMMIT=$KOHYA_SS_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh
 if ! [[ -e "/tmp/kohya_ss.prepared" ]]; then
     
-    python3.10 -m venv /tmp/kohya_ss-env
+    
+    python3 -m venv /tmp/kohya_ss-env
+    
     source /tmp/kohya_ss-env/bin/activate
 
     pip install --upgrade pip

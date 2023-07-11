@@ -28,7 +28,9 @@ symlinks=(
 bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
 if ! [[ -e "/tmp/sd_volta.prepared" ]]; then
     
+    
     python3.10 -m venv /tmp/sd_volta-env
+    
     source /tmp/sd_volta-env/bin/activate
 
     pip install --upgrade pip

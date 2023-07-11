@@ -19,7 +19,9 @@ UPDATE_REPO_COMMIT=$MUSICGEN_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh
 if ! [[ -e "/tmp/musicgen.prepared" ]]; then
     
+    
     python3.10 -m venv /tmp/musicgen-env
+    
     source /tmp/musicgen-env/bin/activate
 
     pip install --upgrade pip

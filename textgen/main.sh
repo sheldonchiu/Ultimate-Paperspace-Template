@@ -22,7 +22,9 @@ UPDATE_REPO_COMMIT=$TEXTGEN_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh
 if ! [[ -e "/tmp/textgen.prepared" ]]; then
     
+    
     python3.10 -m venv /tmp/textgen-env
+    
     source /tmp/textgen-env/bin/activate
 
     pip install --upgrade pip

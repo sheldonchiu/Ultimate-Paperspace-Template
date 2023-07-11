@@ -17,7 +17,9 @@ UPDATE_REPO="auto" \
 bash $current_dir/../utils/prepare_repo.sh
 if ! [[ -e "/tmp/image_browser.prepared" ]]; then
     
-    python3.10 -m venv /tmp/image_browser-env
+    
+    python3 -m venv /tmp/image_browser-env
+    
     source /tmp/image_browser-env/bin/activate
 
     pip install --upgrade pip

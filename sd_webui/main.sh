@@ -43,7 +43,9 @@ bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
 cp $LINK_CONTROLNET_TO/*.yaml $MODEL_DIR/controlnet/
 if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     
+    
     python3.10 -m venv /tmp/sd_webui-env
+    
     source /tmp/sd_webui-env/bin/activate
 
     pip install --upgrade pip

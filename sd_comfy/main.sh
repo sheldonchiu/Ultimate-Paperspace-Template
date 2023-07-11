@@ -32,7 +32,9 @@ symlinks=(
 bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
 if ! [[ -e "/tmp/sd_comfy.prepared" ]]; then
     
+    
     python3.10 -m venv /tmp/sd_comfy-env
+    
     source /tmp/sd_comfy-env/bin/activate
 
     pip install --upgrade pip

@@ -14,7 +14,9 @@ log "Setting up FastChat"
 
 if ! [[ -e "/tmp/fastchat.prepared" ]]; then
     
+    
     python3.10 -m venv /tmp/fastchat-env
+    
     source /tmp/fastchat-env/bin/activate
 
     pip install --upgrade pip

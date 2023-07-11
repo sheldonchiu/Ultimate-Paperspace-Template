@@ -1,6 +1,7 @@
 title: Stable Diffusion Comfy
 name: sd_comfy
 use_python: true
+python_version: 10
 
 prepare_repo: |-
 

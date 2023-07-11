@@ -1,6 +1,7 @@
 title: Langflow
 name: langflow
 use_python: true
+python_version: 10
 
 prepare_repo: ""
 

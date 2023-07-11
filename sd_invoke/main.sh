@@ -24,7 +24,9 @@ symlinks=(
 bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
 if ! [[ -e "/tmp/sd_invoke.prepared" ]]; then
     
+    
     python3.10 -m venv /tmp/sd_invoke-env
+    
     source /tmp/sd_invoke-env/bin/activate
 
     pip install --upgrade pip

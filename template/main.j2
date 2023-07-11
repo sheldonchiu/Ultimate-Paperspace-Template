@@ -14,7 +14,11 @@ log "Setting up {{ title }}"
 {{ prepare_repo }}
 if ! [[ -e "/tmp/{{ name }}.prepared" ]]; then
     {% if use_python %}
-    python3.10 -m venv /tmp/{{ name }}-env
+    {% if python_version %}
+    python3.{{ python_version }} -m venv /tmp/{{ name }}-env
+    {% else %}
+    python3 -m venv /tmp/{{ name }}-env
+    {% endif %}
     source /tmp/{{ name }}-env/bin/activate
 
     pip install --upgrade pip

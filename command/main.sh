@@ -14,7 +14,9 @@ log "Setting up Command Server"
 
 if ! [[ -e "/tmp/command.prepared" ]]; then
     
-    python3.10 -m venv /tmp/command-env
+    
+    python3 -m venv /tmp/command-env
+    
     source /tmp/command-env/bin/activate
 
     pip install --upgrade pip
