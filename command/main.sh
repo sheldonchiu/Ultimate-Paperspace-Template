@@ -40,4 +40,7 @@ PYTHONUNBUFFERED=1 nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > 
 echo $! > /tmp/command.pid
 
 send_to_discord "Command Server Started"
+
+bash $current_dir/../cloudflare_reload.sh
+
 echo "### Done ###"

@@ -33,4 +33,7 @@ rclone serve $RCLONE_SERVE_PROTOCOL --addr :$RCLONE_PORT --copy-links --user $RC
 echo $! > /tmp/rclone.pid
 
 send_to_discord "Rclone Started"
+
+bash $current_dir/../cloudflare_reload.sh
+
 echo "### Done ###"

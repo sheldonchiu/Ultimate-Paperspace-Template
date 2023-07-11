@@ -1,6 +1,7 @@
 title: Minio
 name: minio
 use_python: False
+expose: false
 
 prepare_env: |-
   curl https://dl.min.io/client/mc/release/linux-amd64/mc \

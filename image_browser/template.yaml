@@ -1,6 +1,7 @@
 title: Image Browser
 name: image_browser
 use_python: true
+expose: true
 
 prepare_repo: |-
   TARGET_REPO_URL="https://github.com/zanllp/sd-webui-infinite-image-browsing.git" \

@@ -45,4 +45,5 @@ else
 fi
 
 send_to_discord "Minio Started"
+
 echo "### Done ###"

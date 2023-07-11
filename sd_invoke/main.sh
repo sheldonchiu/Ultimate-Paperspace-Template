@@ -61,4 +61,7 @@ PYTHONUNBUFFERED=1 nohup invokeai --web --port SD_INVOKE_PORT --autoconvert $MOD
 echo $! > /tmp/sd_invoke.pid
 
 send_to_discord "Stable Diffusion InvokeAI Started"
+
+bash $current_dir/../cloudflare_reload.sh
+
 echo "### Done ###"

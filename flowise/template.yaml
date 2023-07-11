@@ -1,6 +1,7 @@
 title: Flowise
 name: flowise
 use_python: false
+expose: true
 
 prepare_repo: ""
 
@@ -28,5 +29,5 @@ export_required_env: |-
 other_commands: |-
 
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7010}
-  export EXPOSE_PORTS="$EXPOSE_PORTS:{{ name|upper }}_PORT"
+  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"

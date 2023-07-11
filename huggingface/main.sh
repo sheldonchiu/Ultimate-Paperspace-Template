@@ -39,4 +39,5 @@ log "Starting HuggingFace Hub"
 python $current_dir/upload.py
 
 send_to_discord "HuggingFace Hub Started"
+
 echo "### Done ###"

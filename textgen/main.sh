@@ -82,6 +82,7 @@ log "Finished Downloading Models for Text generation Webui"
 echo "### Starting Text generation Webui ###"
 log "Starting Text generation Webui"
 cd $REPO_DIR
+share_args="--chat --listen-port $TEXTGEN_PORT --xformers ${EXTRA_TEXTGEN_ARGS}"
 if [ -v TEXTGEN_ENABLE_OPENAI_API ] && [ ! -z "$TEXTGEN_ENABLE_OPENAI_API" ];then
   loader_arg=""
   if echo "$TEXTGEN_OPENAI_MODEL" | grep -q "GPTQ"; then
@@ -90,11 +91,14 @@ if [ -v TEXTGEN_ENABLE_OPENAI_API ] && [ ! -z "$TEXTGEN_ENABLE_OPENAI_API" ];the
   if echo "$TEXTGEN_OPENAI_MODEL" | grep -q "LongChat"; then
     loader_arg+=" --max_seq_len 8192 --compress_pos_emb 4"
   fi
-  PYTHONUNBUFFERED=1 OPENEDAI_PORT=7013 nohup python server.py --listen-port $TEXTGEN_PORT --xformers --model $TEXTGEN_OPENAI_MODEL $loader_arg --extensions openai ${EXTRA_TEXTGEN_ARGS} > $LOG_DIR/textgen.log 2>&1 &
+  PYTHONUNBUFFERED=1 OPENEDAI_PORT=7013 nohup python server.py --model $TEXTGEN_OPENAI_MODEL $loader_arg --extensions openai $share_args > $LOG_DIR/textgen.log 2>&1 &
 else
-  PYTHONUNBUFFERED=1 nohup python server.py  --listen-port $TEXTGEN_PORT --xformers --chat ${EXTRA_TEXTGEN_ARGS} > $LOG_DIR/textgen.log 2>&1 &
+  PYTHONUNBUFFERED=1 nohup python server.py  $share_args > $LOG_DIR/textgen.log 2>&1 &
 fi
 echo $! > /tmp/textgen.pid
 
 send_to_discord "Text generation Webui Started"
+
+bash $current_dir/../cloudflare_reload.sh
+
 echo "### Done ###"

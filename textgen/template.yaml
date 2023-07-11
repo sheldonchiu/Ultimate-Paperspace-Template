@@ -1,7 +1,11 @@
 title: Text generation Webui
 name: textgen
 use_python: true
+<<<<<<< HEAD
 python_version: 10
+=======
+expose: true
+>>>>>>> 1ebb3c657514d6b6b4c71ea4a0c9749774679037
 
 prepare_repo: |-
   # Remove stale symlink to avoid pull conflicts
@@ -56,6 +60,7 @@ action_before_start: ""
 
 start: |-
   cd $REPO_DIR
+  share_args="--chat --listen-port ${{ name|upper }}_PORT --xformers ${EXTRA_{{ name|upper }}_ARGS}"
   if [ -v {{ name|upper }}_ENABLE_OPENAI_API ] && [ ! -z "${{ name|upper }}_ENABLE_OPENAI_API" ];then
     loader_arg=""
     if echo "${{ name|upper }}_OPENAI_MODEL" | grep -q "GPTQ"; then
@@ -64,9 +69,9 @@ start: |-
     if echo "${{ name|upper }}_OPENAI_MODEL" | grep -q "LongChat"; then
       loader_arg+=" --max_seq_len 8192 --compress_pos_emb 4"
     fi
-    PYTHONUNBUFFERED=1 OPENEDAI_PORT=7013 nohup python server.py --listen-port ${{ name|upper }}_PORT --xformers --model ${{ name|upper }}_OPENAI_MODEL $loader_arg --extensions openai ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+    PYTHONUNBUFFERED=1 OPENEDAI_PORT=7013 nohup python server.py --model ${{ name|upper }}_OPENAI_MODEL $loader_arg --extensions openai $share_args > $LOG_DIR/{{ name }}.log 2>&1 &
   else
-    PYTHONUNBUFFERED=1 nohup python server.py  --listen-port ${{ name|upper }}_PORT --xformers --chat ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+    PYTHONUNBUFFERED=1 nohup python server.py  $share_args > $LOG_DIR/{{ name }}.log 2>&1 &
   fi
   echo $! > /tmp/{{ name }}.pid
 
@@ -81,7 +86,7 @@ other_commands: |-
 
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7009}
   export {{ name|upper }}_OPENAI_API_PORT=${{ '{' ~ name|upper }}_OPENAI_API_PORT:-7013}
-  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT:{{ name|upper }}_OPENAI_API_PORT"
+  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT:${{ name|upper }}_OPENAI_API_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}:{{ name }}_openai_api"
   export HUGGINGFACE_TOKEN=$HF_TOKEN
 

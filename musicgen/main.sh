@@ -48,4 +48,7 @@ PYTHONUNBUFFERED=1 nohup python app.py --server_port MUSICGEN_PORT  ${EXTRA_MUSI
 echo $! > /tmp/musicgen.pid
 
 send_to_discord "Musicgen Started"
+
+bash $current_dir/../cloudflare_reload.sh
+
 echo "### Done ###"

@@ -1,7 +1,11 @@
 title: Stable Diffusion WebUI
 name: sd_webui
 use_python: true
+<<<<<<< HEAD
 python_version: 10
+=======
+expose: true
+>>>>>>> 1ebb3c657514d6b6b4c71ea4a0c9749774679037
 
 prepare_repo: |-
   TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \
@@ -33,6 +37,7 @@ prepare_repo: |-
   bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
   
   #Prepare the controlnet model dir
+  mkdir -p $MODEL_DIR/controlnet/
   cp $LINK_CONTROLNET_TO/*.yaml $MODEL_DIR/controlnet/
 
 prepare_env: |-

@@ -67,4 +67,7 @@ PYTHONUNBUFFERED=1 nohup python main.py --dont-print-server --port $SD_COMFY_POR
 echo $! > /tmp/sd_comfy.pid
 
 send_to_discord "Stable Diffusion Comfy Started"
+
+bash $current_dir/../cloudflare_reload.sh
+
 echo "### Done ###"

@@ -40,6 +40,7 @@ symlinks=(
 bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
 
 #Prepare the controlnet model dir
+mkdir -p $MODEL_DIR/controlnet/
 cp $LINK_CONTROLNET_TO/*.yaml $MODEL_DIR/controlnet/
 if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     
@@ -89,4 +90,7 @@ PYTHONUNBUFFERED=1 nohup python webui.py --xformers --port $SD_WEBUI_PORT $auth 
 echo $! > /tmp/sd_webui.pid
 
 send_to_discord "Stable Diffusion WebUI Started"
+
+bash $current_dir/../cloudflare_reload.sh
+
 echo "### Done ###"

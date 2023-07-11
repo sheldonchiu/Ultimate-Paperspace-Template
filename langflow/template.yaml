@@ -1,7 +1,11 @@
 title: Langflow
 name: langflow
 use_python: true
+<<<<<<< HEAD
 python_version: 10
+=======
+expose: true
+>>>>>>> 1ebb3c657514d6b6b4c71ea4a0c9749774679037
 
 prepare_repo: ""
 
@@ -27,5 +31,5 @@ export_required_env: ""
 other_commands: |-
   export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/langflow"}
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7011}
-  export EXPOSE_PORTS="$EXPOSE_PORTS:{{ name|upper }}_PORT"
+  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"

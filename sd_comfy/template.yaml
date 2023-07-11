@@ -1,7 +1,11 @@
 title: Stable Diffusion Comfy
 name: sd_comfy
 use_python: true
+<<<<<<< HEAD
 python_version: 10
+=======
+expose: true
+>>>>>>> 1ebb3c657514d6b6b4c71ea4a0c9749774679037
 
 prepare_repo: |-
 

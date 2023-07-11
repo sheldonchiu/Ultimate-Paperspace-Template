@@ -57,4 +57,7 @@ PYTHONUNBUFFERED=1 nohup python $REPO_DIR/app.py --port=$IMAGE_BROWSER_PORT ${EX
 echo $! > /tmp/image_browser.pid
 
 send_to_discord "Image Browser Started"
+
+bash $current_dir/../cloudflare_reload.sh
+
 echo "### Done ###"

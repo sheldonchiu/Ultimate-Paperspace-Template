@@ -1,6 +1,7 @@
 title: Cloudflare Tunnel
 name: cloudflared
-use_python: False
+use_python: false
+expose: false
 
 prepare_env: |-
   cd /tmp
@@ -18,7 +19,7 @@ start: |-
             if [[ $port == "" ]]; then
                 continue
             fi
-            metrics_port=$((port+1))
+            metrics_port=$((port-1000))
 
             # Generate PID file and log file names using a different delimiter
             pidfile="/tmp/cloudflared_${name}.pid"
@@ -66,7 +67,9 @@ start: |-
 custom_start: ""
 custom_reload: |-
       # Kill all and restart is not a good idea, only start tunnel if it's not running
-      bash main.sh
+      if [[ $CF_TOKEN == "quick" ]]; then
+        bash main.sh
+      fi
 custom_stop: |-
       if [[ -n $2 ]]; then
           log "Stopping Cloudflare tunnel for $2"
