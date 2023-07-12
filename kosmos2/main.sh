@@ -67,7 +67,7 @@ log "Downloading Model for Kosmos2"
 # Prepare model dir and link it under the models folder inside the repo
 mkdir -p $MODEL_DIR
 cd $MODEL_DIR
-aria2c --file-allocation=none -c -x 16 -s 16 --summary-interval=0 --console-log-level=warn --continue  --out=kosmos-2.pt "https://huggingface.co/sheldonxxxx/kosmos-2/resolve/main/kosmos-2.pt"
+aria2c --file-allocation=none -c -x 16 -s 16 --summary-interval=0 --console-log-level=warn --continue  --out=kosmos-2.pt "https://huggingface.co/sheldonxxxx/kosmos-2/resolve/main/kosmos-2-min.pt"
 log "Finished Downloading Models for Kosmos2"
 
 
