@@ -147,3 +147,9 @@ embedding_list = os.environ.get('EMBEDDING_LIST', "").split(',')
 for uri in embedding_list:
     if uri != '':
         downlaod_model(uri)
+        
+prepare_folder("upscaler") 
+upscaler_list = os.environ.get('UPSCALER_LIST', "").split(',')
+for uri in upscaler_list:
+    if uri != '':
+        downlaod_model(uri)
