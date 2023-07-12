@@ -32,7 +32,7 @@ custom_stop: ""
 
 export_required_env: ""
 other_commands: |-
-  export REPO_DIR=${ {{ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/audiocraft"}
+  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/audiocraft"}
 
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7003}
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
