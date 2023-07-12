@@ -14,14 +14,13 @@ log "Setting up Kosmos2"
 TARGET_REPO_DIR=$REPO_DIR \
 TARGET_REPO_BRANCH="master" \
 TARGET_REPO_URL="https://github.com/microsoft/unilm.git" \
-UPDATE_REPO=$KOSMOS2_UPDATE_REPO \
-UPDATE_REPO_COMMIT=$KOSMOS2_UPDATE_REPO_COMMIT \
+UPDATE_REPO="auto" \
 bash $current_dir/../utils/prepare_repo.sh
 
 TARGET_REPO_DIR=/tmp/apex \
 TARGET_REPO_BRANCH="master" \
 TARGET_REPO_URL="https://github.com/NVIDIA/apex.git" \
-UPDATE_REPO=1 \
+UPDATE_REPO="auto" \
 bash $current_dir/../utils/prepare_repo.sh  
 if ! [[ -e "/tmp/kosmos2.prepared" ]]; then
     
