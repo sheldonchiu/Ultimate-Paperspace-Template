@@ -66,6 +66,7 @@ log "Downloading Model for Kosmos2"
 
 # Prepare model dir and link it under the models folder inside the repo
 mkdir -p $MODEL_DIR
+cd $MODEL_DIR
 aria2c --file-allocation=none -c -x 16 -s 16 --summary-interval=0 --console-log-level=warn --continue  --out=kosmos-2.pt "https://huggingface.co/sheldonxxxx/kosmos-2/resolve/main/kosmos-2.pt"
 log "Finished Downloading Models for Kosmos2"
 
@@ -73,7 +74,7 @@ log "Finished Downloading Models for Kosmos2"
 echo "### Starting Kosmos2 ###"
 log "Starting Kosmos2"
 
-cd $REPO_DIR
+cd $REPO_DIR/kosmos-2
 model_path=$MODEL_DIR/kosmos-2.pt
 
 master_port=$((RANDOM%1000+20000))
