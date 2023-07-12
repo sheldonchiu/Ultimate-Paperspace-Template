@@ -1,0 +1,91 @@
+title: Kosmos2
+name: kosmos2
+use_python: true
+expose: true
+
+prepare_repo: |-
+  TARGET_REPO_DIR=$REPO_DIR \
+  TARGET_REPO_BRANCH="master" \
+  TARGET_REPO_URL="https://github.com/microsoft/unilm.git" \
+  UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
+  UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
+  bash $current_dir/../utils/prepare_repo.sh
+
+  TARGET_REPO_DIR=/tmp/apex \
+  TARGET_REPO_BRANCH="master" \
+  TARGET_REPO_URL="https://github.com/NVIDIA/apex.git" \
+  UPDATE_REPO=1 \
+  bash $current_dir/../utils/prepare_repo.sh  
+
+prepare_env: |-
+  cd $REPO_DIR/kosmos-2
+
+  pip install fairseq/
+  pip install infinibatch/
+  pip install ftfy
+  pip install -e torchscale
+  pip install -e open_clip
+  pip install  git+https://github.com/microsoft/DeepSpeed.git@jeffra/engine-xthru-v2
+  pip install tiktoken
+  pip install sentencepiece
+
+  pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu116
+  pip install xformers==0.0.16
+  pip install gradio numpy==1.22.2 scipy opencv-python protobuf==3.20.1 pytorch-extension
+
+  cd /tmp/apex
+  pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --config-settings "--build-option=--cpp_ext" --config-settings "--build-option=--cuda_ext" ./
+  cd $REPO_DIR
+download_model: |-
+
+  # Prepare model dir and link it under the models folder inside the repo
+  mkdir -p $MODEL_DIR
+  aria2c --file-allocation=none -c -x 16 -s 16 --summary-interval=0 --console-log-level=warn --continue  --out=kosmos-2.pt "https://huggingface.co/sheldonxxxx/kosmos-2/resolve/main/kosmos-2.pt"
+
+action_before_start: ""
+
+start: |-
+
+  cd $REPO_DIR
+  model_path=$MODEL_DIR/kosmos-2.pt
+
+  master_port=$((RANDOM%1000+20000))
+
+  CUDA_LAUNCH_BLOCKING=1 CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --master_port=$master_port --nproc_per_node=1 demo/gradio_app.py None \
+      --task generation_obj \
+      --path $model_path \
+      --model-overrides "{'visual_pretrained': '',
+              'dict_path':'data/dict.txt'}" \
+      --dict-path 'data/dict.txt' \
+      --required-batch-size-multiple 1 \
+      --remove-bpe=sentencepiece \
+      --max-len-b 500 \
+      --add-bos-token \
+      --beam 1 \
+      --buffer-size 1 \
+      --image-feature-length 64 \
+      --locate-special-token 1 \
+      --batch-size 1 \
+      --nbest 1 \
+      --no-repeat-ngram-size 3 \
+      --location-bin-size 32 > $LOG_DIR/{{ name }}.log 2>&1 &
+
+  echo $! > /tmp/{{ name }}.pid
+
+custom_start: ""
+
+custom_reload: ""
+
+custom_stop: ""
+
+export_required_env: ""
+
+other_commands: |-
+
+  export MODEL_DIR=${{ '{' ~ name|upper }}_MODEL_DIR:-"$DATA_DIR/kosmos-2"}
+  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/unilm"}
+  export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7014}
+  export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT:"
+  export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
+
+  export GRADIO_SERVER_PORT=${{ name|upper }}_PORT
