@@ -50,6 +50,7 @@ if ! [[ -e "/tmp/kosmos2.prepared" ]]; then
 
     cd /tmp/apex
     gpu_name=$(nvidia-smi --query-gpu=gpu_name --format=csv,noheader,nounits)
+    gpu_name=$(echo $gpu_name | sed 's/ //g')
     case $gpu_name in
       *A4000*)
         pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
@@ -61,7 +62,7 @@ if ! [[ -e "/tmp/kosmos2.prepared" ]]; then
         wget -q https://huggingface.co/sheldonxxxx/apex-paperspace-binary/resolve/main/apex_p5000.tar.gz
         tar -xzf apex_p5000.tar.gz -C /tmp/kosmos2-env/lib/python3.9/site-packages/
         ;;
-      *RTX 5000*)
+      *RTX5000*)
         pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
         wget -q https://huggingface.co/sheldonxxxx/apex-paperspace-binary/resolve/main/apex_rtx5000.tar.gz
         tar -xzf apex_rtx5000.tar.gz -C /tmp/kosmos2-env/lib/python3.9/site-packages/
