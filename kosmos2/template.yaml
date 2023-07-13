@@ -46,6 +46,11 @@ prepare_env: |-
       wget -q https://huggingface.co/sheldonxxxx/apex-paperspace-binary/resolve/main/apex_p5000.tar.gz
       tar -xzf apex_p5000.tar.gz -C /tmp/{{ name }}-env/lib/python3.9/site-packages/
       ;;
+    *RTX 5000*)
+      pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
+      wget -q https://huggingface.co/sheldonxxxx/apex-paperspace-binary/resolve/main/apex_rtx5000.tar.gz
+      tar -xzf apex_rtx5000.tar.gz -C /tmp/{{ name }}-env/lib/python3.9/site-packages/
+      ;;
     *)
       echo "No apex binary for $gpu_name, building from source"
       pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --config-settings "--build-option=--cpp_ext" --config-settings "--build-option=--cuda_ext" ./
