@@ -20,7 +20,8 @@ bash $current_dir/../utils/prepare_repo.sh
 TARGET_REPO_DIR=/tmp/apex \
 TARGET_REPO_BRANCH="master" \
 TARGET_REPO_URL="https://github.com/NVIDIA/apex.git" \
-UPDATE_REPO="auto" \
+UPDATE_REPO="commit" \
+UPDATE_REPO_COMMIT="7b2e71b0d4013f8e2f9f1c8dd21980ff1d76f1b6" \
 bash $current_dir/../utils/prepare_repo.sh  
 if ! [[ -e "/tmp/kosmos2.prepared" ]]; then
     
@@ -48,7 +49,23 @@ if ! [[ -e "/tmp/kosmos2.prepared" ]]; then
     pip install gradio numpy==1.22.2 scipy opencv-python protobuf==3.20.1 pytorch-extension
 
     cd /tmp/apex
-    pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --config-settings "--build-option=--cpp_ext" --config-settings "--build-option=--cuda_ext" ./
+    gpu_name=$(nvidia-smi --query-gpu=gpu_name --format=csv,noheader,nounits)
+    case $gpu_name in
+      *A4000*)
+        pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
+        wget -q https://huggingface.co/sheldonxxxx/apex_paperspace_binary/resolve/main/apex_a4000.tar.gz
+        tar -xzf apex_a4000.tar.gz -C /tmp/kosmos2-env/lib/python3.9/site-packages/
+        ;;
+      *P5000*)
+        pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
+        wget -q https://huggingface.co/sheldonxxxx/apex_paperspace_binary/resolve/main/apex_p5000.tar.gz
+        tar -xzf apex_p5000.tar.gz -C /tmp/kosmos2-env/lib/python3.9/site-packages/
+        ;;
+      *)
+        echo "No apex binary for $gpu_name, building from source"
+        pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation --config-settings "--build-option=--cpp_ext" --config-settings "--build-option=--cuda_ext" ./
+        ;;
+    esac
     cd $REPO_DIR
     
     touch /tmp/kosmos2.prepared
