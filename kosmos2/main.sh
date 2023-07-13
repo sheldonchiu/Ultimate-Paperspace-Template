@@ -53,12 +53,12 @@ if ! [[ -e "/tmp/kosmos2.prepared" ]]; then
     case $gpu_name in
       *A4000*)
         pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
-        wget -q https://huggingface.co/sheldonxxxx/apex_paperspace_binary/resolve/main/apex_a4000.tar.gz
+        wget -q https://huggingface.co/sheldonxxxx/apex-paperspace-binary/resolve/main/apex_a4000.tar.gz
         tar -xzf apex_a4000.tar.gz -C /tmp/kosmos2-env/lib/python3.9/site-packages/
         ;;
       *P5000*)
         pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
-        wget -q https://huggingface.co/sheldonxxxx/apex_paperspace_binary/resolve/main/apex_p5000.tar.gz
+        wget -q https://huggingface.co/sheldonxxxx/apex-paperspace-binary/resolve/main/apex_p5000.tar.gz
         tar -xzf apex_p5000.tar.gz -C /tmp/kosmos2-env/lib/python3.9/site-packages/
         ;;
       *)
