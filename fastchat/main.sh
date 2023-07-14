@@ -22,7 +22,17 @@ if ! [[ -e "/tmp/fastchat.prepared" ]]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
     
-    pip3 install fschat bitsandbytes
+    pip3 install fschat bitsandbytes==0.38.0 safetensors==0.3.1
+
+    cd /tmp
+    TARGET_REPO_DIR=/tmp/GPTQ-for-LLaMa \
+    TARGET_REPO_BRANCH="fastest-inference-4bit" \
+    TARGET_REPO_URL="https://github.com/qwopqwop200/GPTQ-for-LLaMa.git" \
+    bash $current_dir/../utils/prepare_repo.sh
+
+    cd GPTQ-for-LLaMa
+    python3 setup_cuda.py install
+    pip3 install texttable
     
     touch /tmp/fastchat.prepared
 else
@@ -35,30 +45,30 @@ log "Finished Preparing Environment for FastChat"
 
 echo "### Downloading Model for FastChat ###"
 log "Downloading Model for FastChat"
+
 mkdir -p $MODEL_DIR
+bash $current_dir/../utils/llm_model_download.sh
+
 model_paths=""
-model_args = ()
+model_args=()
 IFS=',' read -ra models <<< "$FASTCHAT_MODEL"
 for model in "${models[@]}"
 do
-if [[ $model == "vicuna-7b" ]]; then
-    if [[ ! -d "/tmp/vicuna-7b-1.1" ]]; then
-        git clone https://huggingface.co/eachadea/vicuna-7b-1.1 /tmp/vicuna-7b-1.1
-    fi
-    model_paths="$model_paths,/tmp/vicuna-7b-1.1"
-    model_args += ("--load-8bit")
-elif [[ $model == "vicuna-13b" ]]; then
-    if [[ ! -d "/tmp/vicuna-13b-1.1" ]]; then
-        git clone https://huggingface.co/eachadea/vicuna-13b-1.1 /tmp/vicuna-13b-1.1
-    fi
-    model_paths="$model_paths,/tmp/vicuna-13b-1.1"
-    model_args += ("--load-8bit")
-elif [[ $model == "chatglm-6b" ]]; then
-    if [[ ! -d "/tmp/chatglm-6b" ]]; then
-        git clone https://huggingface.co/THUDM/chatglm-6b /tmp/chatglm-6b
-    fi
-    model_paths="$model_paths,/tmp/chatglm-6b"
-    model_args += ("")
+if [[ $model == "vicuna-13b" ]]; then
+    model_paths="$model_paths,$MODEL_DIR/TheBloke_vicuna-13b-v1.3.0-GPTQ"
+    model_args+=("--gptq-wbits 4 --gptq-groupsize 128")
+# elif [[ $model == "vicuna-13b" ]]; then
+#     if [[ ! -d "/tmp/vicuna-13b-1.1" ]]; then
+#         git clone https://huggingface.co/eachadea/vicuna-13b-1.1 /tmp/vicuna-13b-1.1
+#     fi
+#     model_paths="$model_paths,/tmp/vicuna-13b-1.1"
+#     model_args += ("--load-8bit")
+# elif [[ $model == "chatglm-6b" ]]; then
+#     if [[ ! -d "/tmp/chatglm-6b" ]]; then
+#         git clone https://huggingface.co/THUDM/chatglm-6b /tmp/chatglm-6b
+#     fi
+#     model_paths="$model_paths,/tmp/chatglm-6b"
+#     model_args += ("")
 else
     log "Invalid model name. Please set FASTCHAT_MODEL to vicuna-7b, vicuna-13b or chatglm-6b"
     exit 1
@@ -83,7 +93,7 @@ if [[ -n $1 ]]; then
             do
                 if [ -n "$model" ]; then
                     (( port++ ))
-                    nohup python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model --load-8bit ${model_args[$model_args_id]} > $LOG_DIR/fastchat_worker_$port.log 2>&1 &
+                    nohup python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model ${model_args[$model_args_id]} > $LOG_DIR/fastchat_worker_$port.log 2>&1 &
                     echo $! > /tmp/fastchat_worker_$port.pid
                     (( model_args_id++ ))
                 fi
@@ -108,7 +118,7 @@ else
     do
     if [ -n "$model" ]; then
         (( port++ ))
-        nohup python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model --load-8bit ${model_args[$model_args_id]} > $LOG_DIR/fastchat_worker_$port.log 2>&1 &
+        nohup python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model ${model_args[$model_args_id]} > $LOG_DIR/fastchat_worker_$port.log 2>&1 &
         echo $! > /tmp/fastchat_worker_$port.pid
         (( model_args_id++ ))
     fi

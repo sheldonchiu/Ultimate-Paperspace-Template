@@ -34,7 +34,7 @@ IFS=',' read -ra scripts <<< "$run_script"
 
 echo "Installing common dependencies"
 apt-get update -qq
-apt-get install -qq curl git-lfs aria2 zip python3-venv python3-dev python3.10 python3.10-venv python3.10-dev python3.10-tk -y > /dev/null
+apt-get install -qq curl git-lfs ninja-build aria2 zip python3-venv python3-dev python3.10 python3.10-venv python3.10-dev python3.10-tk -y > /dev/null
 
 # Prepare required path
 mkdir -p $IMAGE_OUTPUTS_DIR
