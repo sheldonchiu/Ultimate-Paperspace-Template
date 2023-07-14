@@ -11,9 +11,9 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Kosmos2 ###"
 log "Setting up Kosmos2"
-TARGET_REPO_DIR=$REPO_DIR \
+TARGET_REPO_DIR=/tmp/unilm \
 TARGET_REPO_BRANCH="master" \
-TARGET_REPO_URL="https://github.com/microsoft/unilm.git" \
+TARGET_REPO_URL="https://github.com/sheldonchiu/unilm.git" \
 UPDATE_REPO="auto" \
 bash $current_dir/../utils/prepare_repo.sh
 
