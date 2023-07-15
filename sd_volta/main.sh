@@ -64,6 +64,9 @@ echo $! > /tmp/sd_volta.pid
 
 send_to_discord "Stable Diffusion Volta Started"
 
+if [[ "$RUN_SCRIPT" != *"sd_volta"* ]]; then
+  export RUN_SCRIPT="$RUN_SCRIPT,sd_volta"
+fi
 bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

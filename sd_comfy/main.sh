@@ -68,6 +68,9 @@ echo $! > /tmp/sd_comfy.pid
 
 send_to_discord "Stable Diffusion Comfy Started"
 
+if [[ "$RUN_SCRIPT" != *"sd_comfy"* ]]; then
+  export RUN_SCRIPT="$RUN_SCRIPT,sd_comfy"
+fi
 bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

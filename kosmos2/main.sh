@@ -11,7 +11,7 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Kosmos2 ###"
 log "Setting up Kosmos2"
-TARGET_REPO_DIR=/tmp/unilm \
+TARGET_REPO_DIR=$REPO_DIR \
 TARGET_REPO_BRANCH="master" \
 TARGET_REPO_URL="https://github.com/sheldonchiu/unilm.git" \
 UPDATE_REPO="auto" \
@@ -124,6 +124,9 @@ echo $! > /tmp/kosmos2.pid
 
 send_to_discord "Kosmos2 Started"
 
+if [[ "$RUN_SCRIPT" != *"kosmos2"* ]]; then
+  export RUN_SCRIPT="$RUN_SCRIPT,kosmos2"
+fi
 bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

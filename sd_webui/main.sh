@@ -91,6 +91,9 @@ echo $! > /tmp/sd_webui.pid
 
 send_to_discord "Stable Diffusion WebUI Started"
 
+if [[ "$RUN_SCRIPT" != *"sd_webui"* ]]; then
+  export RUN_SCRIPT="$RUN_SCRIPT,sd_webui"
+fi
 bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

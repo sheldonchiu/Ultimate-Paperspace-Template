@@ -43,6 +43,9 @@ echo $! > /tmp/langflow.pid
 
 send_to_discord "Langflow Started"
 
+if [[ "$RUN_SCRIPT" != *"langflow"* ]]; then
+  export RUN_SCRIPT="$RUN_SCRIPT,langflow"
+fi
 bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

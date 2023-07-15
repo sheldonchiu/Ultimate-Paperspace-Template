@@ -36,6 +36,9 @@ echo $! > /tmp/flowise.pid
 
 send_to_discord "Flowise Started"
 
+if [[ "$RUN_SCRIPT" != *"flowise"* ]]; then
+  export RUN_SCRIPT="$RUN_SCRIPT,flowise"
+fi
 bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

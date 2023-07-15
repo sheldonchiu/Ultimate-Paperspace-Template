@@ -99,6 +99,9 @@ echo $! > /tmp/textgen.pid
 
 send_to_discord "Text generation Webui Started"
 
+if [[ "$RUN_SCRIPT" != *"textgen"* ]]; then
+  export RUN_SCRIPT="$RUN_SCRIPT,textgen"
+fi
 bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

@@ -51,6 +51,9 @@ log "Starting {{ title }}"
 
 send_to_discord "{{ title }} Started"
 {% if expose %}
+if [[ "$RUN_SCRIPT" != *"{{ name }}"* ]]; then
+  export RUN_SCRIPT="$RUN_SCRIPT,{{ name }}"
+fi
 bash $current_dir/../cloudflare_reload.sh
 {% endif %}
 echo "### Done ###"
