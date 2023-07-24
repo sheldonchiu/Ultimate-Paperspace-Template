@@ -48,9 +48,6 @@ def downlaod_model(model_uri):
         else:
             dl_web_file(model_uri.replace('/blob/', '/resolve/'), filename, token=hf_token)
             # clean exit here
-        else:
-            dl_web_file(model_uri, filename, token=hf_token)
-            # clean exit here
     elif 'https://drive.google.com' in model_uri:
         gdrive_file_id, _ = gdown.parse_url.parse_url(model_uri)
         gdown.download(f"https://drive.google.com/uc?id={gdrive_file_id}&confirm=t")
