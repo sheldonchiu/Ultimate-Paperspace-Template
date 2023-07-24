@@ -45,14 +45,9 @@ def downlaod_model(model_uri):
         response = requests.head(model_uri, allow_redirects=True, headers=headers)
         if response.status_code == 401:
             print('Huggingface token is invalid or not provided, please check your HF_TOKEN environment variable.')
-        elif 'octet-stream' not in response.headers['content-type']:
-            response = requests.head(model_uri.replace('/blob/', '/resolve/'), allow_redirects=True, headers=headers)
-            if 'octet-stream' not in response.headers['content-type']:
-                print(f'Wrong content-type: {response.headers["content-type"].split(";")[0]}')
-                # clean exit here
-            else:
-                dl_web_file(model_uri.replace('/blob/', '/resolve/'), filename, token=hf_token)
-                # clean exit here
+        else:
+            dl_web_file(model_uri.replace('/blob/', '/resolve/'), filename, token=hf_token)
+            # clean exit here
         else:
             dl_web_file(model_uri, filename, token=hf_token)
             # clean exit here
