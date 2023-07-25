@@ -15,6 +15,16 @@ prepare_repo: |-
     "$MODEL_DIR/vae:$LINK_VAE_TO"
     "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
   )
+
+  symlinks=(
+    "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-invokeai"
+    "$OUTPUTS_DIR:$WORKING_DIR/storage"
+    "$MODEL_DIR:$WORKING_DIR/models"
+    "$MODEL_DIR/sd:$LINK_MODEL_TO"
+    "$MODEL_DIR/lora:$LINK_LORA_TO"
+    "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
+    "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
+  )
   bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
 
 prepare_env: |-
@@ -32,7 +42,7 @@ action_before_start: ""
 
 start: |-
   cd "$REPO_DIR"
-  PYTHONUNBUFFERED=1 nohup invokeai --web --port {{ name|upper }}_PORT --autoconvert $MODEL_DIR ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 nohup invokeai-web --port {{ name|upper }}_PORT ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
@@ -48,6 +58,8 @@ other_commands: |-
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
   export HUGGINGFACE_TOKEN=$HF_TOKEN
 
-  export LINK_MODEL_TO=${{ '{' ~ name|upper }}_LINK_MODEL_TO:-"${REPO_DIR}/models/checkpoints"}
-  export LINK_VAE_TO=${{ '{' ~ name|upper }}_LINK_VAE_TO:-"${REPO_DIR}/models/vae"}
-  export LINK_EMBEDDING_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/embeddings"}
+  export LINK_MODEL_TO=${{ '{' ~ name|upper }}_LINK_MODEL_TO:-"${REPO_DIR}/autoimport/main"}
+  export LINK_EMBEDDING_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/autoimport/embedding"}
+  export LINK_LORA_TO=${{ '{' ~ name|upper }}_LINK_LORA_TO:-"${REPO_DIR}/autoimport/lora"}
+  export LINK_CONTROLNET_TO=${{ '{' ~ name|upper }}_LINK_CONTROLNET_TO:-"${REPO_DIR}/autoimport/controlnet"}
+  

@@ -21,6 +21,16 @@ symlinks=(
   "$MODEL_DIR/vae:$LINK_VAE_TO"
   "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
 )
+
+symlinks=(
+  "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-invokeai"
+  "$OUTPUTS_DIR:$WORKING_DIR/storage"
+  "$MODEL_DIR:$WORKING_DIR/models"
+  "$MODEL_DIR/sd:$LINK_MODEL_TO"
+  "$MODEL_DIR/lora:$LINK_LORA_TO"
+  "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
+  "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
+)
 bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
 if ! [[ -e "/tmp/sd_invoke.prepared" ]]; then
     
@@ -57,7 +67,7 @@ log "Finished Downloading Models for Stable Diffusion InvokeAI"
 echo "### Starting Stable Diffusion InvokeAI ###"
 log "Starting Stable Diffusion InvokeAI"
 cd "$REPO_DIR"
-PYTHONUNBUFFERED=1 nohup invokeai --web --port SD_INVOKE_PORT --autoconvert $MODEL_DIR ${EXTRA_SD_INVOKE_ARGS} > $LOG_DIR/sd_invoke.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup invokeai-web --port SD_INVOKE_PORT ${EXTRA_SD_INVOKE_ARGS} > $LOG_DIR/sd_invoke.log 2>&1 &
 echo $! > /tmp/sd_invoke.pid
 
 send_to_discord "Stable Diffusion InvokeAI Started"
