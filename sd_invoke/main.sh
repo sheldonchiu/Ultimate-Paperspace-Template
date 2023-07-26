@@ -11,7 +11,8 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Stable Diffusion InvokeAI ###"
 log "Setting up Stable Diffusion InvokeAI"
-mkdir -p $INVOKEAI_ROOT
+mkdir -p $DATA_DIR/sd_invoke_models
+mkdir -p $INVOKEAI_ROOT/models
 
 symlinks=(
   "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-invokeai"
@@ -22,6 +23,7 @@ symlinks=(
   "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
   "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
   "$MODEL_DIR/vae:$LINK_VAE_TO"
+  "$DATA_DIR/sd_invoke_models:$INVOKEAI_ROOT/models"
 )
 bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
 if ! [[ -e "/tmp/sd_invoke.prepared" ]]; then
