@@ -1,0 +1,40 @@
+title: preprocess
+name: preprocess
+use_python: true
+
+prepare_repo: |-
+  TARGET_REPO_DIR=$PREPROCESS_REPO_DIR \
+  TARGET_REPO_BRANCH="main" \
+  TARGET_REPO_URL="https://github.com/sheldonchiu/paperspace-sd-auto-preprocess.git" \
+  bash $current_dir/../utils/prepare_repo.sh
+
+  TARGET_REPO_DIR=$TRAINER_REPO_DIR \
+  TARGET_REPO_BRANCH="sdxl" \
+  TARGET_REPO_URL="https://github.com/sheldonchiu/kohya-trainer-paperspace.git" \
+  bash $current_dir/../utils/prepare_repo.sh  
+
+prepare_env: |-
+  cd $PREPROCESS_REPO_DIR/preprocess
+  bash prepare_env.sh
+
+action_before_start: |-
+  cd $current_dir/../kosmos2
+  bash control.sh stop
+
+start: |-
+  cd $PREPROCESS_REPO_DIR/preprocess
+  
+  bash run.sh > $LOG_DIR/{{ name }}.log 2>&1 &
+  echo $! > /tmp/{{ name }}.pid
+
+custom_start: ""
+
+custom_reload: ""
+
+custom_stop: ""
+
+export_required_env: ""
+
+other_commands: |-
+  export PREPROCESS_REPO_DIR=/tmp/paperspace-sd-auto-preprocess
+  export TRAINER_REPO_DIR=/tmp/kohya-trainer-paperspace
