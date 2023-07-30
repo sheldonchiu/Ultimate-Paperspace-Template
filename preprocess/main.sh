@@ -50,7 +50,7 @@ echo "### Starting preprocess ###"
 log "Starting preprocess"
 cd $PREPROCESS_REPO_DIR/preprocess
 
-bash run.sh > $LOG_DIR/preprocess.log 2>&1 &
+python main.py > $LOG_DIR/preprocess.log 2>&1 &
 echo $! > /tmp/preprocess.pid
 
 send_to_discord "preprocess Started"

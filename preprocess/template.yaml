@@ -24,7 +24,7 @@ action_before_start: |-
 start: |-
   cd $PREPROCESS_REPO_DIR/preprocess
   
-  bash run.sh > $LOG_DIR/{{ name }}.log 2>&1 &
+  python main.py > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 custom_start: ""
