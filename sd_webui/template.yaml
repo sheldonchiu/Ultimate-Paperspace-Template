@@ -3,6 +3,7 @@ name: sd_webui
 use_python: true
 python_version: 10
 expose: true
+port: 7008
 
 prepare_repo: |-
   TARGET_REPO_URL="https://github.com/AUTOMATIC1111/stable-diffusion-webui.git" \
@@ -61,7 +62,7 @@ start: |-
   if [[ -n "${SD_WEBUI_GRADIO_AUTH}" ]]; then
     auth="--gradio-auth ${SD_WEBUI_GRADIO_AUTH}"
   fi
-  PYTHONUNBUFFERED=1 nohup python webui.py --xformers --port ${{ name|upper }}_PORT $auth --controlnet-dir $MODEL_DIR/controlnet/ --enable-insecure-extension-access ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 nohup python webui.py --xformers --port ${{ name|upper }}_PORT --subpath sd-webui $auth --controlnet-dir $MODEL_DIR/controlnet/ --enable-insecure-extension-access ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""

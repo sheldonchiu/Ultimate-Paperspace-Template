@@ -3,6 +3,7 @@ name: musicgen
 use_python: true
 python_version: 10
 expose: true
+port: 7003
 
 prepare_repo: |-
   TARGET_REPO_DIR=$REPO_DIR \

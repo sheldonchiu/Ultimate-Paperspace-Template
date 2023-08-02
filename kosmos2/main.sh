@@ -124,9 +124,14 @@ echo $! > /tmp/kosmos2.pid
 
 send_to_discord "Kosmos2 Started"
 
-if [[ "$RUN_SCRIPT" != *"kosmos2"* ]]; then
-  export RUN_SCRIPT="$RUN_SCRIPT,kosmos2"
+send_to_discord "Link: https://$PAPERSPACE_FQDN/kosmos2/"
+
+
+if [ -v CF_TOKEN ]; then
+  if [[ "$RUN_SCRIPT" != *"kosmos2"* ]]; then
+    export RUN_SCRIPT="$RUN_SCRIPT,kosmos2"
+  fi
+  bash $current_dir/../cloudflare_reload.sh
 fi
-bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

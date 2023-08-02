@@ -34,9 +34,14 @@ echo $! > /tmp/rclone.pid
 
 send_to_discord "Rclone Started"
 
-if [[ "$RUN_SCRIPT" != *"rclone"* ]]; then
-  export RUN_SCRIPT="$RUN_SCRIPT,rclone"
+send_to_discord "Link: https://$PAPERSPACE_FQDN/rclone/"
+
+
+if [ -v CF_TOKEN ]; then
+  if [[ "$RUN_SCRIPT" != *"rclone"* ]]; then
+    export RUN_SCRIPT="$RUN_SCRIPT,rclone"
+  fi
+  bash $current_dir/../cloudflare_reload.sh
 fi
-bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

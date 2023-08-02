@@ -3,6 +3,7 @@ name: textgen
 use_python: true
 python_version: 10
 expose: true
+port: 7009
 
 prepare_repo: |-
   # Remove stale symlink to avoid pull conflicts
@@ -53,7 +54,8 @@ download_model: |-
 
   bash $current_dir/../utils/llm_model_download.sh
 
-action_before_start: ""
+action_before_start: |-
+  sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/g" $REPO_DIR/server.py
 
 start: |-
   cd $REPO_DIR
@@ -71,6 +73,9 @@ start: |-
     PYTHONUNBUFFERED=1 nohup python server.py  $share_args > $LOG_DIR/{{ name }}.log 2>&1 &
   fi
   echo $! > /tmp/{{ name }}.pid
+  
+  # undo the change for git pull to work
+  sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/g" $REPO_DIR/server.py
 
 custom_start: ""
 custom_reload: ""

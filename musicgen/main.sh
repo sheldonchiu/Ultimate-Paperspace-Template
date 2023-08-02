@@ -49,9 +49,14 @@ echo $! > /tmp/musicgen.pid
 
 send_to_discord "Musicgen Started"
 
-if [[ "$RUN_SCRIPT" != *"musicgen"* ]]; then
-  export RUN_SCRIPT="$RUN_SCRIPT,musicgen"
+send_to_discord "Link: https://$PAPERSPACE_FQDN/musicgen/"
+
+
+if [ -v CF_TOKEN ]; then
+  if [[ "$RUN_SCRIPT" != *"musicgen"* ]]; then
+    export RUN_SCRIPT="$RUN_SCRIPT,musicgen"
+  fi
+  bash $current_dir/../cloudflare_reload.sh
 fi
-bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

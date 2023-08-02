@@ -139,9 +139,14 @@ fi
 
 send_to_discord "FastChat Started"
 
-if [[ "$RUN_SCRIPT" != *"fastchat"* ]]; then
-  export RUN_SCRIPT="$RUN_SCRIPT,fastchat"
+send_to_discord "Link: https://$PAPERSPACE_FQDN/fastchat/"
+
+
+if [ -v CF_TOKEN ]; then
+  if [[ "$RUN_SCRIPT" != *"fastchat"* ]]; then
+    export RUN_SCRIPT="$RUN_SCRIPT,fastchat"
+  fi
+  bash $current_dir/../cloudflare_reload.sh
 fi
-bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

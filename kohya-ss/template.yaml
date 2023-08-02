@@ -2,6 +2,7 @@ title: Kohya SD Trainer
 name: kohya_ss
 use_python: true
 expose: true
+port: 7012
 
 prepare_repo: |-
   TARGET_REPO_DIR=$REPO_DIR \

@@ -3,6 +3,7 @@ name: sd_comfy
 use_python: true
 python_version: 10
 expose: true
+port: 7005
 
 prepare_repo: |-
 
@@ -38,7 +39,7 @@ action_before_start: ""
 
 start: |-
   cd "$REPO_DIR"
-  PYTHONUNBUFFERED=1 nohup python main.py --dont-print-server --port ${{ name|upper }}_PORT ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 nohup python main.py --dont-print-server --highvram --port ${{ name|upper }}_PORT ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
@@ -57,3 +58,5 @@ other_commands: |-
   export LINK_CONTROLNET_TO=${{ '{' ~ name|upper }}_LINK_CONTROLNET_TO:-"${REPO_DIR}/models/controlnet"}
   export LINK_EMBEDDING_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/models/embeddings"}
   export LINK_UPSCALER_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/models/upscale_models"}
+
+  

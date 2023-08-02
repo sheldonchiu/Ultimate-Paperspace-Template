@@ -41,9 +41,14 @@ echo $! > /tmp/command.pid
 
 send_to_discord "Command Server Started"
 
-if [[ "$RUN_SCRIPT" != *"command"* ]]; then
-  export RUN_SCRIPT="$RUN_SCRIPT,command"
+send_to_discord "Link: https://$PAPERSPACE_FQDN/command/"
+
+
+if [ -v CF_TOKEN ]; then
+  if [[ "$RUN_SCRIPT" != *"command"* ]]; then
+    export RUN_SCRIPT="$RUN_SCRIPT,command"
+  fi
+  bash $current_dir/../cloudflare_reload.sh
 fi
-bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

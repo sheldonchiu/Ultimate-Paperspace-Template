@@ -71,9 +71,14 @@ echo $! > /tmp/sd_invoke.pid
 
 send_to_discord "Stable Diffusion InvokeAI Started"
 
-if [[ "$RUN_SCRIPT" != *"sd_invoke"* ]]; then
-  export RUN_SCRIPT="$RUN_SCRIPT,sd_invoke"
+send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-invoke/"
+
+
+if [ -v CF_TOKEN ]; then
+  if [[ "$RUN_SCRIPT" != *"sd_invoke"* ]]; then
+    export RUN_SCRIPT="$RUN_SCRIPT,sd_invoke"
+  fi
+  bash $current_dir/../cloudflare_reload.sh
 fi
-bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

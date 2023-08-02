@@ -63,14 +63,19 @@ log "Finished Downloading Models for Stable Diffusion Comfy"
 echo "### Starting Stable Diffusion Comfy ###"
 log "Starting Stable Diffusion Comfy"
 cd "$REPO_DIR"
-PYTHONUNBUFFERED=1 nohup python main.py --dont-print-server --port $SD_COMFY_PORT ${EXTRA_SD_COMFY_ARGS} > $LOG_DIR/sd_comfy.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup python main.py --dont-print-server --highvram --port $SD_COMFY_PORT ${EXTRA_SD_COMFY_ARGS} > $LOG_DIR/sd_comfy.log 2>&1 &
 echo $! > /tmp/sd_comfy.pid
 
 send_to_discord "Stable Diffusion Comfy Started"
 
-if [[ "$RUN_SCRIPT" != *"sd_comfy"* ]]; then
-  export RUN_SCRIPT="$RUN_SCRIPT,sd_comfy"
+send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-comfy/"
+
+
+if [ -v CF_TOKEN ]; then
+  if [[ "$RUN_SCRIPT" != *"sd_comfy"* ]]; then
+    export RUN_SCRIPT="$RUN_SCRIPT,sd_comfy"
+  fi
+  bash $current_dir/../cloudflare_reload.sh
 fi
-bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

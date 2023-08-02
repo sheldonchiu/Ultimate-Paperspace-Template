@@ -9,7 +9,7 @@ for folder in */; do
         # Run python template.py in the current folder
         cd "${folder}"
         echo "Generating files for ${folder}"
-        python ../template/template.py --yaml_file template.yaml --output_path ./
+        python3 ../template/template.py --yaml_file template.yaml --output_path ./
         cd ..
     fi
 done

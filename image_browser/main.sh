@@ -58,9 +58,14 @@ echo $! > /tmp/image_browser.pid
 
 send_to_discord "Image Browser Started"
 
-if [[ "$RUN_SCRIPT" != *"image_browser"* ]]; then
-  export RUN_SCRIPT="$RUN_SCRIPT,image_browser"
+send_to_discord "Link: https://$PAPERSPACE_FQDN/image-browser/"
+
+
+if [ -v CF_TOKEN ]; then
+  if [[ "$RUN_SCRIPT" != *"image_browser"* ]]; then
+    export RUN_SCRIPT="$RUN_SCRIPT,image_browser"
+  fi
+  bash $current_dir/../cloudflare_reload.sh
 fi
-bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

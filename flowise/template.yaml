@@ -2,6 +2,7 @@ title: Flowise
 name: flowise
 use_python: false
 expose: true
+port: 7010
 
 prepare_repo: ""
 

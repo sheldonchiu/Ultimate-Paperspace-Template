@@ -3,6 +3,7 @@ name: langflow
 use_python: true
 python_version: 10
 expose: true
+port: 7011
 
 prepare_repo: ""
 

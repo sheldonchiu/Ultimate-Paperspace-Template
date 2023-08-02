@@ -3,6 +3,7 @@ name: sd_invoke
 use_python: true
 python_version: 10
 expose: true
+port: 7006
 
 prepare_repo: |-
   mkdir -p $DATA_DIR/sd_invoke_models

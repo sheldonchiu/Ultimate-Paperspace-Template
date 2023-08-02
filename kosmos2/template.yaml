@@ -2,6 +2,7 @@ title: Kosmos2
 name: kosmos2
 use_python: true
 expose: true
+port: 7014
 
 prepare_repo: |-
   TARGET_REPO_DIR=$REPO_DIR \

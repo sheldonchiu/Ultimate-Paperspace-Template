@@ -54,9 +54,14 @@ echo $! > /tmp/kohya_ss.pid
 
 send_to_discord "Kohya SD Trainer Started"
 
-if [[ "$RUN_SCRIPT" != *"kohya_ss"* ]]; then
-  export RUN_SCRIPT="$RUN_SCRIPT,kohya_ss"
+send_to_discord "Link: https://$PAPERSPACE_FQDN/kohya-ss/"
+
+
+if [ -v CF_TOKEN ]; then
+  if [[ "$RUN_SCRIPT" != *"kohya_ss"* ]]; then
+    export RUN_SCRIPT="$RUN_SCRIPT,kohya_ss"
+  fi
+  bash $current_dir/../cloudflare_reload.sh
 fi
-bash $current_dir/../cloudflare_reload.sh
 
 echo "### Done ###"

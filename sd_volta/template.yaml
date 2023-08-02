@@ -3,6 +3,7 @@ name: sd_volta
 use_python: true
 python_version: 10
 expose: true
+port: 7007
 
 prepare_repo: |-
   TARGET_REPO_URL="https://github.com/VoltaML/voltaML-fast-stable-diffusion.git" \

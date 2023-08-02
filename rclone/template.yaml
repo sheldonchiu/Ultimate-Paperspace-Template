@@ -2,6 +2,7 @@ title: Rclone
 name: rclone
 use_python: False
 expose: true
+port: 7004
 
 prepare_repo: ""
 prepare_env: |-

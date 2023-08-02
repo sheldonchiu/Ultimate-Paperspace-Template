@@ -2,6 +2,7 @@ title: Image Browser
 name: image_browser
 use_python: true
 expose: true
+port: 7002
 
 prepare_repo: |-
   TARGET_REPO_URL="https://github.com/zanllp/sd-webui-infinite-image-browsing.git" \
@@ -39,3 +40,6 @@ other_commands: |-
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-"7002"}
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
+
+override_nginx: |-
+  return 301 /infinite_image_browsing;
