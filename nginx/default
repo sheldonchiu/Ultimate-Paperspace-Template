@@ -1,0 +1,57 @@
+server {
+    listen 8888;
+
+    # Common proxy settings
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+
+    # jupyter lab
+    location / {
+        if ($http_referer ~* /sd-webui) {
+            rewrite ^/sd-webui/(.*)$ /$1 break;
+            proxy_pass http://localhost:7008;
+        }
+
+        proxy_pass http://127.0.0.1:8890;
+    }
+
+    # sd webui
+    location /queue/ {
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_pass http://localhost:7008;
+    }
+
+    # sd webui
+    location ~* ^/sd-webui/(.*)$ {
+        rewrite ^/sd-webui/(.*) /$1 break;
+        proxy_pass http://localhost:7008;
+    }
+
+    # sd comfy
+    location ~* ^/sd-comfy/(.*)$ {
+        rewrite ^/sd-comfy/(.*) /$1 break;
+        proxy_pass http://localhost:7005;
+    }
+
+    # command server
+    location ~* ^/command/(.*)$ {
+        rewrite ^/command/(.*) /$1 break;
+        proxy_pass http://localhost:7000;
+    }
+
+    # sd image browser
+    location /browser {
+        return 301 /infinite_image_browsing;
+    }
+
+    # sd image browser
+    location /infinite_image_browsing {
+        proxy_pass http://localhost:7002/infinite_image_browsing;
+    }
+
+}

@@ -30,9 +30,9 @@ source_env_file
 apt-get update -qq
 apt-get install -qq -y nginx > /dev/null
 
-mv /notebooks/default /etc/nginx/sites-available/default
+mv /notebooks/nginx/default /etc/nginx/sites-available/default
+mv /notebooks/nginx/nginx.conf /etc/nginx/nginx.conf
 /usr/sbin/nginx
-echo $! > /tmp/nginx.pid
 
 # Read the RUN_SCRIPT environment variable
 run_script="$RUN_SCRIPT"
