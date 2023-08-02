@@ -26,6 +26,14 @@ export SCRIPT_ROOT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 cd $SCRIPT_ROOT_DIR
 source_env_file
 
+#nginx
+apt-get update -qq
+apt-get install -qq -y nginx > /dev/null
+
+mv /notebooks/default /etc/nginx/sites-available/default
+/usr/sbin/nginx
+echo $! > /tmp/nginx.pid
+
 # Read the RUN_SCRIPT environment variable
 run_script="$RUN_SCRIPT"
 
@@ -33,7 +41,6 @@ run_script="$RUN_SCRIPT"
 IFS=',' read -ra scripts <<< "$run_script"
 
 echo "Installing common dependencies"
-apt-get update -qq
 apt-get install -qq curl git-lfs ninja-build aria2 zip python3-venv python3-dev python3.10 python3.10-venv python3.10-dev python3.10-tk -y > /dev/null
 
 # Prepare required path
