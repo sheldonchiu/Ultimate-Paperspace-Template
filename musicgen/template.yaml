@@ -16,17 +16,24 @@ prepare_repo: |-
 prepare_env: |-
   cd $REPO_DIR
   pip install 'torch>=2.0'
-  pip install -r requirements.txt
+  pip install -e .
 
 download_model: ""
 
-action_before_start: ""
+action_before_start: |-
+  if [ -z CF_TOKEN ]; then
+    sed -i "s|launch_kwargs = {}|launch_kwargs = {'root_path': '/musicgen'}|g" /storage/audiocraft/demos/musicgen_app.py
+  fi
 
 start: |-
   cd $REPO_DIR
-  PYTHONUNBUFFERED=1 nohup python app.py --server_port ${{ name|upper }}_PORT  ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 nohup python demos/musicgen_app.py --server_port ${{ name|upper }}_PORT  ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
+  if [ -z CF_TOKEN ]; then
+    sed -i "s|launch_kwargs = {'root_path': '/musicgen'}|launch_kwargs = {}|g" /storage/audiocraft/demos/musicgen_app.py
+  fi
+  
 custom_start: ""
 custom_reload: ""
 custom_stop: ""

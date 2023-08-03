@@ -29,7 +29,7 @@ if ! [[ -e "/tmp/musicgen.prepared" ]]; then
     
     cd $REPO_DIR
     pip install 'torch>=2.0'
-    pip install -r requirements.txt
+    pip install -e .
     
     touch /tmp/musicgen.prepared
 else
@@ -41,11 +41,19 @@ log "Finished Preparing Environment for Musicgen"
 
 
 
+if [ -z CF_TOKEN ]; then
+  sed -i "s|launch_kwargs = {}|launch_kwargs = {'root_path': '/musicgen'}|g" /storage/audiocraft/demos/musicgen_app.py
+fi
+
 echo "### Starting Musicgen ###"
 log "Starting Musicgen"
 cd $REPO_DIR
-PYTHONUNBUFFERED=1 nohup python app.py --server_port $MUSICGEN_PORT  ${EXTRA_MUSICGEN_ARGS} > $LOG_DIR/musicgen.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup python demos/musicgen_app.py --server_port $MUSICGEN_PORT  ${EXTRA_MUSICGEN_ARGS} > $LOG_DIR/musicgen.log 2>&1 &
 echo $! > /tmp/musicgen.pid
+
+if [ -z CF_TOKEN ]; then
+  sed -i "s|launch_kwargs = {'root_path': '/musicgen'}|launch_kwargs = {}|g" /storage/audiocraft/demos/musicgen_app.py
+fi
 
 send_to_discord "Musicgen Started"
 

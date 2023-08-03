@@ -32,27 +32,19 @@ server {
         proxy_read_timeout    86400;
     }
 
-    # sd webui
-    location /queue/ {
-        proxy_pass http://localhost:7008;
-    }
-
-    # sd webui
-    location ~* ^/sd-webui/(.*)$ {
-        rewrite ^/sd-webui/(.*) /$1 break;
-        proxy_pass http://localhost:7008;
-    }
-
 {% for item in data %}
     # {{ item['name'] }}
     location ~* ^/{{ item['name']|replace('_', '-') }}/(.*)$ {
-        {% if item['override_nginx'] %}
-        {{ item['override_nginx'] }}
+        {% if item['nginx_override'] %}
+        {{ item['nginx_override'] }}
         {% else %}
         rewrite ^/{{ item['name']|replace('_', '-') }}/(.*) /$1 break;
         proxy_pass http://localhost:{{ item['port'] }};
         {% endif %}
     }
+    {% if item['nginx_extra'] %}
+    {{ nginx_extra }}
+    {% endif %}
 {% endfor %}
 
     # sd image browser

@@ -55,7 +55,9 @@ download_model: |-
   bash $current_dir/../utils/llm_model_download.sh
 
 action_before_start: |-
-  sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/g" $REPO_DIR/server.py
+  if [ -z CF_TOKEN ]; then
+    sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/g" $REPO_DIR/server.py
+  fi
 
 start: |-
   cd $REPO_DIR
@@ -75,8 +77,10 @@ start: |-
   echo $! > /tmp/{{ name }}.pid
   
   # undo the change for git pull to work
-  sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/g" $REPO_DIR/server.py
-
+  if [ -z CF_TOKEN ]; then
+    sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/g" $REPO_DIR/server.py
+  fi
+  
 custom_start: ""
 custom_reload: ""
 custom_stop: ""
@@ -93,3 +97,9 @@ other_commands: |-
   export HUGGINGFACE_TOKEN=$HF_TOKEN
 
   export LINK_MODEL_TO=${{ '{' ~ name|upper }}_LINK_MODEL_TO:-"$REPO_DIR/models"}
+
+nginx_extra: |-
+  location ~* ^/textgen-openai/(.*)$ {
+      rewrite ^/textgen-openai/(.*)$ /$1 break;
+      proxy_pass http://localhost:7013;
+  }

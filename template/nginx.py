@@ -7,7 +7,6 @@ from pathlib import Path
 
 current_path = os.path.dirname(os.path.abspath(__file__))
 output_file = Path(current_path).parent / "nginx/default"
-print(output_file)
 
 if __name__ == "__main__":
     # Load the YAML file
@@ -24,8 +23,11 @@ if __name__ == "__main__":
                     print("Missing name or port for " + file)
                     continue
                 output = {"name": yaml_data["name"], "port": yaml_data["port"]}
-                output["override_nginx"] = (
-                    yaml_data["override_nginx"] if "override_nginx" in yaml_data else None
+                output["nginx_override"] = (
+                    yaml_data["nginx_override"] if "nginx_override" in yaml_data else None
+                )
+                output["extra"] = (
+                    yaml_data["nginx_extra"] if "extra" in yaml_data else None
                 )
                 data.append(output)
 

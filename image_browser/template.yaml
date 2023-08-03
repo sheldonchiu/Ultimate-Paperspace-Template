@@ -41,5 +41,5 @@ other_commands: |-
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
 
-override_nginx: |-
+nginx_override: |-
   return 301 /infinite_image_browsing;

@@ -79,7 +79,9 @@ bash $current_dir/../utils/llm_model_download.sh
 log "Finished Downloading Models for Text generation Webui"
 
 
-sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/g" $REPO_DIR/server.py
+if [ -z CF_TOKEN ]; then
+  sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/g" $REPO_DIR/server.py
+fi
 
 echo "### Starting Text generation Webui ###"
 log "Starting Text generation Webui"
@@ -100,7 +102,9 @@ fi
 echo $! > /tmp/textgen.pid
 
 # undo the change for git pull to work
-sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/g" $REPO_DIR/server.py
+if [ -z CF_TOKEN ]; then
+  sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/g" $REPO_DIR/server.py
+fi
 
 send_to_discord "Text generation Webui Started"
 
