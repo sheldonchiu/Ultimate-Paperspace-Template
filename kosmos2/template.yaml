@@ -66,7 +66,10 @@ download_model: |-
   cd $MODEL_DIR
   aria2c --file-allocation=none -c -x 16 -s 16 --summary-interval=0 --console-log-level=warn --continue  --out=kosmos-2.pt "https://huggingface.co/sheldonxxxx/kosmos-2/resolve/main/kosmos-2-min.pt"
 
-action_before_start: ""
+action_before_start: |-
+  if [ -z $CF_TOKEN ]; then
+    sed -i "s/demo.launch()/demo.launch(root_path='\\/kosmos2')/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
+  fi
 
 start: |-
 
@@ -95,6 +98,10 @@ start: |-
       --location-bin-size 32 > $LOG_DIR/{{ name }}.log 2>&1 &
 
   echo $! > /tmp/{{ name }}.pid
+
+  if [ -z $CF_TOKEN ]; then
+    sed -i "s/demo.launch(root_path='\\/kosmos2')/demo.launch()/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
+  fi
 
 custom_start: ""
 

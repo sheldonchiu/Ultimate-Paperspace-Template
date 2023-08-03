@@ -54,7 +54,7 @@ send_to_discord "{{ title }} Started"
 send_to_discord "Link: https://$PAPERSPACE_FQDN/{{ name|replace('_', '-') }}/"
 {% endif %}
 {% if expose %}
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"{{ name }}"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,{{ name }}"
   fi

@@ -45,6 +45,7 @@ for proc in all_processes:
 table.add_row(["Start script", running, ""])
 
 # Process each pid file
+base_url = os.environ.get('PAPERSPACE_FQDN', "")
 for pid_file in pid_files:
     # Read the PID from the file
     with open(os.path.join('/tmp', pid_file), 'r') as f:
@@ -54,12 +55,16 @@ for pid_file in pid_files:
     
     running = is_process_running(pid)
     
-    host_file = os.path.join('/tmp', pid_file.replace('.pid', '.host'))
-    if os.path.isfile(host_file):
-        with open(host_file, 'r') as f:
-            host = f"https://{f.read().strip()}"
-    else:
-        host = ""
+    # host_file = os.path.join('/tmp', pid_file.replace('.pid', '.host'))
+    # if os.path.isfile(host_file):
+    #     with open(host_file, 'r') as f:
+    #         host = f"https://{f.read().strip()}"
+    # else:
+    #     host = ""
+    host = ""
+    if running:
+        service_name = os.path.splitext(pid_file)[0]
+        host = f"https://{base_url}/{service_name.replace('_', '-')}/"
 
     # Add a row to the table
     table.add_row([pid_file.replace('.pid', ''), running, host])

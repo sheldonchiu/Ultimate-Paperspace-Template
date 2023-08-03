@@ -71,7 +71,7 @@ send_to_discord "Stable Diffusion Comfy Started"
 send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-comfy/"
 
 
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"sd_comfy"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,sd_comfy"
   fi

@@ -93,6 +93,10 @@ aria2c --file-allocation=none -c -x 16 -s 16 --summary-interval=0 --console-log-
 log "Finished Downloading Models for Kosmos2"
 
 
+if [ -z $CF_TOKEN ]; then
+  sed -i "s/demo.launch()/demo.launch(root_path='\\/kosmos2')/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
+fi
+
 echo "### Starting Kosmos2 ###"
 log "Starting Kosmos2"
 
@@ -122,12 +126,16 @@ CUDA_LAUNCH_BLOCKING=1 CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch
 
 echo $! > /tmp/kosmos2.pid
 
+if [ -z $CF_TOKEN ]; then
+  sed -i "s/demo.launch(root_path='\\/kosmos2')/demo.launch()/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
+fi
+
 send_to_discord "Kosmos2 Started"
 
 send_to_discord "Link: https://$PAPERSPACE_FQDN/kosmos2/"
 
 
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"kosmos2"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,kosmos2"
   fi

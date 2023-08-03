@@ -25,7 +25,7 @@ custom_reload: ""
 custom_stop: ""
 
 export_required_env: |-
-  export REQUIRED_ENV="FLOWISE_USERNAME,FLOWISE_PASSWORD"
+  export REQUIRED_ENV=""
 
 other_commands: |-
 

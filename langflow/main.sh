@@ -46,7 +46,7 @@ send_to_discord "Langflow Started"
 send_to_discord "Link: https://$PAPERSPACE_FQDN/langflow/"
 
 
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"langflow"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,langflow"
   fi

@@ -111,7 +111,7 @@ send_to_discord "Text generation Webui Started"
 send_to_discord "Link: https://$PAPERSPACE_FQDN/textgen/"
 
 
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"textgen"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,textgen"
   fi

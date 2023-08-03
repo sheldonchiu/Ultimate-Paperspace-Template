@@ -94,7 +94,7 @@ send_to_discord "Stable Diffusion WebUI Started"
 send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-webui/"
 
 
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"sd_webui"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,sd_webui"
   fi

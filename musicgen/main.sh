@@ -60,7 +60,7 @@ send_to_discord "Musicgen Started"
 send_to_discord "Link: https://$PAPERSPACE_FQDN/musicgen/"
 
 
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"musicgen"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,musicgen"
   fi

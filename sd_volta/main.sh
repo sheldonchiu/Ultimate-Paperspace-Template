@@ -67,7 +67,7 @@ send_to_discord "Stable Diffusion Volta Started"
 send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-volta/"
 
 
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"sd_volta"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,sd_volta"
   fi

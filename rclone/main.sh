@@ -37,7 +37,7 @@ send_to_discord "Rclone Started"
 send_to_discord "Link: https://$PAPERSPACE_FQDN/rclone/"
 
 
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"rclone"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,rclone"
   fi

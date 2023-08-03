@@ -38,6 +38,7 @@ log "Finished Preparing Environment for Image Browser"
 
 
 
+if [[ -n "${IMAGE_BROWSER_KEY}" ]]; then
 cat > $REPO_DIR/.env << EOF
 IIB_SECRET_KEY=$IMAGE_BROWSER_KEY
 # Configuring the server-side language for this extension,
@@ -45,6 +46,7 @@ IIB_SECRET_KEY=$IMAGE_BROWSER_KEY
 # If you want to configure the language for the front-end pages, please set it on the extension's global settings page.
 IIB_SERVER_LANG=auto
 EOF
+fi
 
 echo "### Starting Image Browser ###"
 log "Starting Image Browser"
@@ -61,7 +63,7 @@ send_to_discord "Image Browser Started"
 send_to_discord "Link: https://$PAPERSPACE_FQDN/image-browser/"
 
 
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"image_browser"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,image_browser"
   fi

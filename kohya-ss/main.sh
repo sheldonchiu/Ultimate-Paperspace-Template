@@ -49,7 +49,11 @@ log "Finished Preparing Environment for Kohya SD Trainer"
 echo "### Starting Kohya SD Trainer ###"
 log "Starting Kohya SD Trainer"
 cd $REPO_DIR
-PYTHONUNBUFFERED=1 nohup python kohya_gui.py --headless --server_port=$KOHYA_SS_PORT --username $KOHYA_USERNAME --password $KOHYA_PASSWORD ${EXTRA_KOHYA_SS_ARGS} > $LOG_DIR/kohya_ss.log 2>&1 &
+auth=""
+if [[ -n "${KOHYA_USERNAME}" ]] && [[ -n "${KOHYA_PASSWORD}" ]]; then
+  auth="--username=$KOHYA_USERNAME --password=$KOHYA_PASSWORD"
+fi
+PYTHONUNBUFFERED=1 nohup python kohya_gui.py --headless --server_port=$KOHYA_SS_PORT $auth ${EXTRA_KOHYA_SS_ARGS} > $LOG_DIR/kohya_ss.log 2>&1 &
 echo $! > /tmp/kohya_ss.pid
 
 send_to_discord "Kohya SD Trainer Started"
@@ -57,7 +61,7 @@ send_to_discord "Kohya SD Trainer Started"
 send_to_discord "Link: https://$PAPERSPACE_FQDN/kohya-ss/"
 
 
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"kohya_ss"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,kohya_ss"
   fi

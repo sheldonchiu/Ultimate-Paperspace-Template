@@ -44,7 +44,7 @@ send_to_discord "Command Server Started"
 send_to_discord "Link: https://$PAPERSPACE_FQDN/command/"
 
 
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"command"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,command"
   fi

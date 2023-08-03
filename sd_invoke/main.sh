@@ -74,7 +74,7 @@ send_to_discord "Stable Diffusion InvokeAI Started"
 send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-invoke/"
 
 
-if [ -v CF_TOKEN ]; then
+if [[ -n "${CF_TOKEN}" ]]; then
   if [[ "$RUN_SCRIPT" != *"sd_invoke"* ]]; then
     export RUN_SCRIPT="$RUN_SCRIPT,sd_invoke"
   fi
