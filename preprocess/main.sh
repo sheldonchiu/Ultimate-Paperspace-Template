@@ -32,6 +32,9 @@ if ! [[ -e "/tmp/preprocess.prepared" ]]; then
     
     cd $PREPROCESS_REPO_DIR/preprocess
     bash prepare_env.sh
+
+    ln -s /storage /notebooks/storage
+    ln -s /tmp /notebooks/tmp
     
     touch /tmp/preprocess.prepared
 else
@@ -41,6 +44,11 @@ else
 fi
 log "Finished Preparing Environment for preprocess"
 
+
+echo "### Downloading Model for preprocess ###"
+log "Downloading Model for preprocess"
+bash $current_dir/../utils/sd_model_download/main.sh
+log "Finished Downloading Models for preprocess"
 
 
 cd $current_dir/../kosmos2

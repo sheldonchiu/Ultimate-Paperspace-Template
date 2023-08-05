@@ -17,6 +17,12 @@ prepare_env: |-
   cd $PREPROCESS_REPO_DIR/preprocess
   bash prepare_env.sh
 
+  ln -s /storage /notebooks/storage
+  ln -s /tmp /notebooks/tmp
+
+download_model: |-
+  bash $current_dir/../utils/sd_model_download/main.sh
+
 action_before_start: |-
   cd $current_dir/../kosmos2
   bash control.sh stop
@@ -38,3 +44,5 @@ export_required_env: ""
 other_commands: |-
   export PREPROCESS_REPO_DIR=/tmp/paperspace-sd-auto-preprocess
   export TRAINER_REPO_DIR=/tmp/kohya-trainer-paperspace
+
+  export MODEL_DIR=${{ '{' ~ name|upper }}_MODEL_DIR:-"$DATA_DIR/"}
