@@ -23,16 +23,14 @@ prepare_env: |-
 
   pip install fairseq/
   pip install infinibatch/
-  pip install ftfy
-  pip install -e torchscale
-  pip install -e open_clip
+  pip install torchscale/
+  pip install open_clip/
   pip install  git+https://github.com/microsoft/DeepSpeed.git@jeffra/engine-xthru-v2
-  pip install tiktoken
-  pip install sentencepiece
+  pip install numpy==1.23.0 tiktoken ftfy sentencepiece httpcore==0.17.3 gradio==3.37.0 spacy==3.6.0 thinc==8.1.10 pydantic==1.10.11
 
   pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu116
   pip install xformers==0.0.16
-  pip install gradio numpy==1.22.2 scipy opencv-python protobuf==3.20.1 pytorch-extension
+  pip install opencv-python protobuf==3.20.1 pytorch-extension
   
   cd /tmp/apex
   gpu_name=$(nvidia-smi --query-gpu=gpu_name --format=csv,noheader,nounits)
