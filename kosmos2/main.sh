@@ -35,16 +35,22 @@ if ! [[ -e "/tmp/kosmos2.prepared" ]]; then
     
     cd $REPO_DIR/kosmos-2
 
+    pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu116
+    pip install xformers==0.0.16
+    pip install protobuf==3.20.3 pytorch-extension
+
     pip install fairseq/
     pip install infinibatch/
     pip install torchscale/
     pip install open_clip/
     pip install  git+https://github.com/microsoft/DeepSpeed.git@jeffra/engine-xthru-v2
-    pip install numpy==1.23.0 tiktoken ftfy sentencepiece httpcore==0.17.3 gradio==3.37.0 spacy==3.6.0 thinc==8.1.10 pydantic==1.10.11
+    pip install numpy==1.23.0 scipy==1.8.0 tiktoken \
+     ftfy sentencepiece==0.1.99 httpcore==0.17.3 \
+     gradio==3.37.0 spacy==3.6.0 thinc==8.1.10 \
+     pydantic==1.10.11 opencv-python-headless==4.8.0.74 \
+     tensorboardX==1.8
 
-    pip install torch==1.13.1+cu116 torchvision==0.14.1+cu116 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu116
-    pip install xformers==0.0.16
-    pip install opencv-python protobuf==3.20.1 pytorch-extension
+
 
     cd /tmp/apex
     gpu_name=$(nvidia-smi --query-gpu=gpu_name --format=csv,noheader,nounits)
@@ -124,9 +130,9 @@ CUDA_LAUNCH_BLOCKING=1 CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch
 
 echo $! > /tmp/kosmos2.pid
 
-if [ -z $CF_TOKEN ]; then
-  sed -i "s/demo.launch(root_path='\\/kosmos2')/demo.launch()/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
-fi
+# if [ -z $CF_TOKEN ]; then
+#   sed -i "s/demo.launch(root_path='\\/kosmos2')/demo.launch()/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
+# fi
 
 send_to_discord "Kosmos2 Started"
 
