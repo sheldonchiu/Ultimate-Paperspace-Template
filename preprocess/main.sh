@@ -19,8 +19,7 @@ bash $current_dir/../utils/prepare_repo.sh
 TARGET_REPO_DIR=$TRAINER_REPO_DIR \
 TARGET_REPO_BRANCH="sdxl" \
 TARGET_REPO_URL="https://github.com/sheldonchiu/kohya-trainer-paperspace.git" \
-UPDATE_REPO="commit" \
-UPDATE_REPO_COMMIT="4b209a5b6e8d5701294bded10eae6ba98a964ac3" \
+UPDATE_REPO="auto" \
 bash $current_dir/../utils/prepare_repo.sh  
 if ! [[ -e "/tmp/preprocess.prepared" ]]; then
     
