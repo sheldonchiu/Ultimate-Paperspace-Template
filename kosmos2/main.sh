@@ -136,7 +136,9 @@ echo $! > /tmp/kosmos2.pid
 
 send_to_discord "Kosmos2 Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/kosmos2/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/kosmos2/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then

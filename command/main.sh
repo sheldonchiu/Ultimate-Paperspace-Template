@@ -41,7 +41,9 @@ echo $! > /tmp/command.pid
 
 send_to_discord "Command Server Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/command/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/command/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then

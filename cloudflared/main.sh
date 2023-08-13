@@ -53,11 +53,10 @@ if [[ $CF_TOKEN == "quick" ]]; then
         hostfile="/tmp/cloudflared_${name}.host"
         
         # Check if tunnel is already running
-        if [[ -f $pidfile ]]; then
-            if kill -0 "$(cat $pidfile)" 2>/dev/null; then
-                log "Cloudflared tunnel for $name is already running."
-                continue
-            fi
+        if check_if_running $pidfile; then
+            log "Cloudflared tunnel for $name is already running."
+            log "Visit https://$(cat $hostfile) for $name"
+            continue
         fi
         log "Starting cloudflared tunnel for $name"
         # Start cloudflared tunnel in the background
@@ -72,7 +71,7 @@ if [[ $CF_TOKEN == "quick" ]]; then
             if [[ $? -eq 0 ]] && [[ "$(echo "$response" | jq -r '.hostname')" != "" ]]; then
                 hostname=$(echo "$response" | jq -r '.hostname')
                 echo $hostname > $hostfile
-                send_to_discord "Vist https://$hostname for $name"
+                send_to_discord "V https://$hostname for $name"
                 break
             fi
             retries=$((retries+1))
@@ -85,9 +84,15 @@ if [[ $CF_TOKEN == "quick" ]]; then
             sleep 5
         done
     done
+elif [[ -n "${CF_TOKEN}" ]]; then
+    if check_if_running "/var/run/cloudflared.pid"; then
+        log "Cloudflared is already running"
+    else
+        cloudflared service install "$CF_TOKEN"
+        send_to_discord "Cloudflared: Running as a service"
+    fi
 else
-    cloudflared service install "$CF_TOKEN"
-    send_to_discord "Cloudflared: Running as a service"
+    log "CF_TOKEN cannot be empty, either <quick> or a service token"
 fi
 
 send_to_discord "Cloudflare Tunnel Started"

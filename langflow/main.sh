@@ -43,7 +43,9 @@ echo $! > /tmp/langflow.pid
 
 send_to_discord "Langflow Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/langflow/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/langflow/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then

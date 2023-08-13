@@ -36,7 +36,9 @@ echo $! > /tmp/flowise.pid
 
 send_to_discord "Flowise Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/flowise/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/flowise/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then

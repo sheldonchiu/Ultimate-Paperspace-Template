@@ -58,7 +58,9 @@ echo $! > /tmp/kohya_ss.pid
 
 send_to_discord "Kohya SD Trainer Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/kohya-ss/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/kohya-ss/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then

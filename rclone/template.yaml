@@ -6,7 +6,7 @@ port: 7004
 
 prepare_repo: ""
 prepare_env: |-
-  curl https://rclone.org/install.sh | sudo bash
+  curl https://rclone.org/install.sh | sudo bash > /dev/null 2>&1
   mkdir -p /root/.config/rclone
 
 download_model: ""

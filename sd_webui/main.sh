@@ -90,7 +90,9 @@ echo $! > /tmp/sd_webui.pid
 
 send_to_discord "Stable Diffusion WebUI Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-webui/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-webui/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then

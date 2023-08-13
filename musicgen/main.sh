@@ -57,7 +57,9 @@ fi
 
 send_to_discord "Musicgen Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/musicgen/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/musicgen/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then

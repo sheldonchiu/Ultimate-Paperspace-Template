@@ -70,7 +70,9 @@ echo $! > /tmp/sd_invoke.pid
 
 send_to_discord "Stable Diffusion InvokeAI Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-invoke/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-invoke/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then

@@ -139,7 +139,9 @@ fi
 
 send_to_discord "FastChat Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/fastchat/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/fastchat/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then

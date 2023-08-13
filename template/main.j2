@@ -51,7 +51,9 @@ log "Starting {{ title }}"
 
 send_to_discord "{{ title }} Started"
 {% if expose %}
-send_to_discord "Link: https://$PAPERSPACE_FQDN/{{ name|replace('_', '-') }}/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/{{ name|replace('_', '-') }}/"
+fi
 {% endif %}
 {% if expose %}
 if [[ -n "${CF_TOKEN}" ]]; then

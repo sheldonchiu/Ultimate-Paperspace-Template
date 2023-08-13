@@ -60,7 +60,9 @@ echo $! > /tmp/image_browser.pid
 
 send_to_discord "Image Browser Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/image-browser/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/image-browser/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then

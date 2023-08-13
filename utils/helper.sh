@@ -41,6 +41,19 @@ kill_pid() {
   echo "Process $pid has been killed."
 }
 
+check_if_running() {
+  if [[ -f "$1" ]]; then
+    pid=$(cat "$1")
+    if kill -0 "$pid" 2>/dev/null; then
+      return 0
+    fi
+  else
+    log "Error: PID file $1 not found!"
+  fi
+  return 1
+}
+
+
 download_from_hf() {
   model_hub="$1"
   model_name="$2"

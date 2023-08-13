@@ -14,7 +14,7 @@ log "Setting up Rclone"
 
 if ! [[ -e "/tmp/rclone.prepared" ]]; then
     
-    curl https://rclone.org/install.sh | sudo bash
+    curl https://rclone.org/install.sh | sudo bash > /dev/null 2>&1
     mkdir -p /root/.config/rclone
     
     touch /tmp/rclone.prepared
@@ -34,7 +34,9 @@ echo $! > /tmp/rclone.pid
 
 send_to_discord "Rclone Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/rclone/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/rclone/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then

@@ -42,7 +42,7 @@ run_script="$RUN_SCRIPT"
 IFS=',' read -ra scripts <<< "$run_script"
 
 echo "Installing common dependencies"
-apt-get install -qq curl git-lfs ninja-build aria2 zip python3-venv python3-dev python3.10 python3.10-venv python3.10-dev python3.10-tk -y > /dev/null
+apt-get install -qq curl jq git-lfs ninja-build aria2 zip python3-venv python3-dev python3.10 python3.10-venv python3.10-dev python3.10-tk -y > /dev/null
 
 # Prepare required path
 mkdir -p $IMAGE_OUTPUTS_DIR
@@ -50,7 +50,7 @@ if [[ ! -d $WORKING_DIR/image_outputs ]]; then
   ln -s $IMAGE_OUTPUTS_DIR $WORKING_DIR/image_outputs
 fi
 
-mkdir $LOG_DIR
+mkdir -p $LOG_DIR
 
 # Loop through each script and execute the corresponding case
 echo "Starting script(s)"
@@ -67,5 +67,5 @@ do
     echo "One or more required environment variables are missing."
     continue
   fi
-  bash main.sh $@
+  bash control.sh reload
 done

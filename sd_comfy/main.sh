@@ -67,7 +67,9 @@ echo $! > /tmp/sd_comfy.pid
 
 send_to_discord "Stable Diffusion Comfy Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-comfy/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-comfy/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then

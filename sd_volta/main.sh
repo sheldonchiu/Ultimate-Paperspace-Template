@@ -63,7 +63,9 @@ echo $! > /tmp/sd_volta.pid
 
 send_to_discord "Stable Diffusion Volta Started"
 
-send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-volta/"
+if env | grep -q "PAPERSPACE"; then
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-volta/"
+fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then
