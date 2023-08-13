@@ -28,7 +28,6 @@ fi
 symlinks=(
     "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-webui"
     "$REPO_DIR/log:$REPO_DIR/outputs/log"
-    "$OUTPUTS_DIR:$WORKING_DIR/storage"
     "$MODEL_DIR:$WORKING_DIR/models"
     "$MODEL_DIR/sd:$LINK_MODEL_TO"
     "$MODEL_DIR/lora:$LINK_LORA_TO"
@@ -45,9 +44,9 @@ cp $LINK_CONTROLNET_TO/*.yaml $MODEL_DIR/controlnet/
 if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     
     
-    python3.10 -m venv /tmp/sd_webui-env
+    python3.10 -m venv $VENV_DIR/sd_webui-env
     
-    source /tmp/sd_webui-env/bin/activate
+    source $VENV_DIR/sd_webui-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -67,7 +66,7 @@ if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     touch /tmp/sd_webui.prepared
 else
     
-    source /tmp/sd_webui-env/bin/activate
+    source $VENV_DIR/sd_webui-env/bin/activate
     
 fi
 log "Finished Preparing Environment for Stable Diffusion WebUI"

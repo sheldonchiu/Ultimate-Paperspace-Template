@@ -17,7 +17,7 @@ if ! [[ -e "/tmp/huggingface.prepared" ]]; then
     
     python3 -m venv /tmp/huggingface-env
     
-    source /tmp/huggingface-env/bin/activate
+    source $VENV_DIR/huggingface-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -27,7 +27,7 @@ if ! [[ -e "/tmp/huggingface.prepared" ]]; then
     touch /tmp/huggingface.prepared
 else
     
-    source /tmp/huggingface-env/bin/activate
+    source $VENV_DIR/huggingface-env/bin/activate
     
 fi
 log "Finished Preparing Environment for HuggingFace Hub"

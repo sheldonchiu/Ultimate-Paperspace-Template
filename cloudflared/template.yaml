@@ -4,6 +4,11 @@ use_python: false
 expose: false
 
 prepare_env: |-
+  if env | grep -q "PAPERSPACE"; then
+    echo "Tunnel is not allowed in Paperspace, skipping..."
+    exit 0
+  fi
+  
   cd /tmp
   curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
   dpkg -i cloudflared.deb

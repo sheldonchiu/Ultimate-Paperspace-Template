@@ -17,7 +17,7 @@ if ! [[ -e "/tmp/command.prepared" ]]; then
     
     python3 -m venv /tmp/command-env
     
-    source /tmp/command-env/bin/activate
+    source $VENV_DIR/command-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -27,7 +27,7 @@ if ! [[ -e "/tmp/command.prepared" ]]; then
     touch /tmp/command.prepared
 else
     
-    source /tmp/command-env/bin/activate
+    source $VENV_DIR/command-env/bin/activate
     
 fi
 log "Finished Preparing Environment for Command Server"

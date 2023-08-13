@@ -15,7 +15,6 @@ prepare_repo: |-
 
   symlinks=(
     "$REPO_DIR/output:$IMAGE_OUTPUTS_DIR/stable-diffusion-comfy"
-    "$OUTPUTS_DIR:$WORKING_DIR/storage"
     "$MODEL_DIR:$WORKING_DIR/models"
     "$MODEL_DIR/sd:$LINK_MODEL_TO"
     "$MODEL_DIR/lora:$LINK_LORA_TO"
@@ -45,7 +44,7 @@ start: |-
 export_required_env: ""
 other_commands: |-
   export MODEL_DIR=${{ '{' ~ name|upper }}_MODEL_DIR:-"$DATA_DIR/stable-diffusion-models"}
-  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-comfy"}
+  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$ROOT_REPO_DIR/stable-diffusion-comfy"}
 
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-"7005"}
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"

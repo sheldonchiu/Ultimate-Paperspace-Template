@@ -18,8 +18,10 @@ prepare_env: |-
   cd $PREPROCESS_REPO_DIR/preprocess
   bash prepare_env.sh
 
-  ln -s /storage /notebooks/storage
-  ln -s /tmp /notebooks/tmp
+  if env | grep -q "PAPERSPACE"; then
+    ln -s /storage /notebooks/storage
+    ln -s /tmp /notebooks/tmp
+  fi
 
 download_model: |-
   bash $current_dir/../utils/sd_model_download/main.sh

@@ -15,11 +15,11 @@ log "Setting up {{ title }}"
 if ! [[ -e "/tmp/{{ name }}.prepared" ]]; then
     {% if use_python %}
     {% if python_version %}
-    python3.{{ python_version }} -m venv /tmp/{{ name }}-env
+    python3.{{ python_version }} -m venv $VENV_DIR/{{ name }}-env
     {% else %}
     python3 -m venv /tmp/{{ name }}-env
     {% endif %}
-    source /tmp/{{ name }}-env/bin/activate
+    source $VENV_DIR/{{ name }}-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -29,7 +29,7 @@ if ! [[ -e "/tmp/{{ name }}.prepared" ]]; then
     touch /tmp/{{ name }}.prepared
 else
     {% if use_python %}
-    source /tmp/{{ name }}-env/bin/activate
+    source $VENV_DIR/{{ name }}-env/bin/activate
     {% else %}
     log "Environment already prepared"
     {% endif %}

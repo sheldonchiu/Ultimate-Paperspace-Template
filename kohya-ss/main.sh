@@ -22,7 +22,7 @@ if ! [[ -e "/tmp/kohya_ss.prepared" ]]; then
     
     python3 -m venv /tmp/kohya_ss-env
     
-    source /tmp/kohya_ss-env/bin/activate
+    source $VENV_DIR/kohya_ss-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -39,7 +39,7 @@ if ! [[ -e "/tmp/kohya_ss.prepared" ]]; then
     touch /tmp/kohya_ss.prepared
 else
     
-    source /tmp/kohya_ss-env/bin/activate
+    source $VENV_DIR/kohya_ss-env/bin/activate
     
 fi
 log "Finished Preparing Environment for Kohya SD Trainer"

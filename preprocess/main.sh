@@ -26,7 +26,7 @@ if ! [[ -e "/tmp/preprocess.prepared" ]]; then
     
     python3 -m venv /tmp/preprocess-env
     
-    source /tmp/preprocess-env/bin/activate
+    source $VENV_DIR/preprocess-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -34,13 +34,15 @@ if ! [[ -e "/tmp/preprocess.prepared" ]]; then
     cd $PREPROCESS_REPO_DIR/preprocess
     bash prepare_env.sh
 
-    ln -s /storage /notebooks/storage
-    ln -s /tmp /notebooks/tmp
+    if env | grep -q "PAPERSPACE"; then
+      ln -s /storage /notebooks/storage
+      ln -s /tmp /notebooks/tmp
+    fi
     
     touch /tmp/preprocess.prepared
 else
     
-    source /tmp/preprocess-env/bin/activate
+    source $VENV_DIR/preprocess-env/bin/activate
     
 fi
 log "Finished Preparing Environment for preprocess"

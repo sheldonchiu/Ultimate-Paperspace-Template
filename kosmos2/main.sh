@@ -28,7 +28,7 @@ if ! [[ -e "/tmp/kosmos2.prepared" ]]; then
     
     python3 -m venv /tmp/kosmos2-env
     
-    source /tmp/kosmos2-env/bin/activate
+    source $VENV_DIR/kosmos2-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -59,17 +59,17 @@ if ! [[ -e "/tmp/kosmos2.prepared" ]]; then
       *A4000*)
         pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
         wget -q https://huggingface.co/sheldonxxxx/apex-paperspace-binary/resolve/main/apex_a4000.tar.gz
-        tar -xzf apex_a4000.tar.gz -C /tmp/kosmos2-env/lib/python3.9/site-packages/
+        tar -xzf apex_a4000.tar.gz -C $VENV_DIR/kosmos2-env/lib/python3.9/site-packages/
         ;;
       *P5000*)
         pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
         wget -q https://huggingface.co/sheldonxxxx/apex-paperspace-binary/resolve/main/apex_p5000.tar.gz
-        tar -xzf apex_p5000.tar.gz -C /tmp/kosmos2-env/lib/python3.9/site-packages/
+        tar -xzf apex_p5000.tar.gz -C $VENV_DIR/kosmos2-env/lib/python3.9/site-packages/
         ;;
       *RTX5000*)
         pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
         wget -q https://huggingface.co/sheldonxxxx/apex-paperspace-binary/resolve/main/apex_rtx5000.tar.gz
-        tar -xzf apex_rtx5000.tar.gz -C /tmp/kosmos2-env/lib/python3.9/site-packages/
+        tar -xzf apex_rtx5000.tar.gz -C $VENV_DIR/kosmos2-env/lib/python3.9/site-packages/
         ;;
       *)
         echo "No apex binary for $gpu_name, building from source"
@@ -81,7 +81,7 @@ if ! [[ -e "/tmp/kosmos2.prepared" ]]; then
     touch /tmp/kosmos2.prepared
 else
     
-    source /tmp/kosmos2-env/bin/activate
+    source $VENV_DIR/kosmos2-env/bin/activate
     
 fi
 log "Finished Preparing Environment for Kosmos2"
@@ -97,7 +97,7 @@ aria2c --file-allocation=none -c -x 16 -s 16 --summary-interval=0 --console-log-
 log "Finished Downloading Models for Kosmos2"
 
 
-if [ -z $CF_TOKEN ]; then
+if env | grep -q "PAPERSPACE"; then
   sed -i "s/demo.launch()/demo.launch(root_path='\\/kosmos2')/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
 fi
 
@@ -130,7 +130,7 @@ CUDA_LAUNCH_BLOCKING=1 CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch
 
 echo $! > /tmp/kosmos2.pid
 
-# if [ -z $CF_TOKEN ]; then
+# if env | grep -q "PAPERSPACE"; then
 #   sed -i "s/demo.launch(root_path='\\/kosmos2')/demo.launch()/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
 # fi
 

@@ -15,9 +15,9 @@ log "Setting up Langflow"
 if ! [[ -e "/tmp/langflow.prepared" ]]; then
     
     
-    python3.10 -m venv /tmp/langflow-env
+    python3.10 -m venv $VENV_DIR/langflow-env
     
-    source /tmp/langflow-env/bin/activate
+    source $VENV_DIR/langflow-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -27,7 +27,7 @@ if ! [[ -e "/tmp/langflow.prepared" ]]; then
     touch /tmp/langflow.prepared
 else
     
-    source /tmp/langflow-env/bin/activate
+    source $VENV_DIR/langflow-env/bin/activate
     
 fi
 log "Finished Preparing Environment for Langflow"

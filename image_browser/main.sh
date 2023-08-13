@@ -20,7 +20,7 @@ if ! [[ -e "/tmp/image_browser.prepared" ]]; then
     
     python3 -m venv /tmp/image_browser-env
     
-    source /tmp/image_browser-env/bin/activate
+    source $VENV_DIR/image_browser-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -31,7 +31,7 @@ if ! [[ -e "/tmp/image_browser.prepared" ]]; then
     touch /tmp/image_browser.prepared
 else
     
-    source /tmp/image_browser-env/bin/activate
+    source $VENV_DIR/image_browser-env/bin/activate
     
 fi
 log "Finished Preparing Environment for Image Browser"

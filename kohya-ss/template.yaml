@@ -37,7 +37,7 @@ export_required_env: |-
   export REQUIRED_ENV="KOHYA_USERNAME,KOHYA_PASSWORD"
 
 other_commands: |-
-  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/kohya_ss"}
+  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$ROOT_REPO_DIR/kohya_ss"}
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-"7012"}
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"

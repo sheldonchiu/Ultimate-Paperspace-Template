@@ -21,8 +21,8 @@ prepare_env: |-
 download_model: ""
 
 action_before_start: |-
-  if [ -z CF_TOKEN ]; then
-    sed -i "s|launch_kwargs = {}|launch_kwargs = {'root_path': '/musicgen'}|g" /storage/audiocraft/demos/musicgen_app.py
+  if env | grep -q "PAPERSPACE"; then
+    sed -i "s|launch_kwargs = {}|launch_kwargs = {'root_path': '/musicgen'}|g" $REPO_DIR/demos/musicgen_app.py
   fi
 
 start: |-
@@ -30,8 +30,8 @@ start: |-
   PYTHONUNBUFFERED=1 nohup python demos/musicgen_app.py --server_port ${{ name|upper }}_PORT  ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
-  if [ -z CF_TOKEN ]; then
-    sed -i "s|launch_kwargs = {'root_path': '/musicgen'}|launch_kwargs = {}|g" /storage/audiocraft/demos/musicgen_app.py
+  if env | grep -q "PAPERSPACE"; then
+    sed -i "s|launch_kwargs = {'root_path': '/musicgen'}|launch_kwargs = {}|g" $REPO_DIR/demos/musicgen_app.py
   fi
   
 custom_start: ""
@@ -40,7 +40,7 @@ custom_stop: ""
 
 export_required_env: ""
 other_commands: |-
-  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/audiocraft"}
+  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$ROOT_REPO_DIR/audiocraft"}
 
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7003}
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"

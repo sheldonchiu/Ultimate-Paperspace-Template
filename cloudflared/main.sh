@@ -14,6 +14,11 @@ log "Setting up Cloudflare Tunnel"
 
 if ! [[ -e "/tmp/cloudflared.prepared" ]]; then
     
+    if env | grep -q "PAPERSPACE"; then
+      echo "Tunnel is not allowed in Paperspace, skipping..."
+      exit 0
+    fi
+
     cd /tmp
     curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
     dpkg -i cloudflared.deb

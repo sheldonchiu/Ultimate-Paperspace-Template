@@ -20,9 +20,9 @@ bash $current_dir/../utils/prepare_repo.sh
 if ! [[ -e "/tmp/musicgen.prepared" ]]; then
     
     
-    python3.10 -m venv /tmp/musicgen-env
+    python3.10 -m venv $VENV_DIR/musicgen-env
     
-    source /tmp/musicgen-env/bin/activate
+    source $VENV_DIR/musicgen-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -34,15 +34,15 @@ if ! [[ -e "/tmp/musicgen.prepared" ]]; then
     touch /tmp/musicgen.prepared
 else
     
-    source /tmp/musicgen-env/bin/activate
+    source $VENV_DIR/musicgen-env/bin/activate
     
 fi
 log "Finished Preparing Environment for Musicgen"
 
 
 
-if [ -z CF_TOKEN ]; then
-  sed -i "s|launch_kwargs = {}|launch_kwargs = {'root_path': '/musicgen'}|g" /storage/audiocraft/demos/musicgen_app.py
+if env | grep -q "PAPERSPACE"; then
+  sed -i "s|launch_kwargs = {}|launch_kwargs = {'root_path': '/musicgen'}|g" $REPO_DIR/demos/musicgen_app.py
 fi
 
 echo "### Starting Musicgen ###"
@@ -51,8 +51,8 @@ cd $REPO_DIR
 PYTHONUNBUFFERED=1 nohup python demos/musicgen_app.py --server_port $MUSICGEN_PORT  ${EXTRA_MUSICGEN_ARGS} > $LOG_DIR/musicgen.log 2>&1 &
 echo $! > /tmp/musicgen.pid
 
-if [ -z CF_TOKEN ]; then
-  sed -i "s|launch_kwargs = {'root_path': '/musicgen'}|launch_kwargs = {}|g" /storage/audiocraft/demos/musicgen_app.py
+if env | grep -q "PAPERSPACE"; then
+  sed -i "s|launch_kwargs = {'root_path': '/musicgen'}|launch_kwargs = {}|g" $REPO_DIR/demos/musicgen_app.py
 fi
 
 send_to_discord "Musicgen Started"

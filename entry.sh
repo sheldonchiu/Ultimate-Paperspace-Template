@@ -26,13 +26,14 @@ export SCRIPT_ROOT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 cd $SCRIPT_ROOT_DIR
 source_env_file
 
-#nginx
-apt-get update -qq
-apt-get install -qq -y nginx > /dev/null
-
-mv /notebooks/nginx/default /etc/nginx/sites-available/default
-mv /notebooks/nginx/nginx.conf /etc/nginx/nginx.conf
-/usr/sbin/nginx
+# Use Nginx to expose web app in Paperspace
+if env | grep -q "PAPERSPACE"; then
+  apt-get update -qq
+  apt-get install -qq -y nginx > /dev/null
+  mv /notebooks/nginx/default /etc/nginx/sites-available/default
+  mv /notebooks/nginx/nginx.conf /etc/nginx/nginx.conf
+  /usr/sbin/nginx
+fi
 
 # Read the RUN_SCRIPT environment variable
 run_script="$RUN_SCRIPT"

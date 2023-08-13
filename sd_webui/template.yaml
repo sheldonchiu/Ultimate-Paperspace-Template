@@ -23,7 +23,6 @@ prepare_repo: |-
   symlinks=(
       "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-webui"
       "$REPO_DIR/log:$REPO_DIR/outputs/log"
-      "$OUTPUTS_DIR:$WORKING_DIR/storage"
       "$MODEL_DIR:$WORKING_DIR/models"
       "$MODEL_DIR/sd:$LINK_MODEL_TO"
       "$MODEL_DIR/lora:$LINK_LORA_TO"
@@ -68,7 +67,7 @@ start: |-
 export_required_env: ""
 other_commands: |-
   export MODEL_DIR=${{ '{' ~ name|upper }}_MODEL_DIR:-"$DATA_DIR/stable-diffusion-models"}
-  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/stable-diffusion-webui"}
+  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$ROOT_REPO_DIR/stable-diffusion-webui"}
 
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-"7008"}
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"

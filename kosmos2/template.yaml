@@ -45,17 +45,17 @@ prepare_env: |-
     *A4000*)
       pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
       wget -q https://huggingface.co/sheldonxxxx/apex-paperspace-binary/resolve/main/apex_a4000.tar.gz
-      tar -xzf apex_a4000.tar.gz -C /tmp/{{ name }}-env/lib/python3.9/site-packages/
+      tar -xzf apex_a4000.tar.gz -C $VENV_DIR/{{ name }}-env/lib/python3.9/site-packages/
       ;;
     *P5000*)
       pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
       wget -q https://huggingface.co/sheldonxxxx/apex-paperspace-binary/resolve/main/apex_p5000.tar.gz
-      tar -xzf apex_p5000.tar.gz -C /tmp/{{ name }}-env/lib/python3.9/site-packages/
+      tar -xzf apex_p5000.tar.gz -C $VENV_DIR/{{ name }}-env/lib/python3.9/site-packages/
       ;;
     *RTX5000*)
       pip install -v --disable-pip-version-check --no-cache-dir --no-build-isolation  .
       wget -q https://huggingface.co/sheldonxxxx/apex-paperspace-binary/resolve/main/apex_rtx5000.tar.gz
-      tar -xzf apex_rtx5000.tar.gz -C /tmp/{{ name }}-env/lib/python3.9/site-packages/
+      tar -xzf apex_rtx5000.tar.gz -C $VENV_DIR/{{ name }}-env/lib/python3.9/site-packages/
       ;;
     *)
       echo "No apex binary for $gpu_name, building from source"
@@ -71,7 +71,7 @@ download_model: |-
   aria2c --file-allocation=none -c -x 16 -s 16 --summary-interval=0 --console-log-level=warn --continue  --out=kosmos-2.pt "https://huggingface.co/sheldonxxxx/kosmos-2/resolve/main/kosmos-2-min.pt"
 
 action_before_start: |-
-  if [ -z $CF_TOKEN ]; then
+  if env | grep -q "PAPERSPACE"; then
     sed -i "s/demo.launch()/demo.launch(root_path='\\/kosmos2')/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
   fi
 
@@ -103,7 +103,7 @@ start: |-
 
   echo $! > /tmp/{{ name }}.pid
 
-  # if [ -z $CF_TOKEN ]; then
+  # if env | grep -q "PAPERSPACE"; then
   #   sed -i "s/demo.launch(root_path='\\/kosmos2')/demo.launch()/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
   # fi
 

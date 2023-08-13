@@ -16,7 +16,6 @@ mkdir -p $INVOKEAI_ROOT/models
 
 symlinks=(
   "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-invokeai"
-  "$OUTPUTS_DIR:$WORKING_DIR/storage"
   "$MODEL_DIR:$WORKING_DIR/models"
   "$MODEL_DIR/sd:$LINK_MODEL_TO"
   "$MODEL_DIR/lora:$LINK_LORA_TO"
@@ -29,9 +28,9 @@ bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
 if ! [[ -e "/tmp/sd_invoke.prepared" ]]; then
     
     
-    python3.10 -m venv /tmp/sd_invoke-env
+    python3.10 -m venv $VENV_DIR/sd_invoke-env
     
-    source /tmp/sd_invoke-env/bin/activate
+    source $VENV_DIR/sd_invoke-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -46,7 +45,7 @@ if ! [[ -e "/tmp/sd_invoke.prepared" ]]; then
     touch /tmp/sd_invoke.prepared
 else
     
-    source /tmp/sd_invoke-env/bin/activate
+    source $VENV_DIR/sd_invoke-env/bin/activate
     
 fi
 log "Finished Preparing Environment for Stable Diffusion InvokeAI"

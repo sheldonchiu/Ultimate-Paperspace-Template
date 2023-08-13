@@ -23,9 +23,9 @@ bash $current_dir/../utils/prepare_repo.sh
 if ! [[ -e "/tmp/textgen.prepared" ]]; then
     
     
-    python3.10 -m venv /tmp/textgen-env
+    python3.10 -m venv $VENV_DIR/textgen-env
     
-    source /tmp/textgen-env/bin/activate
+    source $VENV_DIR/textgen-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -54,7 +54,7 @@ if ! [[ -e "/tmp/textgen.prepared" ]]; then
     touch /tmp/textgen.prepared
 else
     
-    source /tmp/textgen-env/bin/activate
+    source $VENV_DIR/textgen-env/bin/activate
     
 fi
 log "Finished Preparing Environment for Text generation Webui"
@@ -79,7 +79,7 @@ bash $current_dir/../utils/llm_model_download.sh
 log "Finished Downloading Models for Text generation Webui"
 
 
-if [ -z CF_TOKEN ]; then
+if env | grep -q "PAPERSPACE"; then
   sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/g" $REPO_DIR/server.py
 fi
 
@@ -102,7 +102,7 @@ fi
 echo $! > /tmp/textgen.pid
 
 # undo the change for git pull to work
-if [ -z CF_TOKEN ]; then
+if env | grep -q "PAPERSPACE"; then
   sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/g" $REPO_DIR/server.py
 fi
 

@@ -55,7 +55,7 @@ download_model: |-
   bash $current_dir/../utils/llm_model_download.sh
 
 action_before_start: |-
-  if [ -z CF_TOKEN ]; then
+  if env | grep -q "PAPERSPACE"; then
     sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/g" $REPO_DIR/server.py
   fi
 
@@ -77,7 +77,7 @@ start: |-
   echo $! > /tmp/{{ name }}.pid
   
   # undo the change for git pull to work
-  if [ -z CF_TOKEN ]; then
+  if env | grep -q "PAPERSPACE"; then
     sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/g" $REPO_DIR/server.py
   fi
   
@@ -88,7 +88,7 @@ custom_stop: ""
 export_required_env: ""
 other_commands: |-
   export MODEL_DIR=${{ '{' ~ name|upper }}_MODEL_DIR:-"$DATA_DIR/llm-models"}
-  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$OUTPUTS_DIR/text-generation-webui"}
+  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$ROOT_REPO_DIR/text-generation-webui"}
 
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7009}
   export {{ name|upper }}_OPENAI_API_PORT=${{ '{' ~ name|upper }}_OPENAI_API_PORT:-7013}
