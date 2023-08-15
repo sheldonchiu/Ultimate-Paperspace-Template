@@ -11,8 +11,14 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Stable Diffusion Fooocus ###"
 log "Setting up Stable Diffusion Fooocus"
+
+if env | grep -q "PAPERSPACE" && [ -f $REPO_DIR/webui.py ]; then
+  sed -i "s|shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share, root_path='/sd-fooocus')|shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share)|g" $REPO_DIR/webui.py
+fi
+
 TARGET_REPO_URL="https://github.com/lllyasviel/Fooocus.git" \
 TARGET_REPO_DIR=$REPO_DIR \
+TARGET_REPO_BRANCH="main" \
 UPDATE_REPO=$SD_FOOOCUS_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$SD_FOOOCUS_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh 
@@ -56,10 +62,14 @@ bash $current_dir/../utils/sd_model_download/main.sh
 log "Finished Downloading Models for Stable Diffusion Fooocus"
 
 
+if env | grep -q "PAPERSPACE"; then
+  sed -i "s|shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share)|shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share, root_path='/sd-fooocus')|g" $REPO_DIR/webui.py
+fi
+
 echo "### Starting Stable Diffusion Fooocus ###"
 log "Starting Stable Diffusion Fooocus"
 cd $REPO_DIR
-GRADIO_ROOT_PATH="/sd_fooocus" python launch.py --port 7015
+python launch.py --port 7015
 
 send_to_discord "Stable Diffusion Fooocus Started"
 
