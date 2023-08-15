@@ -30,8 +30,8 @@ source_env_file
 if env | grep -q "PAPERSPACE"; then
   apt-get update -qq
   apt-get install -qq -y nginx > /dev/null
-  mv /notebooks/nginx/default /etc/nginx/sites-available/default
-  mv /notebooks/nginx/nginx.conf /etc/nginx/nginx.conf
+  cp /notebooks/nginx/default /etc/nginx/sites-available/default
+  cp /notebooks/nginx/nginx.conf /etc/nginx/nginx.conf
   /usr/sbin/nginx
 fi
 
