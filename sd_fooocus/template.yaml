@@ -44,7 +44,8 @@ action_before_start: |-
 
 start: |-
   cd $REPO_DIR
-  python launch.py --port {{ port }}
+  python launch.py --port {{ port }} ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+  echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
 other_commands: |-

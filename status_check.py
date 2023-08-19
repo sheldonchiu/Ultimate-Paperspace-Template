@@ -1,5 +1,4 @@
-# This script will be execute with command server python venv
-# new package need to be reflected in the command server setup script
+#!/usr/local/bin/python
 import os
 import psutil
 import subprocess

@@ -26,8 +26,13 @@ export SCRIPT_ROOT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 cd $SCRIPT_ROOT_DIR
 source_env_file
 
-# Use Nginx to expose web app in Paperspace
+
 if env | grep -q "PAPERSPACE"; then
+  # Add alias to check the status of the web app
+  chmod +x /notebooks/status_check.py
+  echo "alias status='watch -n 1 /notebooks/status_check.py'" >> ~/.bashrc
+  
+  # Use Nginx to expose web app in Paperspace
   apt-get update -qq
   apt-get install -qq -y nginx > /dev/null
   cp /notebooks/nginx/default /etc/nginx/sites-available/default
