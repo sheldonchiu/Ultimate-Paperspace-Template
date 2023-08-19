@@ -18,6 +18,11 @@ def is_process_running(pid):
         return True
     except OSError:
         return False
+    
+def print_nvidia_smi_output():
+    result = subprocess.run(['nvidia-smi'], capture_output=True, text=True)
+    output = result.stdout
+    print(output)
 
 # Find files matching the pattern *.pid in /tmp
 pid_files = [f for f in os.listdir('/tmp') if f.endswith('.pid')]
@@ -69,3 +74,5 @@ for pid_file in pid_files:
     table.add_row([pid_file.replace('.pid', ''), running, host])
 
 print(table)
+print("\n\n")
+print_nvidia_smi_output()
