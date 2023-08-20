@@ -27,7 +27,6 @@ fi
 
 symlinks=(
     "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-webui"
-    "$REPO_DIR/log:$REPO_DIR/outputs/log"
     "$MODEL_DIR:$WORKING_DIR/models"
     "$MODEL_DIR/sd:$LINK_MODEL_TO"
     "$MODEL_DIR/lora:$LINK_LORA_TO"

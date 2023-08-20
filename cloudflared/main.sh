@@ -71,7 +71,7 @@ if [[ $CF_TOKEN == "quick" ]]; then
             if [[ $? -eq 0 ]] && [[ "$(echo "$response" | jq -r '.hostname')" != "" ]]; then
                 hostname=$(echo "$response" | jq -r '.hostname')
                 echo $hostname > $hostfile
-                send_to_discord "V https://$hostname for $name"
+                send_to_discord "Visit https://$hostname for $name"
                 break
             fi
             retries=$((retries+1))
