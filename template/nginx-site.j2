@@ -36,7 +36,7 @@ server {
     # {{ item['name'] }}
     location ~* ^/{{ item['name']|replace('_', '-') }}/(.*)$ {
         {% if item['nginx_override'] %}
-        {{ item['nginx_override'] }}
+        {{ item['nginx_override']|indent(8) }}
         {% else %}
         rewrite ^/{{ item['name']|replace('_', '-') }}/(.*) /$1 break;
         proxy_pass http://localhost:{{ item['port'] }};

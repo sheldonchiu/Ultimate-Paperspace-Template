@@ -12,6 +12,7 @@ if __name__ == "__main__":
     # Load the YAML file
     targets = Path(current_path).parent / "**" / "template.yaml"
     yaml_files = glob(str(targets), recursive=True)
+    yaml_files.sort()
 
     # Load the YAML file as a Jinja2 template
     data = []

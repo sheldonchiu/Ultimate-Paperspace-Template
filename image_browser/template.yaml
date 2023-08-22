@@ -44,4 +44,5 @@ other_commands: |-
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
 
 nginx_override: |-
+  absolute_redirect off;
   return 301 /infinite_image_browsing;
