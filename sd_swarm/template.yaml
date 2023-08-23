@@ -16,13 +16,14 @@ prepare_repo: |-
 
   symlinks=(
       "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-swarm"
-      # "$MODEL_DIR:$WORKING_DIR/models"
-      # "$MODEL_DIR/sd:$LINK_MODEL_TO"
-      # "$MODEL_DIR/lora:$LINK_LORA_TO"
-      # "$MODEL_DIR/vae:$LINK_VAE_TO"
-      # "$MODEL_DIR/hypernetwork:$LINK_HYPERNETWORK_TO"
-      # "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
-      # "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
+      "$MODEL_DIR:$WORKING_DIR/models"
+      "$MODEL_DIR/sd:$LINK_MODEL_TO"
+      "$MODEL_DIR/lora:$LINK_LORA_TO"
+      "$MODEL_DIR/vae:$LINK_VAE_TO"
+      "$MODEL_DIR/hypernetwork:$LINK_HYPERNETWORK_TO"
+      "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
+      "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
+      "$MODEL_DIR/clip_vision:$LINK_CLIP_TO"
   )
   bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
 
@@ -41,7 +42,7 @@ action_before_start: ""
 
 start: |-
   cd $REPO_DIR
-  bash launch-linux.sh --host * --port {{ port }} --launch_mode web ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+  bash launch-linux.sh --port {{ port }} --launch_mode none ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
@@ -53,9 +54,11 @@ other_commands: |-
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
 
-  # export LINK_MODEL_TO=${{ '{' ~ name|upper }}_LINK_MODEL_TO:-"${REPO_DIR}/models/checkpoints"}
-  # export LINK_VAE_TO=${{ '{' ~ name|upper }}_LINK_VAE_TO:-"${REPO_DIR}/models/vae"}
-  # export LINK_HYPERNETWORK_TO=${{ '{' ~ name|upper }}_LINK_HYPERNETWORK_TO:-"${REPO_DIR}/models/hypernetworks"}
-  # export LINK_LORA_TO=${{ '{' ~ name|upper }}_LINK_LORA_TO:-"${REPO_DIR}/models/loras"}
-  # export LINK_CONTROLNET_TO=${{ '{' ~ name|upper }}_LINK_CONTROLNET_TO:-"${REPO_DIR}/models/controlnet"}
-  # export LINK_EMBEDDING_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/embeddings"}
+  export LINK_MODEL_TO=${{ '{' ~ name|upper }}_LINK_MODEL_TO:-"${REPO_DIR}/Models/Stable-Diffusion"}
+  export LINK_VAE_TO=${{ '{' ~ name|upper }}_LINK_VAE_TO:-"${REPO_DIR}/Models/VAE"}
+  export LINK_HYPERNETWORK_TO=${{ '{' ~ name|upper }}_LINK_HYPERNETWORK_TO:-"${REPO_DIR}/Models/hypernetworks"}
+  export LINK_LORA_TO=${{ '{' ~ name|upper }}_LINK_LORA_TO:-"${REPO_DIR}/Models/Lora"}
+  export LINK_CONTROLNET_TO=${{ '{' ~ name|upper }}_LINK_CONTROLNET_TO:-"${REPO_DIR}/Models/controlnet"}
+  export LINK_EMBEDDING_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/Models/Embeddings"}
+  export LINK_CLIP_TO=${{ '{' ~ name|upper }}_LINK_CLIP_TO:-"${REPO_DIR}/Models/clip_vision"}
+  

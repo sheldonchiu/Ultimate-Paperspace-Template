@@ -21,13 +21,14 @@ bash $current_dir/../utils/prepare_repo.sh
 
 symlinks=(
     "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-swarm"
-    # "$MODEL_DIR:$WORKING_DIR/models"
-    # "$MODEL_DIR/sd:$LINK_MODEL_TO"
-    # "$MODEL_DIR/lora:$LINK_LORA_TO"
-    # "$MODEL_DIR/vae:$LINK_VAE_TO"
-    # "$MODEL_DIR/hypernetwork:$LINK_HYPERNETWORK_TO"
-    # "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
-    # "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
+    "$MODEL_DIR:$WORKING_DIR/models"
+    "$MODEL_DIR/sd:$LINK_MODEL_TO"
+    "$MODEL_DIR/lora:$LINK_LORA_TO"
+    "$MODEL_DIR/vae:$LINK_VAE_TO"
+    "$MODEL_DIR/hypernetwork:$LINK_HYPERNETWORK_TO"
+    "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
+    "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
+    "$MODEL_DIR/clip_vision:$LINK_CLIP_TO"
 )
 bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
 if ! [[ -e "/tmp/sd_swarm.prepared" ]]; then
@@ -65,7 +66,7 @@ log "Finished Downloading Models for Stable Diffusion Swarm"
 echo "### Starting Stable Diffusion Swarm ###"
 log "Starting Stable Diffusion Swarm"
 cd $REPO_DIR
-bash launch-linux.sh --host * --port 7016 --launch_mode web ${EXTRA_SD_SWARM_ARGS} > $LOG_DIR/sd_swarm.log 2>&1 &
+bash launch-linux.sh --port 7016 --launch_mode none ${EXTRA_SD_SWARM_ARGS} > $LOG_DIR/sd_swarm.log 2>&1 &
 echo $! > /tmp/sd_swarm.pid
 
 send_to_discord "Stable Diffusion Swarm Started"
