@@ -26,7 +26,13 @@ prepare_repo: |-
   )
   bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
 
-prepare_env: ""
+prepare_env: |-
+  wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+  sudo dpkg -i packages-microsoft-prod.deb
+  rm packages-microsoft-prod.deb
+
+  apt-get update -qq
+  apt-get install -qq -y dotnet-sdk-7.0
 
 download_model: |-
   bash $current_dir/../utils/sd_model_download/main.sh

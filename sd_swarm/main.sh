@@ -40,7 +40,12 @@ if ! [[ -e "/tmp/sd_swarm.prepared" ]]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
     
-    
+    wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+    rm packages-microsoft-prod.deb
+
+    apt-get update -qq
+    apt-get install -qq -y dotnet-sdk-7.0
     
     touch /tmp/sd_swarm.prepared
 else
