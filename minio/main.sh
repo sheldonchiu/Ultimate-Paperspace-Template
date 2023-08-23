@@ -40,8 +40,7 @@ if [[ -z $S3_MIRROR_PATH || -z $S3_MIRROR_TO_BUCKET ]]; then
     log "ENV S3_MIRROR_PATH or S3_MIRROR_TO_BUCKET not provided, skipping minio mirror"
 else
     mkdir -p $S3_MIRROR_PATH
-    nohup /tmp/minio-binaries/mc mirror --overwrite --watch --quiet $S3_MIRROR_PATH dst/$S3_MIRROR_TO_BUCKET ${EXTRA_MINIO_ARGS} > $LOG_DIR/minio_mirror.log 2>&1 &
-    echo $! > /tmp/minio.pid
+    bash $current_dir/../utils/minio_sync.sh
 fi
 
 send_to_discord "Minio Started"
