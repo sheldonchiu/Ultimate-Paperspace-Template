@@ -47,7 +47,7 @@ run_script="$RUN_SCRIPT"
 IFS=',' read -ra scripts <<< "$run_script"
 
 echo "Installing common dependencies"
-apt-get install -qq curl jq git-lfs ninja-build aria2 zip python3-venv python3-dev python3.10 python3.10-venv python3.10-dev python3.10-tk -y > /dev/null
+apt-get install -qq curl jq git-lfs ninja-build dotnet-sdk-7.0 aria2 zip python3-venv python3-dev python3.10 python3.10-venv python3.10-dev python3.10-tk -y > /dev/null
 
 # Prepare required path
 mkdir -p $IMAGE_OUTPUTS_DIR

@@ -78,6 +78,11 @@ server {
             proxy_pass http://localhost:7006;
         }
     
+        if ($first_subpath ~* sd-swarm) {
+            rewrite ^/sd-swarm/(.*)$ /$1 break;
+            proxy_pass http://localhost:7016;
+        }
+    
         if ($first_subpath ~* sd-volta) {
             rewrite ^/sd-volta/(.*)$ /$1 break;
             proxy_pass http://localhost:7007;
@@ -207,6 +212,15 @@ server {
         
         rewrite ^/sd-invoke/(.*) /$1 break;
         proxy_pass http://localhost:7006;
+        
+    }
+    
+
+    # sd_swarm
+    location ~* ^/sd-swarm/(.*)$ {
+        
+        rewrite ^/sd-swarm/(.*) /$1 break;
+        proxy_pass http://localhost:7016;
         
     }
     
