@@ -25,7 +25,7 @@ def print_nvidia_smi_output():
     print(output)
 
 # Find files matching the pattern *.pid in /tmp
-pid_files = [f for f in os.listdir('/tmp') if f.endswith('.pid')]
+pid_files = [f for f in os.listdir('/tmp') if f.endswith('.pid') and 'minio' not in f]
 
 # Initialize the table
 table = PrettyTable()
