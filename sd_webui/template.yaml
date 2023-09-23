@@ -34,7 +34,7 @@ prepare_repo: |-
   
   #Prepare the controlnet model dir
   mkdir -p $MODEL_DIR/controlnet/
-  cp $LINK_CONTROLNET_TO/*.yaml $MODEL_DIR/controlnet/
+  # cp $LINK_CONTROLNET_TO/*.yaml $MODEL_DIR/controlnet/
 
 prepare_env: |-
   # fix install issue with pycairo, which is needed by sd-webui-controlnet
