@@ -32,13 +32,13 @@ symlinks=(
     "$MODEL_DIR/lora:$LINK_LORA_TO"
     "$MODEL_DIR/vae:$LINK_VAE_TO"
     "$MODEL_DIR/hypernetwork:$LINK_HYPERNETWORK_TO"
-    # "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
+    "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
     "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
 )
 bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
 
 #Prepare the controlnet model dir
-mkdir -p $MODEL_DIR/controlnet/
+# mkdir -p $MODEL_DIR/controlnet/
 # cp $LINK_CONTROLNET_TO/*.yaml $MODEL_DIR/controlnet/
 if ! [[ -e "/tmp/sd_webui.prepared" ]]; then
     
