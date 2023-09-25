@@ -14,6 +14,7 @@ log "Setting up Image Browser"
 TARGET_REPO_URL="https://github.com/zanllp/sd-webui-infinite-image-browsing.git" \
 TARGET_REPO_DIR=$REPO_DIR \
 UPDATE_REPO="auto" \
+TARGET_REPO_BRANCH="main" \
 bash $current_dir/../utils/prepare_repo.sh
 if ! [[ -e "/tmp/image_browser.prepared" ]]; then
     
