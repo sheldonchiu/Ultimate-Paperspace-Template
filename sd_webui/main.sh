@@ -71,10 +71,14 @@ fi
 log "Finished Preparing Environment for Stable Diffusion WebUI"
 
 
-echo "### Downloading Model for Stable Diffusion WebUI ###"
-log "Downloading Model for Stable Diffusion WebUI"
-bash $current_dir/../utils/sd_model_download/main.sh
-log "Finished Downloading Models for Stable Diffusion WebUI"
+if [[ -z "$SKIP_MODEL_DOWNLOAD" ]]; then
+  echo "### Downloading Model for Stable Diffusion WebUI ###"
+  log "Downloading Model for Stable Diffusion WebUI"
+  bash $current_dir/../utils/sd_model_download/main.sh
+  log "Finished Downloading Models for Stable Diffusion WebUI"
+else
+  log "Skipping Model Download for Stable Diffusion WebUI"
+fi
 
 
 echo "### Starting Stable Diffusion WebUI ###"

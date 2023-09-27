@@ -48,10 +48,14 @@ fi
 log "Finished Preparing Environment for preprocess"
 
 
-echo "### Downloading Model for preprocess ###"
-log "Downloading Model for preprocess"
-bash $current_dir/../utils/sd_model_download/main.sh
-log "Finished Downloading Models for preprocess"
+if [[ -z "$SKIP_MODEL_DOWNLOAD" ]]; then
+  echo "### Downloading Model for preprocess ###"
+  log "Downloading Model for preprocess"
+  bash $current_dir/../utils/sd_model_download/main.sh
+  log "Finished Downloading Models for preprocess"
+else
+  log "Skipping Model Download for preprocess"
+fi
 
 
 cd $current_dir/../kosmos2

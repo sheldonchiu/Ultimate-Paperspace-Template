@@ -51,10 +51,14 @@ fi
 log "Finished Preparing Environment for Stable Diffusion InvokeAI"
 
 
-echo "### Downloading Model for Stable Diffusion InvokeAI ###"
-log "Downloading Model for Stable Diffusion InvokeAI"
-bash $current_dir/../utils/sd_model_download/main.sh
-log "Finished Downloading Models for Stable Diffusion InvokeAI"
+if [[ -z "$SKIP_MODEL_DOWNLOAD" ]]; then
+  echo "### Downloading Model for Stable Diffusion InvokeAI ###"
+  log "Downloading Model for Stable Diffusion InvokeAI"
+  bash $current_dir/../utils/sd_model_download/main.sh
+  log "Finished Downloading Models for Stable Diffusion InvokeAI"
+else
+  log "Skipping Model Download for Stable Diffusion InvokeAI"
+fi
 
 
 echo "### Starting Stable Diffusion InvokeAI ###"

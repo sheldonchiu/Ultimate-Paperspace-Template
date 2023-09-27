@@ -43,38 +43,42 @@ fi
 log "Finished Preparing Environment for FastChat"
 
 
-echo "### Downloading Model for FastChat ###"
-log "Downloading Model for FastChat"
+if [[ -z "$SKIP_MODEL_DOWNLOAD" ]]; then
+  echo "### Downloading Model for FastChat ###"
+  log "Downloading Model for FastChat"
+  
+  mkdir -p $MODEL_DIR
+  bash $current_dir/../utils/llm_model_download.sh
 
-mkdir -p $MODEL_DIR
-bash $current_dir/../utils/llm_model_download.sh
-
-model_paths=""
-model_args=()
-IFS=',' read -ra models <<< "$FASTCHAT_MODEL"
-for model in "${models[@]}"
-do
-if [[ $model == "vicuna-13b" ]]; then
-    model_paths="$model_paths,$MODEL_DIR/TheBloke_vicuna-13b-v1.3.0-GPTQ"
-    model_args+=("--gptq-wbits 4 --gptq-groupsize 128")
-# elif [[ $model == "vicuna-13b" ]]; then
-#     if [[ ! -d "/tmp/vicuna-13b-1.1" ]]; then
-#         git clone https://huggingface.co/eachadea/vicuna-13b-1.1 /tmp/vicuna-13b-1.1
-#     fi
-#     model_paths="$model_paths,/tmp/vicuna-13b-1.1"
-#     model_args += ("--load-8bit")
-# elif [[ $model == "chatglm-6b" ]]; then
-#     if [[ ! -d "/tmp/chatglm-6b" ]]; then
-#         git clone https://huggingface.co/THUDM/chatglm-6b /tmp/chatglm-6b
-#     fi
-#     model_paths="$model_paths,/tmp/chatglm-6b"
-#     model_args += ("")
+  model_paths=""
+  model_args=()
+  IFS=',' read -ra models <<< "$FASTCHAT_MODEL"
+  for model in "${models[@]}"
+  do
+  if [[ $model == "vicuna-13b" ]]; then
+      model_paths="$model_paths,$MODEL_DIR/TheBloke_vicuna-13b-v1.3.0-GPTQ"
+      model_args+=("--gptq-wbits 4 --gptq-groupsize 128")
+  # elif [[ $model == "vicuna-13b" ]]; then
+  #     if [[ ! -d "/tmp/vicuna-13b-1.1" ]]; then
+  #         git clone https://huggingface.co/eachadea/vicuna-13b-1.1 /tmp/vicuna-13b-1.1
+  #     fi
+  #     model_paths="$model_paths,/tmp/vicuna-13b-1.1"
+  #     model_args += ("--load-8bit")
+  # elif [[ $model == "chatglm-6b" ]]; then
+  #     if [[ ! -d "/tmp/chatglm-6b" ]]; then
+  #         git clone https://huggingface.co/THUDM/chatglm-6b /tmp/chatglm-6b
+  #     fi
+  #     model_paths="$model_paths,/tmp/chatglm-6b"
+  #     model_args += ("")
+  else
+      log "Invalid model name. Please set FASTCHAT_MODEL to vicuna-7b, vicuna-13b or chatglm-6b"
+      exit 1
+  fi
+  done
+  log "Finished Downloading Models for FastChat"
 else
-    log "Invalid model name. Please set FASTCHAT_MODEL to vicuna-7b, vicuna-13b or chatglm-6b"
-    exit 1
+  log "Skipping Model Download for FastChat"
 fi
-done
-log "Finished Downloading Models for FastChat"
 
 
 echo "### Starting FastChat ###"

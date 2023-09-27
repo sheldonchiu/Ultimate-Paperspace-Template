@@ -56,10 +56,14 @@ fi
 log "Finished Preparing Environment for Stable Diffusion Fooocus"
 
 
-echo "### Downloading Model for Stable Diffusion Fooocus ###"
-log "Downloading Model for Stable Diffusion Fooocus"
-bash $current_dir/../utils/sd_model_download/main.sh
-log "Finished Downloading Models for Stable Diffusion Fooocus"
+if [[ -z "$SKIP_MODEL_DOWNLOAD" ]]; then
+  echo "### Downloading Model for Stable Diffusion Fooocus ###"
+  log "Downloading Model for Stable Diffusion Fooocus"
+  bash $current_dir/../utils/sd_model_download/main.sh
+  log "Finished Downloading Models for Stable Diffusion Fooocus"
+else
+  log "Skipping Model Download for Stable Diffusion Fooocus"
+fi
 
 
 if env | grep -q "PAPERSPACE"; then

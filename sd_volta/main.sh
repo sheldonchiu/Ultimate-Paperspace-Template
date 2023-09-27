@@ -49,10 +49,14 @@ fi
 log "Finished Preparing Environment for Stable Diffusion Volta"
 
 
-echo "### Downloading Model for Stable Diffusion Volta ###"
-log "Downloading Model for Stable Diffusion Volta"
-bash $current_dir/../utils/sd_model_download/main.sh
-log "Finished Downloading Models for Stable Diffusion Volta"
+if [[ -z "$SKIP_MODEL_DOWNLOAD" ]]; then
+  echo "### Downloading Model for Stable Diffusion Volta ###"
+  log "Downloading Model for Stable Diffusion Volta"
+  bash $current_dir/../utils/sd_model_download/main.sh
+  log "Finished Downloading Models for Stable Diffusion Volta"
+else
+  log "Skipping Model Download for Stable Diffusion Volta"
+fi
 
 
 echo "### Starting Stable Diffusion Volta ###"

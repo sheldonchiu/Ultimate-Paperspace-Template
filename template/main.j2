@@ -37,10 +37,14 @@ fi
 log "Finished Preparing Environment for {{ title }}"
 
 {% if download_model %}
-echo "### Downloading Model for {{ title }} ###"
-log "Downloading Model for {{ title }}"
-{{ download_model }}
-log "Finished Downloading Models for {{ title }}"
+if [[ -z "$SKIP_MODEL_DOWNLOAD" ]]; then
+  echo "### Downloading Model for {{ title }} ###"
+  log "Downloading Model for {{ title }}"
+  {{ download_model | indent(2)}}
+  log "Finished Downloading Models for {{ title }}"
+else
+  log "Skipping Model Download for {{ title }}"
+fi
 {% endif %}
 {% if action_before_start %}
 {{ action_before_start }}

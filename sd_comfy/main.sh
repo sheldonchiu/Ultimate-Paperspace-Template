@@ -53,10 +53,14 @@ fi
 log "Finished Preparing Environment for Stable Diffusion Comfy"
 
 
-echo "### Downloading Model for Stable Diffusion Comfy ###"
-log "Downloading Model for Stable Diffusion Comfy"
-bash $current_dir/../utils/sd_model_download/main.sh
-log "Finished Downloading Models for Stable Diffusion Comfy"
+if [[ -z "$SKIP_MODEL_DOWNLOAD" ]]; then
+  echo "### Downloading Model for Stable Diffusion Comfy ###"
+  log "Downloading Model for Stable Diffusion Comfy"
+  bash $current_dir/../utils/sd_model_download/main.sh
+  log "Finished Downloading Models for Stable Diffusion Comfy"
+else
+  log "Skipping Model Download for Stable Diffusion Comfy"
+fi
 
 
 echo "### Starting Stable Diffusion Comfy ###"

@@ -57,10 +57,14 @@ fi
 log "Finished Preparing Environment for Stable Diffusion Swarm"
 
 
-echo "### Downloading Model for Stable Diffusion Swarm ###"
-log "Downloading Model for Stable Diffusion Swarm"
-bash $current_dir/../utils/sd_model_download/main.sh
-log "Finished Downloading Models for Stable Diffusion Swarm"
+if [[ -z "$SKIP_MODEL_DOWNLOAD" ]]; then
+  echo "### Downloading Model for Stable Diffusion Swarm ###"
+  log "Downloading Model for Stable Diffusion Swarm"
+  bash $current_dir/../utils/sd_model_download/main.sh
+  log "Finished Downloading Models for Stable Diffusion Swarm"
+else
+  log "Skipping Model Download for Stable Diffusion Swarm"
+fi
 
 
 echo "### Starting Stable Diffusion Swarm ###"

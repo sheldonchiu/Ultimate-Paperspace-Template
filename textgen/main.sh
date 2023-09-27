@@ -60,23 +60,27 @@ fi
 log "Finished Preparing Environment for Text generation Webui"
 
 
-echo "### Downloading Model for Text generation Webui ###"
-log "Downloading Model for Text generation Webui"
-# Prepare model dir and link it under the models folder inside the repo
-mkdir -p $MODEL_DIR
-rm -rf $LINK_MODEL_TO
-ln -s $MODEL_DIR $LINK_MODEL_TO
-if [[ ! -f $MODEL_DIR/config.yaml ]]; then 
-    current_dir_save=$(pwd) 
-    cd $REPO_DIR
-    commit=$(git rev-parse HEAD)
-    wget -q https://raw.githubusercontent.com/oobabooga/text-generation-webui/$commit/models/config.yaml -P $MODEL_DIR
-    cd $current_dir_save
+if [[ -z "$SKIP_MODEL_DOWNLOAD" ]]; then
+  echo "### Downloading Model for Text generation Webui ###"
+  log "Downloading Model for Text generation Webui"
+  # Prepare model dir and link it under the models folder inside the repo
+  mkdir -p $MODEL_DIR
+  rm -rf $LINK_MODEL_TO
+  ln -s $MODEL_DIR $LINK_MODEL_TO
+  if [[ ! -f $MODEL_DIR/config.yaml ]]; then 
+      current_dir_save=$(pwd) 
+      cd $REPO_DIR
+      commit=$(git rev-parse HEAD)
+      wget -q https://raw.githubusercontent.com/oobabooga/text-generation-webui/$commit/models/config.yaml -P $MODEL_DIR
+      cd $current_dir_save
+  fi
+
+
+  bash $current_dir/../utils/llm_model_download.sh
+  log "Finished Downloading Models for Text generation Webui"
+else
+  log "Skipping Model Download for Text generation Webui"
 fi
-
-
-bash $current_dir/../utils/llm_model_download.sh
-log "Finished Downloading Models for Text generation Webui"
 
 
 if env | grep -q "PAPERSPACE"; then
