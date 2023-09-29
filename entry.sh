@@ -26,6 +26,12 @@ export SCRIPT_ROOT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
 cd $SCRIPT_ROOT_DIR
 source_env_file
 
+# Prepare Path (for local install)
+mkdir -p $DATA_DIR
+mkdir -p $WORKING_DIR
+mkdir -p $ROOT_REPO_DIR
+mkdir -p $VENV_DIR
+mkdir -p $LOG_DIR
 
 if env | grep -q "PAPERSPACE"; then
   # Add alias to check the status of the web app
@@ -55,8 +61,6 @@ mkdir -p $IMAGE_OUTPUTS_DIR
 if [[ ! -d $WORKING_DIR/image_outputs ]]; then
   ln -s $IMAGE_OUTPUTS_DIR $WORKING_DIR/image_outputs
 fi
-
-mkdir -p $LOG_DIR
 
 # Loop through each script and execute the corresponding case
 echo "Starting script(s)"
