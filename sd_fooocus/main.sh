@@ -16,9 +16,9 @@ if env | grep -q "PAPERSPACE" && [ -f $REPO_DIR/webui.py ]; then
   sed -i "s|shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share, root_path='/sd-fooocus')|shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share)|g" $REPO_DIR/webui.py
 fi
 
-TARGET_REPO_URL="https://github.com/lllyasviel/Fooocus.git" \
+TARGET_REPO_URL="https://github.com/MoonRide303/Fooocus-MRE.git" \
 TARGET_REPO_DIR=$REPO_DIR \
-TARGET_REPO_BRANCH="main" \
+TARGET_REPO_BRANCH="moonride-main" \
 UPDATE_REPO=$SD_FOOOCUS_UPDATE_REPO \
 UPDATE_REPO_COMMIT=$SD_FOOOCUS_UPDATE_REPO_COMMIT \
 bash $current_dir/../utils/prepare_repo.sh 

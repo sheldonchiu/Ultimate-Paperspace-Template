@@ -11,9 +11,9 @@ prepare_repo: |-
     sed -i "s|shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share, root_path='/sd-fooocus')|shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share)|g" $REPO_DIR/webui.py
   fi
 
-  TARGET_REPO_URL="https://github.com/lllyasviel/Fooocus.git" \
+  TARGET_REPO_URL="https://github.com/MoonRide303/Fooocus-MRE.git" \
   TARGET_REPO_DIR=$REPO_DIR \
-  TARGET_REPO_BRANCH="main" \
+  TARGET_REPO_BRANCH="moonride-main" \
   UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
   UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
   bash $current_dir/../utils/prepare_repo.sh 
@@ -51,7 +51,7 @@ start: |-
 export_required_env: ""
 other_commands: |-
   export MODEL_DIR=${{ '{' ~ name|upper }}_MODEL_DIR:-"$DATA_DIR/stable-diffusion-models"}
-  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$ROOT_REPO_DIR/Fooocus"}
+  export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$ROOT_REPO_DIR/Fooocus-MRE"}
 
   export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-"{{ port }}"}
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
