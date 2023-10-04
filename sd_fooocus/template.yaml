@@ -8,7 +8,7 @@ port: 7015
 prepare_repo: |-
 
   if env | grep -q "PAPERSPACE" && [ -f $REPO_DIR/webui.py ]; then
-    sed -i "s|share=args.share,root_path='/sd-fooocus'|share=args.share,|g" $REPO_DIR/webui.py
+    sed -i "s|share=args.share,root_path='/sd-fooocus',|share=args.share,|g" $REPO_DIR/webui.py
   fi
 
   TARGET_REPO_URL="https://github.com/MoonRide303/Fooocus-MRE.git" \
@@ -40,7 +40,7 @@ download_model: |-
 
 action_before_start: |-
   if env | grep -q "PAPERSPACE"; then
-    sed -i "s|share=args.share,|share=args.share,root_path='/sd-fooocus'|g" $REPO_DIR/webui.py
+    sed -i "s|share=args.share,|share=args.share,root_path='/sd-fooocus',|g" $REPO_DIR/webui.py
   fi
 
 start: |-
