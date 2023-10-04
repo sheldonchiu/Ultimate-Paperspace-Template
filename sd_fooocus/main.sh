@@ -13,7 +13,7 @@ echo "### Setting up Stable Diffusion Fooocus ###"
 log "Setting up Stable Diffusion Fooocus"
 
 if env | grep -q "PAPERSPACE" && [ -f $REPO_DIR/webui.py ]; then
-  sed -i "s|shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share, root_path='/sd-fooocus')|shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share)|g" $REPO_DIR/webui.py
+  sed -i "s|share=args.share,root_path='/sd-fooocus'|share=args.share,|g" $REPO_DIR/webui.py
 fi
 
 TARGET_REPO_URL="https://github.com/MoonRide303/Fooocus-MRE.git" \
@@ -68,7 +68,7 @@ fi
 
 
 if env | grep -q "PAPERSPACE"; then
-  sed -i "s|shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share)|shared.gradio_root.launch(inbrowser=True, server_name=args.listen, server_port=args.port, share=args.share, root_path='/sd-fooocus')|g" $REPO_DIR/webui.py
+  sed -i "s|share=args.share,|share=args.share,root_path='/sd-fooocus'|g" $REPO_DIR/webui.py
 fi
 
 echo "### Starting Stable Diffusion Fooocus ###"
