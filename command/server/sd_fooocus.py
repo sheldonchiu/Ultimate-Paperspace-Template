@@ -1,5 +1,14 @@
 from pydantic import BaseModel
+from playhouse.shortcuts import model_to_dict
 from fastapi import APIRouter
+from fastapi import Depends
+import asyncio
+
+from gradio_client import Client
+
+from .auth import authenticate
+from .db import Task
+from .share import *
 
 router = APIRouter()
 
@@ -74,4 +83,97 @@ class Base(BaseModel):
     revision_gallery: str = None
     keep_input_names: bool = False
     
+def save_result(result, task):
+    print(result)
+    task.status = "Done"
+    task.result = result
+    task.save()
+    
+    
+async def process(task: Task):
+    config = task.config
+    client = Client(f"{base_url}:{fooocus_port}{fooocus_subfoler}", serialize=False)
+    client.predict(
+        config.prompt,
+        config.negative_prompt,
+        config.image_styles,
+        config.performance,
+        config.resolution,
+        config.image_number,
+        config.seed,
+        config.sampling_sharpness,
+        config.sampler,
+        config.scheduler,
+        config.custom_steps,
+        config.custom_switch,
+        config.cfg_scale,
+        config.sd_model_checkpoint,
+        config.sd_refiner_checkpoint,
+        config.sd_model_clip_skip,
+        config.sd_refiner_clip_skip,
+        config.sd_lora_1,
+        config.sd_lora_1_weight,
+        config.sd_lora_2,
+        config.sd_lora_2_weight,
+        config.sd_lora_3,
+        config.sd_lora_3_weight,
+        config.sd_lora_4,
+        config.sd_lora_4_weight,
+        config.sd_lora_5,
+        config.sd_lora_5_weight,
+        config.save_metadata_json,
+        config.save_metadata_image,
+        config.image2image,
+        config.image2image_start_step,
+        config.image2image_denoise_strength,
+        config.image2image_scale_strength,
+        config.revision,
+        config.positive_prompt_strength,
+        config.negative_prompt_strength,
+        config.revision_image_1_strength,
+        config.revision_image_2_strength,
+        config.revision_image_3_strength,
+        config.revision_image_4_strength,
+        config.same_seed_for_all,
+        config.output_format,
+        config.control_lora_canny,
+        config.control_lora_canny_edge_detection_low,
+        config.control_lora_canny_edge_detection_high,
+        config.control_lora_canny_start,
+        config.control_lora_canny_stop,
+        config.control_lora_canny_strength,
+        config.control_lora_canny_model,
+        config.control_lora_depth,
+        config.control_lora_depth_start,
+        config.control_lora_depth_stop,
+        config.control_lora_depth_strength,
+        config.control_lora_depth_model,
+        config.prompt_expansion,
+        config.freeu,
+        config.backbone_scale_f_1,
+        config.backbone_scale_f_2,
+        config.skip_scale_f_1,
+        config.skip_scale_f_2,
+        config.enhance_image,
+        config.tab,
+        config.variation_or_upscale,
+        config.input_image,
+        config.outpaint,
+        config.style_iterator,
+        config.input_gallery,
+        config.revision_gallery,
+        config.keep_input_names,
+        fn_index=29,
+        result_callbacks=[lambda result: save_result(result, task)]
+    )
+    
+    
+    
+@router.post("/fooocus/t2i")
+def t2i(base: Base, authenticated: bool = Depends(authenticate)):
+    task = Task.create(task_type="fooocus_t2i", config=base.dict())
+    task.save()
+    
+    return model_to_dict(task)
+
     

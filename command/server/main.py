@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from playhouse.shortcuts import model_to_dict
 
 from .terminal import router as terminal_router
+from .db import Task
 
 app = FastAPI(docs_url=None, redoc_url=None)
 
@@ -15,3 +17,9 @@ app.add_middleware(
 )
 
 app.include_router(terminal_router)
+
+@app.get("/tasks/{task_id}")
+def get_task(task_id: int):
+    task = Task.get(Task.id==task_id)
+    #TODO
+    return model_to_dict(task)
