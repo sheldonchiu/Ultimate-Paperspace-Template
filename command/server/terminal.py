@@ -1,38 +1,17 @@
-import os
 from pydantic import BaseModel
-from fastapi import FastAPI, HTTPException, Depends
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi import APIRouter
+from fastapi import HTTPException, Depends
 from subprocess import PIPE, run, CalledProcessError
 
-app = FastAPI(docs_url=None, redoc_url=None)
-security = HTTPBasic()
-
-# Allow CORS from all origins
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+from .auth import authenticate
 
 class Command(BaseModel):
     command: str
-
-username = os.environ['COMMAND_USERNAME']
-password = os.environ['COMMAND_PASSWORD']
-
-# define a function to authenticate users
-def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
-    """Authenticate users with basic auth"""
-
-    if credentials.username != username or credentials.password != password:
-        raise HTTPException(status_code=401, detail="Invalid username or password")
-    return True
+    
+router = APIRouter()
 
 # define a route that executes a command and returns the output
-@app.post("/execute")
+@router.post("/execute")
 def execute_command(command: Command, authenticated: bool = Depends(authenticate)):
     """Execute a command and return the output"""
     try:
@@ -43,8 +22,8 @@ def execute_command(command: Command, authenticated: bool = Depends(authenticate
         raise HTTPException(status_code=500, detail=f"Error executing command: {e}")
     return {"code": result.returncode, "output": output, "error": error}
 
-@app.post("/run")
-async def start_process(command: Command, authenticated: bool = Depends(authenticate)):
+@router.post("/run")
+def start_process(command: Command, authenticated: bool = Depends(authenticate)):
     """Start a background process"""
     try:
         run(command.command, shell=True, check=False)

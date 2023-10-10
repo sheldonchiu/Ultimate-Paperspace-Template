@@ -22,7 +22,7 @@ if ! [[ -e "/tmp/command.prepared" ]]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
     
-    pip install fastapi uvicorn[standard] psutil
+    pip install fastapi uvicorn[standard] psutil peewee
     
     touch /tmp/command.prepared
 else
@@ -36,7 +36,7 @@ log "Finished Preparing Environment for Command Server"
 
 echo "### Starting Command Server ###"
 log "Starting Command Server"
-PYTHONUNBUFFERED=1 nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > $LOG_DIR/command.log 2>&1 &
+PYTHONUNBUFFERED=1 nohup uvicorn server/main:app --host 0.0.0.0 --port $COMMAND_PORT > $LOG_DIR/command.log 2>&1 &
 echo $! > /tmp/command.pid
 
 send_to_discord "Command Server Started"
