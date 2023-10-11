@@ -1,11 +1,13 @@
+import time
 from db import db, Task
 from sd_fooocus import process as fooocus_process
 
-task_return_image = [
-    "fooocus_t2i",
-]
+import logging
+logging.basicConfig(level=logging.INFO)
+
 
 def process():
+    logging.info("Start background process")
     while True:
         task = None
         with db.transaction():
@@ -15,9 +17,15 @@ def process():
                 .first()
             )
             if task:
+                logging.info(f"Processing task {task.id}")
+                task.status = "Running"
                 task.lock = True
                 task.save()
         if task:
             if task.task_type == "fooocus_t2i":
                 fooocus_process(task)
+                
+        time.sleep(1)
 
+if __name__ == "__main__":
+    process()
