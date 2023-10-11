@@ -7,8 +7,10 @@ port: 7000
 prepare_env: "pip install fastapi uvicorn[standard] psutil peewee gradio-client"
 
 start: |-
-  PYTHONUNBUFFERED=1 nohup uvicorn server/main:app --host 0.0.0.0 --port ${{ name|upper }}_PORT > $LOG_DIR/{{ name }}.log 2>&1 &
+  cd server
+  PYTHONUNBUFFERED=1 nohup uvicorn main:app --host 0.0.0.0 --port ${{ name|upper }}_PORT > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
+  cd ..
 
 export_required_env: |-
   export REQUIRED_ENV="COMMAND_USERNAME,COMMAND_PASSWORD"

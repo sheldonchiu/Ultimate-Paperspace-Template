@@ -1,6 +1,9 @@
-from .db import db, Task
-from .sd_fooocus import process as fooocus_process
+from db import db, Task
+from sd_fooocus import process as fooocus_process
 
+task_return_image = [
+    "fooocus_t2i",
+]
 
 def process():
     while True:

@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from fastapi import HTTPException, Depends
 from subprocess import PIPE, run, CalledProcessError
 
-from .auth import authenticate
+from auth import authenticate
 
 class Command(BaseModel):
     command: str

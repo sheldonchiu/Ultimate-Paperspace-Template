@@ -6,9 +6,9 @@ import asyncio
 
 from gradio_client import Client
 
-from .auth import authenticate
-from .db import Task
-from .share import *
+from auth import authenticate
+from db import Task
+from share import *
 
 router = APIRouter()
 
