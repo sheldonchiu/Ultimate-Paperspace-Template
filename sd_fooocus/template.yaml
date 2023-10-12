@@ -31,8 +31,7 @@ prepare_repo: |-
   bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
 
 prepare_env: |-
-  cd $REPO_DIR
-  pip3 install pygit2 packaging
+  pip install pygit2 packaging
 
 download_model: |-
   bash $current_dir/../utils/sd_model_download/main.sh

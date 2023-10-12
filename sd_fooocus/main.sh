@@ -44,8 +44,7 @@ if ! [[ -e "/tmp/sd_fooocus.prepared" ]]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
     
-    cd $REPO_DIR
-    pip3 install pygit2 packaging
+    pip install pygit2 packaging
     
     touch /tmp/sd_fooocus.prepared
 else
