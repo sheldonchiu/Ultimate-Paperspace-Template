@@ -32,8 +32,7 @@ prepare_repo: |-
 
 prepare_env: |-
   cd $REPO_DIR
-  pip3 install torch torchvision torchaudio
-  pip install -r requirements_versions.txt
+  pip3 install pygit2 packaging
 
 download_model: |-
   bash $current_dir/../utils/sd_model_download/main.sh
