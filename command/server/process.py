@@ -1,6 +1,6 @@
 import time
 from db import db, Task
-from sd_fooocus import process as fooocus_process
+from sd_fooocus import process_t2i as fooocus_process
 
 import logging
 logging.basicConfig(level=logging.INFO)
