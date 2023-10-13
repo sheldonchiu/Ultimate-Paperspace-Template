@@ -4,7 +4,7 @@ use_python: true
 expose: true
 port: 7000
 
-prepare_env: "pip install fastapi uvicorn[standard] psutil peewee gradio-client"
+prepare_env: "pip install -r server/requirements.txt"
 
 start: |-
   cd server

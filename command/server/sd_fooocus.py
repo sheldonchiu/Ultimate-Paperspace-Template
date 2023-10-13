@@ -23,8 +23,8 @@ class Base(BaseModel):
     positive_prompt_strength: float = 1.5
     negative_prompt_strength: float = 0.8
     guidance_end_at_step: int = 0.3
-    cfg_scale: int = 7
-    mimick_cfg: int = 7
+    cfg_scale: float = 7.0
+    mimick_cfg: float = 7.0
     
     image_styles: list[str] = ["Fooocus V2", "Default (Slightly Cinematic)"]
     
@@ -197,6 +197,8 @@ def process_t2i(task: Task):
         result_callbacks=[lambda *result: save_result(task, *result)],
     )
     logger.info(f"Task {task.id} submitted")
+    task.config['seed'] = seed
+    task.save()
 
 
 @router.post("/fooocus/t2i")

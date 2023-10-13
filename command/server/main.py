@@ -4,7 +4,6 @@ from playhouse.shortcuts import model_to_dict
 
 from terminal import router as terminal_router
 from sd_fooocus import router as fooocus_router
-from sd_fooocus import process
 from db import Task
 from share import *
 
