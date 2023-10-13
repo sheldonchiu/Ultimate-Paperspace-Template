@@ -121,6 +121,9 @@ def process_t2i(task: Task):
     )
 
     seed = client.predict(config["random_seed"], config["seed"], fn_index=21)
+    task.config['seed'] = seed
+    task.save()
+    
     client.predict(
         config['positive_prompt_strength'],
         config['negative_prompt_strength'],
@@ -197,8 +200,6 @@ def process_t2i(task: Task):
         result_callbacks=[lambda *result: save_result(task, *result)],
     )
     logger.info(f"Task {task.id} submitted")
-    task.config['seed'] = seed
-    task.save()
 
 
 @router.post("/fooocus/t2i")

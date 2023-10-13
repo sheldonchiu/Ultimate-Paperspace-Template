@@ -9,7 +9,6 @@ class Task(Model):
     config = JSONField()
     status = CharField(default="Pending")
     result = JSONField(default={})
-    lock = BooleanField(default=False)
 
     class Meta:
         database = db
