@@ -1,6 +1,6 @@
 import time
 from db import db, Task
-from sd_fooocus import process as fooocus_process
+from sd_fooocus import process_t2i as fooocus_process
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -13,13 +13,12 @@ def process():
         with db.transaction():
             task = (
                 Task.select()
-                .where((Task.status == "Pending") & (Task.lock == False))
+                .where(Task.status == "Pending")
                 .first()
             )
             if task:
                 logging.info(f"Processing task {task.id}")
                 task.status = "Running"
-                task.lock = True
                 task.save()
         if task:
             if task.task_type == "fooocus_t2i":

@@ -1,3 +1,7 @@
+from share import *
+from db import Task
+from auth import authenticate
+from gradio_client import Client
 from pydantic import BaseModel
 from playhouse.shortcuts import model_to_dict
 from fastapi import APIRouter
@@ -6,106 +10,148 @@ from fastapi.responses import FileResponse
 import asyncio
 
 import logging
+
 logger = logging.getLogger(__name__)
 
-from gradio_client import Client
-
-from auth import authenticate
-from db import Task
-from share import *
 
 router = APIRouter()
 
+
 class Base(BaseModel):
     prompt: str
-    negative_prompt: str = ""
-    image_styles: list[str] = ["Default (Slightly Cinematic)"]
+    negative_prompt: str = "low quality, bad hands, bad eyes, cropped, missing fingers, extra digit"
+    positive_prompt_strength: float = 1.5
+    negative_prompt_strength: float = 0.8
+    guidance_end_at_step: int = 0.3
+    cfg_scale: float = 7.0
+    mimick_cfg: float = 7.0
+    
+    image_styles: list[str] = ["Fooocus V2", "Default (Slightly Cinematic)"]
+    
     performance: str = "Speed"
-    resolution: str = "1024×1024 (1:1)"
+    resolution: str = "1024×1024"
     image_number: int = 1
-    seed: str = "0"
-    sampling_sharpness: float = 2.0
-    sampler: str = "dpmpp_2m_sde_gpu"
-    scheduler: str = "karras"
-    custom_steps: int = 24 
-    custom_switch: float = 0.75
-    cfg_scale: int = 7
+    random_seed: bool = True
+    seed: int = 0
+    
     sd_model_checkpoint: str = "sd_xl_base_1.0_0.9vae.safetensors"
     sd_refiner_checkpoint: str = "sd_xl_refiner_1.0_0.9vae.safetensors"
-    sd_model_clip_skip: int = -2
-    sd_refiner_clip_skip: int = -2
     sd_lora_1: str = "sd_xl_offset_example-lora_1.0.safetensors"
     sd_lora_1_weight: float = 0.5
     sd_lora_2: str = "None"
     sd_lora_2_weight: float = -2
-    sd_lora_3: str = "None" 
+    sd_lora_3: str = "None"
     sd_lora_3_weight: float = -2
     sd_lora_4: str = "None"
     sd_lora_4_weight: float = -2
     sd_lora_5: str = "None"
     sd_lora_5_weight: float = -2
-    save_metadata_json: bool = False
-    save_metadata_image: bool = True
-    image2image: bool = False
-    image2image_start_step: float = 0.06
-    image2image_denoise_strength: float = 0.94
-    image2image_scale_strength: float = 1.0
-    revision: bool = False
-    positive_prompt_strength: float = 1
-    negative_prompt_strength: float = 1
-    revision_image_1_strength: float = 1.0
-    revision_image_2_strength: float = 1.0
-    revision_image_3_strength: float = 1.0
-    revision_image_4_strength: float = 1.0
-    same_seed_for_all: bool = False
-    output_format: str = "png"
-    control_lora_canny: bool = False
-    control_lora_canny_edge_detection_low: float = 0.2
-    control_lora_canny_edge_detection_high: float = 0.8
-    control_lora_canny_start: float = 0.0
-    control_lora_canny_stop: float = 0.4
-    control_lora_canny_strength: float = 0.8
-    control_lora_canny_model: str = "control-lora-canny-rank256.safetensors"
-    control_lora_depth: bool = False
-    control_lora_depth_start: float = 0.0
-    control_lora_depth_stop: float = 0.4
-    control_lora_depth_strength: float = 0.8 
-    control_lora_depth_model: str = "control-lora-depth-rank128.safetensors"
-    prompt_expansion: bool = True
+    
+    sampling_sharpness: float = 2.0
+    sampler: str = "dpmpp_2m_sde_gpu"
+    scheduler: str = "karras"
+    forced_sampling_step: float = -1
+    forced_refiner_switch_step: float = -1
+    forced_generating_width: float = -1
+    forced_generating_height: float = -1
+    forced_denoising_strength_vary: float = -1
+    forced_denoising_strength_upscale: float = -1
+    mix_image_prompt_vary_upscale: bool = False
+    mix_image_prompt_inpaint: bool  = False
+    debug_preprocessor_control_nets: bool  = False
+    softness_of_control_net: float = 0.25
+    canny_low_threshold: int = 64
+    canny_high_threshold: int = 128
+    inpaint_engine: str = "v1"
+    refiner_swap_method: str = "joint"
+    
     freeu: bool = False
     backbone_scale_f_1: float = 1.01
     backbone_scale_f_2: float = 1.02
     skip_scale_f_1: float = 0.99
     skip_scale_f_2: float = 0.95
+    
     enhance_image: bool = False
     tab: str = "uov"
     variation_or_upscale: str = "Disabled"
-    input_image: str = None
-    outpaint: list[str] = []
-    input_image_2: str = None
-    style_iterator: bool = False
-    input_gallery: str = None
-    revision_gallery: str = None
-    keep_input_names: bool = False
+    upscale_image: str = None
+
+    outpaint_image: str = None
+    outpaint_mode: list[str] = []
     
+    image_prompt_1: str = None
+    image_prompt_type_1: str = "Image Prompt"
+    image_prompt_stop_at_1: float = 0.5
+    image_prompt_weight_1: float = 0.6
+    image_prompt_2: str = None
+    image_prompt_type_2: str = "Image Prompt"
+    image_prompt_stop_at_2: float = 0.5
+    image_prompt_weight_2: float = 0.6
+    image_prompt_3: str = None
+    image_prompt_type_3: str = "Image Prompt"
+    image_prompt_stop_at_3: float = 0.5
+    image_prompt_weight_3: float = 0.6
+    image_prompt_4: str = None
+    image_prompt_type_4: str = "Image Prompt"
+    image_prompt_stop_at_4: float = 0.5
+    image_prompt_weight_4: float = 0.6
+    
+    
+
+
 def save_result(task, *result):
     logger.info("Saving result for task %s", task.id)
-    
+
     output = []
-    images = result[2]['value']
+    images = result[2]["value"]
     for image in images:
-        output.append(image['name'].replace(gradio_output_root_path, ""))
+        output.append(image["name"].replace(gradio_output_root_path, ""))
 
     task.status = "Done"
     task.result = output
     task.save()
-    
-    
-def process(task: Task):
+
+
+def process_t2i(task: Task):
     config = task.config
-    client = Client(f"{base_url}:{fooocus_port}{fooocus_subfoler}", 
-                    output_dir=gradio_output_root_path,
-                    serialize=False)
+    client = Client(
+        f"{base_url}:{fooocus_port}{fooocus_subfoler}",
+        output_dir=gradio_output_root_path,
+        serialize=False,
+    )
+
+    seed = client.predict(config["random_seed"], config["seed"], fn_index=21)
+    task.config['seed'] = seed
+    task.save()
+    
+    client.predict(
+        config['positive_prompt_strength'],
+        config['negative_prompt_strength'],
+        config['guidance_end_at_step'],
+        config['mimick_cfg'],
+        config['sampler'],  # str (Option from: ['euler', 'euler_ancestral', 'heun', 'dpm_2', 'dpm_2_ancestral', 'lms', 'dpm_fast', 'dpm_adaptive', 'dpmpp_2s_ancestral', 'dpmpp_sde', 'dpmpp_sde_gpu', 'dpmpp_2m', 'dpmpp_2m_sde', 'dpmpp_2m_sde_gpu', 'dpmpp_3m_sde', 'dpmpp_3m_sde_gpu', 'ddpm', 'ddim', 'uni_pc', 'uni_pc_bh2']) in 'Sampler' Dropdown component
+        config['scheduler'],  # str (Option from: ['normal', 'karras', 'exponential', 'sgm_uniform', 'simple', 'ddim_uniform']) in 'Scheduler' Dropdown component
+        config['forced_sampling_step'],
+        config['forced_refiner_switch_step'],
+        config['forced_generating_width'],
+        config['forced_generating_height'],
+        config['forced_denoising_strength_vary'],
+        config['forced_denoising_strength_upscale'],
+        config['mix_image_prompt_vary_upscale'],
+        config['mix_image_prompt_inpaint'],
+        config['debug_preprocessor_control_nets'],
+        config['softness_of_control_net'],
+        config['canny_low_threshold'],
+        config['canny_high_threshold'],
+        config['inpaint_engine'],
+        config['refiner_swap_method'],
+        config["freeu"],
+        config["backbone_scale_f_1"],
+        config["backbone_scale_f_2"],
+        config["skip_scale_f_1"],
+        config["skip_scale_f_2"],
+        fn_index=22,
+    )
     client.submit(
         config["prompt"],
         config["negative_prompt"],
@@ -113,17 +159,11 @@ def process(task: Task):
         config["performance"],
         config["resolution"],
         config["image_number"],
-        config["seed"],
+        seed,
         config["sampling_sharpness"],
-        config["sampler"],
-        config["scheduler"],
-        config["custom_steps"],
-        config["custom_switch"],
         config["cfg_scale"],
         config["sd_model_checkpoint"],
         config["sd_refiner_checkpoint"],
-        config["sd_model_clip_skip"],
-        config["sd_refiner_clip_skip"],
         config["sd_lora_1"],
         config["sd_lora_1_weight"],
         config["sd_lora_2"],
@@ -134,62 +174,41 @@ def process(task: Task):
         config["sd_lora_4_weight"],
         config["sd_lora_5"],
         config["sd_lora_5_weight"],
-        config["save_metadata_json"],
-        config["save_metadata_image"],
-        config["image2image"],
-        config["image2image_start_step"],
-        config["image2image_denoise_strength"],
-        config["image2image_scale_strength"],
-        config["revision"],
-        config["positive_prompt_strength"],
-        config["negative_prompt_strength"],
-        config["revision_image_1_strength"],
-        config["revision_image_2_strength"],
-        config["revision_image_3_strength"],
-        config["revision_image_4_strength"],
-        config["same_seed_for_all"],
-        config["output_format"],
-        config["control_lora_canny"],
-        config["control_lora_canny_edge_detection_low"],
-        config["control_lora_canny_edge_detection_high"],
-        config["control_lora_canny_start"],
-        config["control_lora_canny_stop"],
-        config["control_lora_canny_strength"],
-        config["control_lora_canny_model"],
-        config["control_lora_depth"],
-        config["control_lora_depth_start"],
-        config["control_lora_depth_stop"],
-        config["control_lora_depth_strength"],
-        config["control_lora_depth_model"],
-        config["prompt_expansion"],
-        config["freeu"],
-        config["backbone_scale_f_1"],
-        config["backbone_scale_f_2"],
-        config["skip_scale_f_1"],
-        config["skip_scale_f_2"],
-        config["enhance_image"],
+        config['enhance_image'],
         config["tab"],
         config["variation_or_upscale"],
-        config["input_image"],
-        config["outpaint"],
-        config['input_image_2'],
-        config["style_iterator"],
-        config["input_gallery"],
-        config["revision_gallery"],
-        config["keep_input_names"],
-        fn_index=29,
-        result_callbacks=[lambda *result: save_result(task, *result)]
+        config['upscale_image'],
+        config['outpaint_mode'],
+        config['outpaint_image'],
+        config['image_prompt_1'],
+        config['image_prompt_stop_at_1'],
+        config['image_prompt_weight_1'],
+        config['image_prompt_type_1'],
+        config['image_prompt_2'],
+        config['image_prompt_stop_at_2'],
+        config['image_prompt_weight_2'],
+        config['image_prompt_type_2'],
+        config['image_prompt_3'],
+        config['image_prompt_stop_at_3'],
+        config['image_prompt_weight_3'],
+        config['image_prompt_type_3'],
+        config['image_prompt_4'],
+        config['image_prompt_stop_at_4'],
+        config['image_prompt_weight_4'],
+        config['image_prompt_type_4'],
+        fn_index=23,
+        result_callbacks=[lambda *result: save_result(task, *result)],
     )
     logger.info(f"Task {task.id} submitted")
-    
-    
-    
+
+
 @router.post("/fooocus/t2i")
 def t2i(base: Base, authenticated: bool = Depends(authenticate)):
     task = Task.create(task_type="fooocus_t2i", config=base.dict())
     task.save()
-    
+
     return model_to_dict(task)
+
 
 @router.get("/fooocus/image")
 def image(id: str):
