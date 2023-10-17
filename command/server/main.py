@@ -32,7 +32,7 @@ def get_status():
 @app.get('/info')
 def get_info():
     gpu_info = get_gpu_info()
-    return model_to_dict(gpu_info)
+    return gpu_info
 
 @app.get("/tasks/{task_id}")
 def get_task(task_id: int):

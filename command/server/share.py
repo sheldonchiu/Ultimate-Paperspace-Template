@@ -1,5 +1,7 @@
 import os
 
+log_format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
 task_return_image = [
     "fooocus_t2i",
 ]
