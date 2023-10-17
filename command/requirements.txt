@@ -3,3 +3,4 @@ gradio_client==0.6.0
 peewee==3.16.3
 psutil==5.9.5
 uvicorn==0.23.2
+pynvml==11.5.0

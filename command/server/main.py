@@ -6,6 +6,7 @@ from terminal import router as terminal_router
 from sd_fooocus import router as fooocus_router
 from db import Task
 from share import *
+from utils import get_gpu_info
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -27,6 +28,11 @@ app.include_router(fooocus_router)
 @app.get('/status')
 def get_status():
     return {'status': 'ok'}
+
+@app.get('/info')
+def get_info():
+    gpu_info = get_gpu_info()
+    return model_to_dict(gpu_info)
 
 @app.get("/tasks/{task_id}")
 def get_task(task_id: int):
