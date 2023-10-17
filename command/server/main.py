@@ -24,6 +24,10 @@ app.add_middleware(
 app.include_router(terminal_router)
 app.include_router(fooocus_router)
 
+@app.get('/status')
+def get_status():
+    return {'status': 'ok'}
+
 @app.get("/tasks/{task_id}")
 def get_task(task_id: int):
     task = Task.get(Task.id==task_id)
