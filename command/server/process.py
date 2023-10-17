@@ -2,9 +2,12 @@ import time
 import requests
 from db import db, Task
 from sd_fooocus import process_t2i as fooocus_process
+from share import *
 
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format=log_format)
 
 
 def wait_for_server_ready(url):
@@ -35,7 +38,9 @@ def process():
                 task.save()
         if task:
             if task.task_type == "fooocus_t2i":
+                logging.info("Checking if server is ready")
                 wait_for_server_ready("https://localhost:7015")
+                logging.info("Server is ready")
                 fooocus_process(task)
                 
         time.sleep(1)
