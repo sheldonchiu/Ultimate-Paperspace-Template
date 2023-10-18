@@ -38,10 +38,13 @@ def process():
                 task.save()
         if task:
             if task.task_type == "fooocus_t2i":
-                logging.info("Checking if server is ready")
-                wait_for_server_ready("http://localhost:7015")
-                logging.info("Server is ready")
-                fooocus_process(task)
+                try:
+                    logging.info("Checking if server is ready")
+                    wait_for_server_ready("http://localhost:7015")
+                    logging.info("Server is ready")
+                    fooocus_process(task)
+                except:
+                    logging.error("Encountered error during fooocus inference")
                 
         time.sleep(1)
 

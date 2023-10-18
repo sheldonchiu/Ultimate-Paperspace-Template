@@ -14,6 +14,7 @@ if [[ $1 == "reload" ]]; then
     log "Reloading Command Server"
     
     kill_pid $file
+    kill_pid /tmp/command_process.pid
     # Wait for 1s to avoid unexpected behavior
     sleep 1
     bash main.sh
