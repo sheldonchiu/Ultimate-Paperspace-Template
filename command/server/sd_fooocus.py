@@ -4,10 +4,8 @@ from auth import authenticate
 from gradio_client import Client
 from pydantic import BaseModel
 from playhouse.shortcuts import model_to_dict
-from fastapi import APIRouter
-from fastapi import Depends
+from fastapi import Depends, APIRouter
 from fastapi.responses import FileResponse
-import asyncio
 
 import logging
 
@@ -211,6 +209,6 @@ def t2i(base: Base, authenticated: bool = Depends(authenticate)):
 
 
 @router.get("/fooocus/image")
-def image(id: str):
+def image(id: str, authenticated: bool = Depends(authenticate)):
     image_path = os.path.join(gradio_output_root_path, id)
     return FileResponse(image_path, media_type="image/png")

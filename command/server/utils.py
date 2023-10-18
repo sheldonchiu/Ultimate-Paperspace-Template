@@ -22,13 +22,3 @@ def get_gpu_info():
 
     pynvml.nvmlShutdown()
     return gpu_info
-
-# Get GPU information
-gpu_info = get_gpu_info()
-
-# Print GPU information
-for gpu in gpu_info:
-    print(f"GPU {gpu['index']}: {gpu['name']}")
-    print(f"Memory Total: {gpu['memory_total']} MB")
-    print(f"Memory Used: {gpu['memory_used']} MB")
-    print()

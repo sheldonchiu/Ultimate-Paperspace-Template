@@ -13,6 +13,7 @@ start: |-
   if [[ -n "${DISCORD_BOT}" ]]; then
     nohup python process.py > $LOG_DIR/{{ name }}_process.log 2>&1 &
     echo $! > /tmp/{{ name }}_process.pid
+  fi
   cd ..
 
 export_required_env: |-
@@ -22,3 +23,10 @@ other_commands: |-
   export {{ name|upper }}_PORT=${{ '{' ~  name|upper }}_PORT:-"7000"}
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
+
+custom_reload: |-
+  kill_pid $file
+  kill_pid /tmp/{{ name }}_process.pid
+  # Wait for 1s to avoid unexpected behavior
+  sleep 1
+  bash main.sh

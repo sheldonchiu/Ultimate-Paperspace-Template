@@ -42,6 +42,7 @@ echo $! > /tmp/command.pid
 if [[ -n "${DISCORD_BOT}" ]]; then
   nohup python process.py > $LOG_DIR/command_process.log 2>&1 &
   echo $! > /tmp/command_process.pid
+fi
 cd ..
 
 send_to_discord "Command Server Started"

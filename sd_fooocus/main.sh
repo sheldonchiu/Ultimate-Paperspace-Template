@@ -47,8 +47,9 @@ if ! [[ -e "/tmp/sd_fooocus.prepared" ]]; then
     pip install pygit2 packaging
 
     cd $REPO_DIR
-    pip install -r requirements.txt
-    pip install xformers==0.0.22.post4
+    pip install torch==2.1.0 torchvision==0.16.0 --extra-index-url https://download.pytorch.org/whl/cu121
+    pip install -r requirements_versions.txt
+    pip install xformers==0.0.20
     
     touch /tmp/sd_fooocus.prepared
 else

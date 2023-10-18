@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import Body, FastAPI, Depends
+from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
 from playhouse.shortcuts import model_to_dict
 
@@ -7,6 +8,7 @@ from sd_fooocus import router as fooocus_router
 from db import Task
 from share import *
 from utils import get_gpu_info
+from auth import authenticate
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -30,17 +32,16 @@ def get_status():
     return {'status': 'ok'}
 
 @app.get('/info')
-def get_info():
+def get_info(authenticated: bool = Depends(authenticate)):
     gpu_info = get_gpu_info()
     return gpu_info
 
 @app.get("/tasks/{task_id}")
-def get_task(task_id: int):
+def get_task(task_id: int, authenticated: bool = Depends(authenticate)):
     task = Task.get(Task.id==task_id)
-    #TODO  
     return model_to_dict(task)
 
-@app.get("/tasks")
-def get_tasks(task_ids: list[int]):
+@app.post("/tasks")
+def get_tasks(task_ids: Annotated[list[int], Body()], authenticated: bool = Depends(authenticate)):
     tasks = Task.select().where(Task.id << task_ids)
     return [model_to_dict(task) for task in tasks]
