@@ -10,6 +10,9 @@ start: |-
   cd server
   PYTHONUNBUFFERED=1 nohup uvicorn main:app --host 0.0.0.0 --port ${{ name|upper }}_PORT > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
+  if [[ -n "${DISCORD_BOT}" ]]; then
+    nohup python process.py > $LOG_DIR/{{ name }}_process.log 2>&1 &
+    echo $! > /tmp/{{ name }}_process.pid
   cd ..
 
 export_required_env: |-

@@ -39,7 +39,7 @@ def process():
         if task:
             if task.task_type == "fooocus_t2i":
                 logging.info("Checking if server is ready")
-                wait_for_server_ready("https://localhost:7015")
+                wait_for_server_ready("http://localhost:7015")
                 logging.info("Server is ready")
                 fooocus_process(task)
                 
@@ -47,3 +47,6 @@ def process():
 
 if __name__ == "__main__":
     process()
+
+# TODO api for reading meta
+# dirty workaround: read log in fooocus output folder, complete md5 with output image in gradio folder

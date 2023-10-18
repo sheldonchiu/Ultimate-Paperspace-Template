@@ -45,6 +45,10 @@ if ! [[ -e "/tmp/sd_fooocus.prepared" ]]; then
     pip install --upgrade wheel setuptools
     
     pip install pygit2 packaging
+
+    cd $REPO_DIR
+    pip install -r requirements.txt
+    pip install xformers==0.0.22.post4
     
     touch /tmp/sd_fooocus.prepared
 else

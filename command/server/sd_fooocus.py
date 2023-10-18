@@ -32,7 +32,7 @@ class Base(BaseModel):
     resolution: str = "1024×1024"
     image_number: int = 1
     random_seed: bool = True
-    seed: int = 0
+    seed: int = -1
     
     sd_model_checkpoint: str = "sd_xl_base_1.0_0.9vae.safetensors"
     sd_refiner_checkpoint: str = "sd_xl_refiner_1.0_0.9vae.safetensors"
@@ -119,10 +119,10 @@ def process_t2i(task: Task):
         output_dir=gradio_output_root_path,
         serialize=False,
     )
-
-    seed = client.predict(config["random_seed"], config["seed"], fn_index=21)
-    task.config['seed'] = seed
-    task.save()
+    if config['seed'] == -1:
+        seed = client.predict(config["random_seed"], config["seed"], fn_index=21)
+        task.config['seed'] = seed
+        task.save()
     
     client.predict(
         config['positive_prompt_strength'],
