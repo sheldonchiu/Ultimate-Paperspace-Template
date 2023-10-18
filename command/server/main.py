@@ -39,3 +39,8 @@ def get_task(task_id: int):
     task = Task.get(Task.id==task_id)
     #TODO  
     return model_to_dict(task)
+
+@app.get("/tasks")
+def get_tasks(task_ids: list[int]):
+    tasks = Task.select().where(Task.id << task_ids)
+    return [model_to_dict(task) for task in tasks]
