@@ -76,9 +76,7 @@ fi
 
 echo "### Starting Stable Diffusion Fooocus ###"
 log "Starting Stable Diffusion Fooocus"
-cd $REPO_DIR
-python launch.py --port 7015 ${EXTRA_SD_FOOOCUS_ARGS} > $LOG_DIR/sd_fooocus.log 2>&1 &
-echo $! > /tmp/sd_fooocus.pid
+/usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart sd_fooocus
 
 send_to_discord "Stable Diffusion Fooocus Started"
 

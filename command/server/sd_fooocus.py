@@ -121,6 +121,8 @@ def process_t2i(task: Task):
         seed = client.predict(config["random_seed"], config["seed"], fn_index=21)
         task.config['seed'] = seed
         task.save()
+    else:
+        seed = config['seed']
     
     client.predict(
         config['positive_prompt_strength'],

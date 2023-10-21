@@ -76,15 +76,13 @@ action_before_start: |-
   fi
 
 start: |-
+  /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart {{ name }}
 
-  cd $REPO_DIR/kosmos-2
-  model_path=$MODEL_DIR/kosmos-2.pt
-
-  master_port=$((RANDOM%1000+20000))
-
-  CUDA_LAUNCH_BLOCKING=1 CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --master_port=$master_port --nproc_per_node=1 demo/gradio_app.py None \
+supervisord: |-
+  [program:{{ name }}]
+  command={{ venv_dir }}/{{ name }}-env/bin/python -m torch.distributed.launch --nproc_per_node=1 demo/gradio_app.py None \
       --task generation_obj \
-      --path $model_path \
+      --path {{ model_dir }}/kosmos-2.pt \
       --model-overrides "{'visual_pretrained': '',
               'dict_path':'data/dict.txt'}" \
       --dict-path 'data/dict.txt' \
@@ -99,27 +97,19 @@ start: |-
       --batch-size 1 \
       --nbest 1 \
       --no-repeat-ngram-size 3 \
-      --location-bin-size 32 > $LOG_DIR/{{ name }}.log 2>&1 &
-
-  echo $! > /tmp/{{ name }}.pid
-
-  # if env | grep -q "PAPERSPACE"; then
-  #   sed -i "s/demo.launch(root_path='\\/kosmos2')/demo.launch()/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
-  # fi
-
-custom_start: ""
-
-custom_reload: ""
-
-custom_stop: ""
-
-export_required_env: ""
+      --location-bin-size 32 
+  directory={{ repo_dir}}/kosmos-2
+  autostart=false
+  autorestart=true
+  stdout_logfile={{ log_dir }}/{{ name }}.log
+  redirect_stderr=true
+  environment=CUDA_LAUNCH_BLOCKING=1,CUDA_VISIBLE_DEVICES=0
 
 other_commands: |-
 
   export MODEL_DIR=${{ '{' ~ name|upper }}_MODEL_DIR:-"$DATA_DIR/kosmos-2"}
   export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$DATA_DIR/unilm"}
-  export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7014}
+  export {{ name|upper }}_PORT="{{ port }}"
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT:"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
 

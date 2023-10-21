@@ -36,12 +36,9 @@ log "Finished Preparing Environment for Command Server"
 
 echo "### Starting Command Server ###"
 log "Starting Command Server"
-cd server
-PYTHONUNBUFFERED=1 nohup uvicorn main:app --host 0.0.0.0 --port $COMMAND_PORT > $LOG_DIR/command.log 2>&1 &
-echo $! > /tmp/command.pid
+/usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart command
 if [[ -n "${DISCORD_BOT}" ]]; then
-  nohup python process.py > $LOG_DIR/command_process.log 2>&1 &
-  echo $! > /tmp/command_process.pid
+  /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart command_process
 fi
 cd ..
 

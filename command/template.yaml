@@ -7,12 +7,9 @@ port: 7000
 prepare_env: "pip install -r requirements.txt"
 
 start: |-
-  cd server
-  PYTHONUNBUFFERED=1 nohup uvicorn main:app --host 0.0.0.0 --port ${{ name|upper }}_PORT > $LOG_DIR/{{ name }}.log 2>&1 &
-  echo $! > /tmp/{{ name }}.pid
+  /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart {{ name }}
   if [[ -n "${DISCORD_BOT}" ]]; then
-    nohup python process.py > $LOG_DIR/{{ name }}_process.log 2>&1 &
-    echo $! > /tmp/{{ name }}_process.pid
+    /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart command_process
   fi
   cd ..
 
@@ -20,13 +17,31 @@ export_required_env: |-
   export REQUIRED_ENV="COMMAND_USERNAME,COMMAND_PASSWORD"
 
 other_commands: |-
-  export {{ name|upper }}_PORT=${{ '{' ~  name|upper }}_PORT:-"7000"}
+  export {{ name|upper }}_PORT="{{ port }}"
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
 
-custom_reload: |-
-  kill_pid $file
-  kill_pid /tmp/{{ name }}_process.pid
-  # Wait for 1s to avoid unexpected behavior
-  sleep 1
-  bash main.sh
+custom_stop: |-
+  /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf stop {{ name }}
+  if [[ -n "${DISCORD_BOT}" ]]; then
+    /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf stop command_process
+  fi
+
+supervisord: |-
+  [program:{{ name }}]
+  command={{ venv_dir }}/{{ name }}-env/bin/python -m uvicorn main:app --host 0.0.0.0 --port {{ port }}
+  directory=./{{ name }}/server
+  autostart=false
+  autorestart=true
+  stdout_logfile={{ log_dir }}/{{ name }}.log
+  redirect_stderr=true
+  environment=PYTHONUNBUFFERED=1
+
+  [program:command_process]
+  command={{ venv_dir }}/{{ name }}-env/bin/python process.py
+  directory=./{{ name }}/server
+  autostart=false
+  autorestart=true
+  stdout_logfile={{ log_dir }}/{{ name }}_process.log
+  redirect_stderr=true
+  environment=PYTHONUNBUFFERED=1

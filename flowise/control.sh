@@ -13,9 +13,6 @@ file="/tmp/flowise.pid"
 if [[ $1 == "reload" ]]; then
     log "Reloading Flowise"
     
-    kill_pid $file
-    # Wait for 1s to avoid unexpected behavior
-    sleep 1
     bash main.sh
     
 elif [[ $1 == "start" ]]; then
@@ -26,7 +23,7 @@ elif [[ $1 == "start" ]]; then
 elif [[ $1 == "stop" ]]; then
     log "Stopping Flowise"
         
-    kill_pid $file
+    /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf stop flowise
     
 
 else

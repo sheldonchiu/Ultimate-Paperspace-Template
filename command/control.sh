@@ -13,10 +13,6 @@ file="/tmp/command.pid"
 if [[ $1 == "reload" ]]; then
     log "Reloading Command Server"
     
-    kill_pid $file
-    kill_pid /tmp/command_process.pid
-    # Wait for 1s to avoid unexpected behavior
-    sleep 1
     bash main.sh
     
 elif [[ $1 == "start" ]]; then
@@ -26,8 +22,11 @@ elif [[ $1 == "start" ]]; then
     
 elif [[ $1 == "stop" ]]; then
     log "Stopping Command Server"
-        
-    kill_pid $file
+    
+    /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf stop command
+    if [[ -n "${DISCORD_BOT}" ]]; then
+      /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf stop command_process
+    fi
     
 
 else

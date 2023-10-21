@@ -51,13 +51,7 @@ fi
 
 echo "### Starting Image Browser ###"
 log "Starting Image Browser"
-if [ -n IMAGE_OUTPUTS_DIR ]; then
-    cd $IMAGE_OUTPUTS_DIR
-else
-    cd $REPO_DIR
-fi
-PYTHONUNBUFFERED=1 nohup python $REPO_DIR/app.py --port=$IMAGE_BROWSER_PORT ${EXTRA_IMAGE_BROWSER_ARGS} > $LOG_DIR/image_browser.log 2>&1 &
-echo $! > /tmp/image_browser.pid
+/usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart image_browser
 
 send_to_discord "Image Browser Started"
 

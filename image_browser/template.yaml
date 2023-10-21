@@ -27,23 +27,27 @@ action_before_start: |-
   fi
 
 start: |-
-  if [ -n IMAGE_OUTPUTS_DIR ]; then
-      cd $IMAGE_OUTPUTS_DIR
-  else
-      cd $REPO_DIR
-  fi
-  PYTHONUNBUFFERED=1 nohup python $REPO_DIR/app.py --port=$IMAGE_BROWSER_PORT ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
-  echo $! > /tmp/{{ name }}.pid
+  /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart {{ name }}
 
 export_required_env: |-
   export REQUIRED_ENV=""
 
 other_commands: |-
   export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$ROOT_REPO_DIR/sd-webui-infinite-image-browsing"}
-  export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-"7002"}
+  export {{ name|upper }}_PORT="{{ port }}"
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
 
 nginx_override: |-
   absolute_redirect off;
   return 301 /infinite_image_browsing;
+
+supervisord: |-
+  [program:{{ name }}]
+  command={{ venv_dir }}/{{ name }}-env/bin/python {{ root_repo_dir }}/sd-webui-infinite-image-browsing/app.py --port="{{ port }}"
+  directory={{ image_outputs_dir }}
+  autostart=false
+  autorestart=true
+  stdout_logfile={{ log_dir }}/{{ name }}.log
+  redirect_stderr=true
+  environment=PYTHONUNBUFFERED=1

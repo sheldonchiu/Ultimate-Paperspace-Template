@@ -13,3 +13,7 @@ for folder in */; do
         cd ..
     fi
 done
+
+cd $current_dir
+python3 supervisord.py
+python3 nginx.py

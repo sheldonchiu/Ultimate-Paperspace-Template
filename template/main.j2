@@ -51,7 +51,9 @@ fi
 {% endif%}
 echo "### Starting {{ title }} ###"
 log "Starting {{ title }}"
-{{ start }}
+{% if start %}{{ start }}{% else %}
+/usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart {{ name }}
+{% endif %}
 
 send_to_discord "{{ title }} Started"
 {% if expose %}
