@@ -50,7 +50,7 @@ fi
 echo "### Starting Musicgen ###"
 log "Starting Musicgen"
 cd $REPO_DIR
-PYTHONUNBUFFERED=1 nohup python demos/musicgen_app.py --server_port $MUSICGEN_PORT  ${EXTRA_MUSICGEN_ARGS} > $LOG_DIR/musicgen.log 2>&1 &
+PYTHONUNBUFFERED=1 service_loop "python demos/musicgen_app.py --server_port $MUSICGEN_PORT  ${EXTRA_MUSICGEN_ARGS}" > $LOG_DIR/musicgen.log 2>&1 &
 echo $! > /tmp/musicgen.pid
 
 if env | grep -q "PAPERSPACE"; then

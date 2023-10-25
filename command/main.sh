@@ -43,7 +43,7 @@ PYTHONUNBUFFERED=1 service_loop "python -m uvicorn main:app --host 0.0.0.0 --por
 echo $! > /tmp/command.pid
 
 if [[ -n "${DISCORD_BOT}" ]]; then
-  PYTHONUNBUFFERED=1 service_loop python process.py > $LOG_DIR/command_process.log 2>&1 &
+  PYTHONUNBUFFERED=1 service_loop "python process.py" > $LOG_DIR/command_process.log 2>&1 &
   echo $! > /tmp/command_process.pid
 fi
 

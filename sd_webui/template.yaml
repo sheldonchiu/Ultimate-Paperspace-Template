@@ -52,6 +52,15 @@ prepare_env: |-
 download_model: |-
   bash $current_dir/../utils/sd_model_download/main.sh
 
+start: |-
+  cd $REPO_DIR
+  auth=""
+  if [[ -n "${SD_WEBUI_GRADIO_AUTH}" ]]; then
+    auth="--gradio-auth ${SD_WEBUI_GRADIO_AUTH}"
+  fi
+  PYTHONUNBUFFERED=1 service_loop "python webui.py --xformers --port ${{ name|upper }}_PORT --subpath sd-webui $auth --controlnet-dir $MODEL_DIR/controlnet/ --enable-insecure-extension-access ${EXTRA_{{ name|upper }}_ARGS}" > $LOG_DIR/{{ name }}.log 2>&1 &
+  echo $! > /tmp/{{ name }}.pid
+
 other_commands: |-
   export MODEL_DIR="$DATA_DIR/stable-diffusion-models"
   export REPO_DIR="$ROOT_REPO_DIR/stable-diffusion-webui"
@@ -66,13 +75,3 @@ other_commands: |-
   export LINK_LORA_TO=${{ '{' ~ name|upper }}_LINK_LORA_TO:-"${REPO_DIR}/extensions/sd-webui-additional-networks/models/lora,${REPO_DIR}/models/Lora"}
   export LINK_CONTROLNET_TO=${{ '{' ~ name|upper }}_LINK_CONTROLNET_TO:-"${REPO_DIR}/extensions/sd-webui-controlnet/models"}
   export LINK_EMBEDDING_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/embeddings"}
-
-supervisord: |-
-  [program:{{ name }}]
-  command={{ venv_dir }}/{{ name }}-env/bin/python webui.py --xformers --port {{ port }} --subpath sd-webui --controlnet-dir {{ data_dir }}/stable-diffusion-models/controlnet/ --enable-insecure-extension-access
-  directory={{ root_repo_dir }}/stable-diffusion-webui
-  autostart=false
-  autorestart=true
-  stdout_logfile={{ log_dir }}/{{ name }}.log
-  redirect_stderr=true
-  environment=PYTHONUNBUFFERED=1

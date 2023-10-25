@@ -36,6 +36,11 @@ download_model: |-
 
 action_before_start: ""
 
+start: |-
+  cd "$REPO_DIR"
+  PYTHONUNBUFFERED=1 service_loop "python main.py --dont-print-server --highvram --port ${{ name|upper }}_PORT ${EXTRA_{{ name|upper }}_ARGS}" > $LOG_DIR/{{ name }}.log 2>&1 &
+  echo $! > /tmp/{{ name }}.pid
+
 export_required_env: ""
 other_commands: |-
   export MODEL_DIR="$DATA_DIR/stable-diffusion-models"
@@ -52,13 +57,3 @@ other_commands: |-
   export LINK_CONTROLNET_TO=${{ '{' ~ name|upper }}_LINK_CONTROLNET_TO:-"${REPO_DIR}/models/controlnet"}
   export LINK_EMBEDDING_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/models/embeddings"}
   export LINK_UPSCALER_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/models/upscale_models"}
-
-supervisord: |-
-  [program:{{ name }}]
-  command={{ venv_dir }}/{{ name }}-env/bin/python main.py --dont-print-server --highvram --port {{ port }}
-  directory={{ root_repo_dir }}/stable-diffusion-comfy
-  autostart=false
-  autorestart=true
-  stdout_logfile={{ log_dir }}/{{ name }}.log
-  redirect_stderr=true
-  environment=PYTHONUNBUFFERED=1

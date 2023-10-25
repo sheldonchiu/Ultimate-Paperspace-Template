@@ -175,6 +175,8 @@ llm_model_downlaod(){
 }
 
 service_loop(){
+  set +e
+
   COMMAND="$1"
 
   while true; do
@@ -182,19 +184,17 @@ service_loop(){
     PID=$!
     log "Started $COMMAND with PID $PID"
 
-    trap - SIGTERM
-    trap "kill_pid $PID" SIGTERM
-
     wait $PID
 
     # Check the exit status
     if [ $? -eq 0 ]; then
       # Process exited successfully, break out of the loop
+      log "Process exited successfully"
       break
     else
       # Process exited with an error, wait for a while and restart
+      log "Process exited with an error, restarting in 5 seconds"
       sleep 5
     fi
   done
-  trap - SIGTERM
 }

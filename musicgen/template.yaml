@@ -27,7 +27,7 @@ action_before_start: |-
 
 start: |-
   cd $REPO_DIR
-  PYTHONUNBUFFERED=1 nohup python demos/musicgen_app.py --server_port ${{ name|upper }}_PORT  ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 service_loop "python demos/musicgen_app.py --server_port ${{ name|upper }}_PORT  ${EXTRA_{{ name|upper }}_ARGS}" > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
   if env | grep -q "PAPERSPACE"; then

@@ -67,9 +67,9 @@ fi
 
 echo "### Starting Stable Diffusion Comfy ###"
 log "Starting Stable Diffusion Comfy"
-
-/usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart sd_comfy
-
+cd "$REPO_DIR"
+PYTHONUNBUFFERED=1 service_loop "python main.py --dont-print-server --highvram --port $SD_COMFY_PORT ${EXTRA_SD_COMFY_ARGS}" > $LOG_DIR/sd_comfy.log 2>&1 &
+echo $! > /tmp/sd_comfy.pid
 
 send_to_discord "Stable Diffusion Comfy Started"
 

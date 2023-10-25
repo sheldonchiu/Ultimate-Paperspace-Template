@@ -85,9 +85,13 @@ fi
 
 echo "### Starting Stable Diffusion WebUI ###"
 log "Starting Stable Diffusion WebUI"
-
-/usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart sd_webui
-
+cd $REPO_DIR
+auth=""
+if [[ -n "${SD_WEBUI_GRADIO_AUTH}" ]]; then
+  auth="--gradio-auth ${SD_WEBUI_GRADIO_AUTH}"
+fi
+PYTHONUNBUFFERED=1 service_loop "python webui.py --xformers --port $SD_WEBUI_PORT --subpath sd-webui $auth --controlnet-dir $MODEL_DIR/controlnet/ --enable-insecure-extension-access ${EXTRA_SD_WEBUI_ARGS}" > $LOG_DIR/sd_webui.log 2>&1 &
+echo $! > /tmp/sd_webui.pid
 
 send_to_discord "Stable Diffusion WebUI Started"
 

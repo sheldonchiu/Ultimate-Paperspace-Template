@@ -47,7 +47,9 @@ action_before_start: |-
   fi
 
 start: |-
-  /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart {{ name }}
+  cd $REPO_DIR
+  service_loop "python launch.py --port {{ port }}" > $LOG_DIR/{{ name }}.log 2>&1 &
+  echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
 other_commands: |-
@@ -64,13 +66,3 @@ other_commands: |-
   export LINK_LORA_TO=${{ '{' ~ name|upper }}_LINK_LORA_TO:-"${REPO_DIR}/models/loras"}
   export LINK_CONTROLNET_TO=${{ '{' ~ name|upper }}_LINK_CONTROLNET_TO:-"${REPO_DIR}/models/controlnet"}
   export LINK_EMBEDDING_TO=${{ '{' ~ name|upper }}_LINK_EMBEDDING_TO:-"${REPO_DIR}/embeddings"}
-
-
-supervisord: |-
-  [program:{{ name }}]
-  command={{ venv_dir }}/{{ name }}-env/bin/python launch.py --port {{ port }}
-  directory={{ root_repo_dir }}/Fooocus
-  autostart=false
-  autorestart=true
-  stdout_logfile={{ log_dir }}/{{ name }}.log
-  redirect_stderr=true

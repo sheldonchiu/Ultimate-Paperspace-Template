@@ -72,7 +72,7 @@ fi
 echo "### Starting Stable Diffusion Swarm ###"
 log "Starting Stable Diffusion Swarm"
 cd $REPO_DIR
-bash launch-linux.sh --port 7016 --launch_mode none ${EXTRA_SD_SWARM_ARGS} > $LOG_DIR/sd_swarm.log 2>&1 &
+service_loop "bash launch-linux.sh --port 7016 --launch_mode none ${EXTRA_SD_SWARM_ARGS}" > $LOG_DIR/sd_swarm.log 2>&1 &
 echo $! > /tmp/sd_swarm.pid
 
 send_to_discord "Stable Diffusion Swarm Started"

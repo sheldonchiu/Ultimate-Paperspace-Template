@@ -76,13 +76,14 @@ action_before_start: |-
   fi
 
 start: |-
-  /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart {{ name }}
+  cd $REPO_DIR/kosmos-2
+  model_path=$MODEL_DIR/kosmos-2.pt
 
-supervisord: |-
-  [program:{{ name }}]
-  command={{ venv_dir }}/{{ name }}-env/bin/python -m torch.distributed.launch --nproc_per_node=1 demo/gradio_app.py None \
+  master_port=$((RANDOM%1000+20000))
+
+  CUDA_LAUNCH_BLOCKING=1 CUDA_VISIBLE_DEVICES=0 service_loop "python -m torch.distributed.launch --master_port=$master_port --nproc_per_node=1 demo/gradio_app.py None \
       --task generation_obj \
-      --path {{ model_dir }}/kosmos-2.pt \
+      --path $model_path \
       --model-overrides "{'visual_pretrained': '',
               'dict_path':'data/dict.txt'}" \
       --dict-path 'data/dict.txt' \
@@ -97,13 +98,10 @@ supervisord: |-
       --batch-size 1 \
       --nbest 1 \
       --no-repeat-ngram-size 3 \
-      --location-bin-size 32 
-  directory={{ repo_dir}}/kosmos-2
-  autostart=false
-  autorestart=true
-  stdout_logfile={{ log_dir }}/{{ name }}.log
-  redirect_stderr=true
-  environment=CUDA_LAUNCH_BLOCKING=1,CUDA_VISIBLE_DEVICES=0
+      --location-bin-size 32" > $LOG_DIR/{{ name }}.log 2>&1 &
+
+  echo $! > /tmp/{{ name }}.pid
+
 
 other_commands: |-
 

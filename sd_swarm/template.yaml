@@ -42,7 +42,7 @@ action_before_start: ""
 
 start: |-
   cd $REPO_DIR
-  bash launch-linux.sh --port {{ port }} --launch_mode none ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+  service_loop "bash launch-linux.sh --port {{ port }} --launch_mode none ${EXTRA_{{ name|upper }}_ARGS}" > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
