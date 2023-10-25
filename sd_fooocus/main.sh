@@ -11,30 +11,32 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Stable Diffusion Fooocus ###"
 log "Setting up Stable Diffusion Fooocus"
+if [[ "$REINSTALL_SD_FOOOCUS" || ! -f "/tmp/sd_fooocus.prepared" ]]; then
 
-if env | grep -q "PAPERSPACE" && [ -f $REPO_DIR/webui.py ]; then
-  sed -i "s|share=args_manager.args.share,root_path='/sd-fooocus'|share=args_manager.args.share|g" $REPO_DIR/webui.py
-fi
+    
+    if env | grep -q "PAPERSPACE" && [ -f $REPO_DIR/webui.py ]; then
+      sed -i "s|share=args_manager.args.share,root_path='/sd-fooocus'|share=args_manager.args.share|g" $REPO_DIR/webui.py
+    fi
 
-TARGET_REPO_URL="https://github.com/lllyasviel/Fooocus.git" \
-TARGET_REPO_DIR=$REPO_DIR \
-TARGET_REPO_BRANCH="main" \
-UPDATE_REPO=$SD_FOOOCUS_UPDATE_REPO \
-UPDATE_REPO_COMMIT=$SD_FOOOCUS_UPDATE_REPO_COMMIT \
-bash $current_dir/../utils/prepare_repo.sh 
+    TARGET_REPO_URL="https://github.com/lllyasviel/Fooocus.git" \
+    TARGET_REPO_DIR=$REPO_DIR \
+    TARGET_REPO_BRANCH="main" \
+    UPDATE_REPO=$SD_FOOOCUS_UPDATE_REPO \
+    UPDATE_REPO_COMMIT=$SD_FOOOCUS_UPDATE_REPO_COMMIT \
+    prepare_repo 
 
-symlinks=(
-    "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-fooocus"
-    "$MODEL_DIR:$WORKING_DIR/models"
-    "$MODEL_DIR/sd:$LINK_MODEL_TO"
-    "$MODEL_DIR/lora:$LINK_LORA_TO"
-    "$MODEL_DIR/vae:$LINK_VAE_TO"
-    "$MODEL_DIR/hypernetwork:$LINK_HYPERNETWORK_TO"
-    "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
-    "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
-)
-bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
-if ! [[ -e "/tmp/sd_fooocus.prepared" ]]; then
+    symlinks=(
+        "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-fooocus"
+        "$MODEL_DIR:$WORKING_DIR/models"
+        "$MODEL_DIR/sd:$LINK_MODEL_TO"
+        "$MODEL_DIR/lora:$LINK_LORA_TO"
+        "$MODEL_DIR/vae:$LINK_VAE_TO"
+        "$MODEL_DIR/hypernetwork:$LINK_HYPERNETWORK_TO"
+        "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
+        "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
+    )
+    prepare_link  "${symlinks[@]}"
+    rm -rf $VENV_DIR/sd_fooocus-env
     
     
     python3.10 -m venv $VENV_DIR/sd_fooocus-env

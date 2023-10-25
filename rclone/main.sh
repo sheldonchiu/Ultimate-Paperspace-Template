@@ -11,8 +11,10 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Rclone ###"
 log "Setting up Rclone"
+if [[ "$REINSTALL_RCLONE" || ! -f "/tmp/rclone.prepared" ]]; then
 
-if ! [[ -e "/tmp/rclone.prepared" ]]; then
+    
+    rm -rf $VENV_DIR/rclone-env
     
     curl https://rclone.org/install.sh | sudo bash > /dev/null 2>&1
     mkdir -p /root/.config/rclone

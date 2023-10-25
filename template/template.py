@@ -8,7 +8,8 @@ current_path = os.path.dirname(os.path.abspath(__file__))
 target_files = {
     "control.j2": "control.sh",
     "main.j2": "main.sh",
-    "env.j2": ".env"
+    "env.j2": ".env",
+    # "start.j2": "start.sh",
 }
 
 if __name__ == "__main__":
@@ -28,6 +29,8 @@ if __name__ == "__main__":
         yaml_data = yaml.safe_load(yaml_string)
 
     for j2_file, output_filename in target_files.items():
+        if j2_file == "start.j2" and "start_script" not in yaml_data:
+            continue
         # Load the Jinja2 template file
         with open(os.path.join(current_path, j2_file)) as f:
             template = Template(f.read())

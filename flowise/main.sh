@@ -11,8 +11,10 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Flowise ###"
 log "Setting up Flowise"
+if [[ "$REINSTALL_FLOWISE" || ! -f "/tmp/flowise.prepared" ]]; then
 
-if ! [[ -e "/tmp/flowise.prepared" ]]; then
+    
+    rm -rf $VENV_DIR/flowise-env
     
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - &&\
     apt-get install -y nodejs

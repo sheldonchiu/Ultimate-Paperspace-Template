@@ -11,12 +11,14 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Image Browser ###"
 log "Setting up Image Browser"
-TARGET_REPO_URL="https://github.com/zanllp/sd-webui-infinite-image-browsing.git" \
-TARGET_REPO_DIR=$REPO_DIR \
-UPDATE_REPO="auto" \
-TARGET_REPO_BRANCH="main" \
-bash $current_dir/../utils/prepare_repo.sh
-if ! [[ -e "/tmp/image_browser.prepared" ]]; then
+if [[ "$REINSTALL_IMAGE_BROWSER" || ! -f "/tmp/image_browser.prepared" ]]; then
+
+    TARGET_REPO_URL="https://github.com/zanllp/sd-webui-infinite-image-browsing.git" \
+    TARGET_REPO_DIR=$REPO_DIR \
+    UPDATE_REPO="auto" \
+    TARGET_REPO_BRANCH="main" \
+    prepare_repo
+    rm -rf $VENV_DIR/image_browser-env
     
     
     python3 -m venv /tmp/image_browser-env

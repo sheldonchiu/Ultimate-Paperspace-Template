@@ -23,7 +23,7 @@ elif [[ $1 == "start" ]]; then
 elif [[ $1 == "stop" ]]; then
     log "Stopping HuggingFace Hub"
         
-    /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf stop huggingface
+    kill_pid $file
     
 
 else

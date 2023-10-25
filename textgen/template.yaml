@@ -14,7 +14,7 @@ prepare_repo: |-
   TARGET_REPO_URL="https://github.com/oobabooga/text-generation-webui" \
   UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
   UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
-  bash $current_dir/../utils/prepare_repo.sh
+  prepare_repo
 
 prepare_env: |-
   cd $REPO_DIR
@@ -26,7 +26,7 @@ prepare_env: |-
   TARGET_REPO_DIR=$REPO_DIR/repositories/GPTQ-for-LLaMa \
   TARGET_REPO_BRANCH="cuda" \
   TARGET_REPO_URL="https://github.com/qwopqwop200/GPTQ-for-LLaMa.git" \
-  bash $current_dir/../utils/prepare_repo.sh
+  prepare_repo
   
   cd GPTQ-for-LLaMa
   python setup_cuda.py install
@@ -52,7 +52,7 @@ download_model: |-
   fi
 
 
-  bash $current_dir/../utils/llm_model_download.sh
+  llm_model_download
 
 action_before_start: |-
   if env | grep -q "PAPERSPACE"; then

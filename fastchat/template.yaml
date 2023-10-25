@@ -13,7 +13,7 @@ prepare_env: |-
   TARGET_REPO_DIR=/tmp/GPTQ-for-LLaMa \
   TARGET_REPO_BRANCH="fastest-inference-4bit" \
   TARGET_REPO_URL="https://github.com/qwopqwop200/GPTQ-for-LLaMa.git" \
-  bash $current_dir/../utils/prepare_repo.sh
+  prepare_repo
 
   cd GPTQ-for-LLaMa
   python3 setup_cuda.py install

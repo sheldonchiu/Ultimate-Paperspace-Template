@@ -15,5 +15,4 @@ for folder in */; do
 done
 
 cd $current_dir
-python3 supervisord.py
 python3 nginx.py

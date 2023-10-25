@@ -11,8 +11,10 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Minio ###"
 log "Setting up Minio"
+if [[ "$REINSTALL_MINIO" || ! -f "/tmp/minio.prepared" ]]; then
 
-if ! [[ -e "/tmp/minio.prepared" ]]; then
+    
+    rm -rf $VENV_DIR/minio-env
     
     curl https://dl.min.io/client/mc/release/linux-amd64/mc \
       --create-dirs \
@@ -40,7 +42,7 @@ if [[ -z $S3_MIRROR_PATH || -z $S3_MIRROR_TO_BUCKET ]]; then
     log "ENV S3_MIRROR_PATH or S3_MIRROR_TO_BUCKET not provided, skipping minio mirror"
 else
     mkdir -p $S3_MIRROR_PATH
-    bash $current_dir/../utils/minio_sync.sh
+    minio_sync
 fi
 
 send_to_discord "Minio Started"

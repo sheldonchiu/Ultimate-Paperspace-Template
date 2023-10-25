@@ -11,21 +11,23 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Stable Diffusion Volta ###"
 log "Setting up Stable Diffusion Volta"
-TARGET_REPO_URL="https://github.com/VoltaML/voltaML-fast-stable-diffusion.git" \
-TARGET_REPO_DIR=$REPO_DIR \
-TARGET_REPO_BRANCH=main \
-UPDATE_REPO=$SD_VOLTA_UPDATE_REPO \
-UPDATE_REPO_COMMIT=$SD_VOLTA_UPDATE_REPO_COMMIT \
-bash $current_dir/../utils/prepare_repo.sh
+if [[ "$REINSTALL_SD_VOLTA" || ! -f "/tmp/sd_volta.prepared" ]]; then
 
-symlinks=(
-  "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-volta"
-  "$MODEL_DIR:$WORKING_DIR/models"
-  "$MODEL_DIR/sd:$LINK_MODEL_TO"
-  "$MODEL_DIR/lora:$LINK_LORA_TO"
-)
-bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
-if ! [[ -e "/tmp/sd_volta.prepared" ]]; then
+    TARGET_REPO_URL="https://github.com/VoltaML/voltaML-fast-stable-diffusion.git" \
+    TARGET_REPO_DIR=$REPO_DIR \
+    TARGET_REPO_BRANCH=main \
+    UPDATE_REPO=$SD_VOLTA_UPDATE_REPO \
+    UPDATE_REPO_COMMIT=$SD_VOLTA_UPDATE_REPO_COMMIT \
+    prepare_repo
+
+    symlinks=(
+      "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-volta"
+      "$MODEL_DIR:$WORKING_DIR/models"
+      "$MODEL_DIR/sd:$LINK_MODEL_TO"
+      "$MODEL_DIR/lora:$LINK_LORA_TO"
+    )
+    prepare_link "${symlinks[@]}"
+    rm -rf $VENV_DIR/sd_volta-env
     
     
     python3.10 -m venv $VENV_DIR/sd_volta-env

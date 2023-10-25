@@ -11,8 +11,10 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Langflow ###"
 log "Setting up Langflow"
+if [[ "$REINSTALL_LANGFLOW" || ! -f "/tmp/langflow.prepared" ]]; then
 
-if ! [[ -e "/tmp/langflow.prepared" ]]; then
+    
+    rm -rf $VENV_DIR/langflow-env
     
     
     python3.10 -m venv $VENV_DIR/langflow-env

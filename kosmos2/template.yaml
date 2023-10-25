@@ -9,14 +9,14 @@ prepare_repo: |-
   TARGET_REPO_BRANCH="master" \
   TARGET_REPO_URL="https://github.com/sheldonchiu/unilm.git" \
   UPDATE_REPO="auto" \
-  bash $current_dir/../utils/prepare_repo.sh
+  prepare_repo
 
   TARGET_REPO_DIR=/tmp/apex \
   TARGET_REPO_BRANCH="master" \
   TARGET_REPO_URL="https://github.com/NVIDIA/apex.git" \
   UPDATE_REPO="commit" \
   UPDATE_REPO_COMMIT="7b2e71b0d4013f8e2f9f1c8dd21980ff1d76f1b6" \
-  bash $current_dir/../utils/prepare_repo.sh  
+  prepare_repo  
 
 prepare_env: |-
   cd $REPO_DIR/kosmos-2

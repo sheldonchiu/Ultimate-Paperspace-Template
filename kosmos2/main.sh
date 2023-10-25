@@ -11,19 +11,21 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Kosmos2 ###"
 log "Setting up Kosmos2"
-TARGET_REPO_DIR=$REPO_DIR \
-TARGET_REPO_BRANCH="master" \
-TARGET_REPO_URL="https://github.com/sheldonchiu/unilm.git" \
-UPDATE_REPO="auto" \
-bash $current_dir/../utils/prepare_repo.sh
+if [[ "$REINSTALL_KOSMOS2" || ! -f "/tmp/kosmos2.prepared" ]]; then
 
-TARGET_REPO_DIR=/tmp/apex \
-TARGET_REPO_BRANCH="master" \
-TARGET_REPO_URL="https://github.com/NVIDIA/apex.git" \
-UPDATE_REPO="commit" \
-UPDATE_REPO_COMMIT="7b2e71b0d4013f8e2f9f1c8dd21980ff1d76f1b6" \
-bash $current_dir/../utils/prepare_repo.sh  
-if ! [[ -e "/tmp/kosmos2.prepared" ]]; then
+    TARGET_REPO_DIR=$REPO_DIR \
+    TARGET_REPO_BRANCH="master" \
+    TARGET_REPO_URL="https://github.com/sheldonchiu/unilm.git" \
+    UPDATE_REPO="auto" \
+    prepare_repo
+
+    TARGET_REPO_DIR=/tmp/apex \
+    TARGET_REPO_BRANCH="master" \
+    TARGET_REPO_URL="https://github.com/NVIDIA/apex.git" \
+    UPDATE_REPO="commit" \
+    UPDATE_REPO_COMMIT="7b2e71b0d4013f8e2f9f1c8dd21980ff1d76f1b6" \
+    prepare_repo  
+    rm -rf $VENV_DIR/kosmos2-env
     
     
     python3 -m venv /tmp/kosmos2-env

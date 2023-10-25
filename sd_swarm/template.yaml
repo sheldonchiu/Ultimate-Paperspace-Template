@@ -12,7 +12,7 @@ prepare_repo: |-
   TARGET_REPO_BRANCH="master" \
   UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
   UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
-  bash $current_dir/../utils/prepare_repo.sh 
+  prepare_repo 
 
   symlinks=(
       "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-swarm"
@@ -25,7 +25,7 @@ prepare_repo: |-
       "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
       "$MODEL_DIR/clip_vision:$LINK_CLIP_TO"
   )
-  bash $current_dir/../utils/prepare_link.sh  "${symlinks[@]}"
+  prepare_link  "${symlinks[@]}"
 
 prepare_env: |-
   wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb

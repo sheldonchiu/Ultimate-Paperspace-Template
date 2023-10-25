@@ -29,7 +29,7 @@ elif [[ $1 == "stop" ]]; then
     {% if custom_stop %}
     {{ custom_stop | indent(4) }}
     {% else %}    
-    /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf stop {{ name }}
+    kill_pid $file
     {% endif %}
 {% if additional_condition %}
 {{ additional_condition }}

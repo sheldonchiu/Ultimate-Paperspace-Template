@@ -23,7 +23,7 @@ elif [[ $1 == "start" ]]; then
 elif [[ $1 == "stop" ]]; then
     log "Stopping Stable Diffusion Swarm"
         
-    /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf stop sd_swarm
+    kill_pid $file
     
 
 else

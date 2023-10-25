@@ -11,8 +11,10 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up {{ title }} ###"
 log "Setting up {{ title }}"
-{{ prepare_repo }}
-if ! [[ -e "/tmp/{{ name }}.prepared" ]]; then
+if [[ "$REINSTALL_{{ name|upper }}" || ! -f "/tmp/{{ name }}.prepared" ]]; then
+
+    {% if prepare_repo %}{{ prepare_repo | indent(4)}}{% endif %}
+    rm -rf $VENV_DIR/{{ name }}-env
     {% if use_python %}
     {% if python_version %}
     python3.{{ python_version }} -m venv $VENV_DIR/{{ name }}-env

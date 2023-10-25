@@ -19,7 +19,7 @@ prepare_repo: |-
     "$MODEL_DIR/vae:$LINK_VAE_TO"
     "$DATA_DIR/sd_invoke_models:$INVOKEAI_ROOT/models"
   )
-  bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
+  prepare_link "${symlinks[@]}"
 
 prepare_env: |-
   apt-get install -qq build-essential -y > /dev/null

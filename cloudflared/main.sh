@@ -11,8 +11,10 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Cloudflare Tunnel ###"
 log "Setting up Cloudflare Tunnel"
+if [[ "$REINSTALL_CLOUDFLARED" || ! -f "/tmp/cloudflared.prepared" ]]; then
 
-if ! [[ -e "/tmp/cloudflared.prepared" ]]; then
+    
+    rm -rf $VENV_DIR/cloudflared-env
     
     if env | grep -q "PAPERSPACE"; then
       echo "Tunnel is not allowed in Paperspace, skipping..."

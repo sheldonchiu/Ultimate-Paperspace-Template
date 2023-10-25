@@ -11,8 +11,10 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up FastChat ###"
 log "Setting up FastChat"
+if [[ "$REINSTALL_FASTCHAT" || ! -f "/tmp/fastchat.prepared" ]]; then
 
-if ! [[ -e "/tmp/fastchat.prepared" ]]; then
+    
+    rm -rf $VENV_DIR/fastchat-env
     
     
     python3.10 -m venv $VENV_DIR/fastchat-env
@@ -28,7 +30,7 @@ if ! [[ -e "/tmp/fastchat.prepared" ]]; then
     TARGET_REPO_DIR=/tmp/GPTQ-for-LLaMa \
     TARGET_REPO_BRANCH="fastest-inference-4bit" \
     TARGET_REPO_URL="https://github.com/qwopqwop200/GPTQ-for-LLaMa.git" \
-    bash $current_dir/../utils/prepare_repo.sh
+    prepare_repo
 
     cd GPTQ-for-LLaMa
     python3 setup_cuda.py install

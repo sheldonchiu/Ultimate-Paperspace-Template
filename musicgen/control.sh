@@ -23,7 +23,7 @@ elif [[ $1 == "start" ]]; then
 elif [[ $1 == "stop" ]]; then
     log "Stopping Musicgen"
         
-    /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf stop musicgen
+    kill_pid $file
     
 
 else

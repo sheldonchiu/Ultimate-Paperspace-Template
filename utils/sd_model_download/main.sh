@@ -2,7 +2,6 @@
 set -e
 
 current_dir=$(dirname "$(realpath "$0")")
-source $current_dir/../log.sh
 source $current_dir/../helper.sh
 
 # Set up a trap to call the error_exit function on ERR signal

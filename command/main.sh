@@ -11,8 +11,10 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Command Server ###"
 log "Setting up Command Server"
+if [[ "$REINSTALL_COMMAND" || ! -f "/tmp/command.prepared" ]]; then
 
-if ! [[ -e "/tmp/command.prepared" ]]; then
+    
+    rm -rf $VENV_DIR/command-env
     
     
     python3 -m venv /tmp/command-env
@@ -36,10 +38,15 @@ log "Finished Preparing Environment for Command Server"
 
 echo "### Starting Command Server ###"
 log "Starting Command Server"
-/usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart command
+cd $current_dir/server
+PYTHONUNBUFFERED=1 service_loop "python -m uvicorn main:app --host 0.0.0.0 --port 7000" > $LOG_DIR/command.log 2>&1 &
+echo $! > /tmp/command.pid
+
 if [[ -n "${DISCORD_BOT}" ]]; then
-  /usr/bin/supervisorctl -c $WORKING_DIR/supervisord.conf restart command_process
+  PYTHONUNBUFFERED=1 service_loop python process.py > $LOG_DIR/command_process.log 2>&1 &
+  echo $! > /tmp/command_process.pid
 fi
+
 cd ..
 
 send_to_discord "Command Server Started"

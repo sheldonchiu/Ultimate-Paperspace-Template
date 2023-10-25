@@ -9,7 +9,7 @@ prepare_repo: |-
   TARGET_REPO_DIR=$REPO_DIR \
   UPDATE_REPO="auto" \
   TARGET_REPO_BRANCH="main" \
-  bash $current_dir/../utils/prepare_repo.sh
+  prepare_repo
 
 prepare_env: |-
   cd $REPO_DIR

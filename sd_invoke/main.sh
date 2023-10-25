@@ -11,21 +11,23 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Stable Diffusion InvokeAI ###"
 log "Setting up Stable Diffusion InvokeAI"
-mkdir -p $DATA_DIR/sd_invoke_models
-mkdir -p $INVOKEAI_ROOT/models
+if [[ "$REINSTALL_SD_INVOKE" || ! -f "/tmp/sd_invoke.prepared" ]]; then
 
-symlinks=(
-  "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-invokeai"
-  "$MODEL_DIR:$WORKING_DIR/models"
-  "$MODEL_DIR/sd:$LINK_MODEL_TO"
-  "$MODEL_DIR/lora:$LINK_LORA_TO"
-  "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
-  "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
-  "$MODEL_DIR/vae:$LINK_VAE_TO"
-  "$DATA_DIR/sd_invoke_models:$INVOKEAI_ROOT/models"
-)
-bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
-if ! [[ -e "/tmp/sd_invoke.prepared" ]]; then
+    mkdir -p $DATA_DIR/sd_invoke_models
+    mkdir -p $INVOKEAI_ROOT/models
+
+    symlinks=(
+      "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-invokeai"
+      "$MODEL_DIR:$WORKING_DIR/models"
+      "$MODEL_DIR/sd:$LINK_MODEL_TO"
+      "$MODEL_DIR/lora:$LINK_LORA_TO"
+      "$MODEL_DIR/controlnet:$LINK_CONTROLNET_TO"
+      "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
+      "$MODEL_DIR/vae:$LINK_VAE_TO"
+      "$DATA_DIR/sd_invoke_models:$INVOKEAI_ROOT/models"
+    )
+    prepare_link "${symlinks[@]}"
+    rm -rf $VENV_DIR/sd_invoke-env
     
     
     python3.10 -m venv $VENV_DIR/sd_invoke-env

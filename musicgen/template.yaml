@@ -11,7 +11,7 @@ prepare_repo: |-
   TARGET_REPO_URL="https://github.com/facebookresearch/audiocraft.git" \
   UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
   UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
-  bash $current_dir/../utils/prepare_repo.sh
+  prepare_repo
 
 prepare_env: |-
   cd $REPO_DIR

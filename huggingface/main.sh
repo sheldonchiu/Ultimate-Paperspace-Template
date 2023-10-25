@@ -11,8 +11,10 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up HuggingFace Hub ###"
 log "Setting up HuggingFace Hub"
+if [[ "$REINSTALL_HUGGINGFACE" || ! -f "/tmp/huggingface.prepared" ]]; then
 
-if ! [[ -e "/tmp/huggingface.prepared" ]]; then
+    
+    rm -rf $VENV_DIR/huggingface-env
     
     
     python3 -m venv /tmp/huggingface-env
