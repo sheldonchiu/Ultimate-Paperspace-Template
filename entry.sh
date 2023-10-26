@@ -37,16 +37,7 @@ echo "Installing common dependencies"
 apt-get update -qq
 apt-get install -qq -y curl jq git-lfs ninja-build \
     aria2 zip python3-venv python3-dev python3.10 \
-    python3.10-venv python3.10-dev python3.10-tk \
-    supervisor > /dev/null
-
-# Prepare supervisord.conf
-python3 -m venv $VENV_DIR/base-env
-source $VENV_DIR/base-env/bin/activate
-pip3 install jinja2 pyyaml
-
-python3 $SCRIPT_ROOT_DIR/template/supervisord.py
-/usr/bin/supervisord -c $SCRIPT_ROOT_DIR/supervisord.conf
+    python3.10-venv python3.10-dev python3.10-tk  > /dev/null
 
 if env | grep -q "PAPERSPACE"; then
   # Add alias to check the status of the web app
@@ -57,7 +48,7 @@ if env | grep -q "PAPERSPACE"; then
   apt-get install -qq -y nginx > /dev/null
   cp /notebooks/nginx/default /etc/nginx/sites-available/default
   cp /notebooks/nginx/nginx.conf /etc/nginx/nginx.conf
-  /usr/bin/supervisorctl -c $SCRIPT_ROOT_DIR/supervisord.conf start nginx
+  /usr/sbin/nginx
 fi
 
 # Read the RUN_SCRIPT environment variable
