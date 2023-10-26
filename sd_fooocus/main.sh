@@ -73,7 +73,9 @@ fi
 
 
 if env | grep -q "PAPERSPACE"; then
-  sed -i "s|share=args_manager.args.share|share=args_manager.args.share,root_path='/sd-fooocus'|g" $REPO_DIR/webui.py
+  if ! grep -q "root_path" $REPO_DIR/webui.py; then
+    sed -i "s|share=args_manager.args.share|share=args_manager.args.share,root_path='/sd-fooocus'|g" $REPO_DIR/webui.py
+  fi
 fi
 
 echo "### Starting Stable Diffusion Fooocus ###"

@@ -13,6 +13,8 @@ file="/tmp/minio.pid"
 if [[ $1 == "reload" ]]; then
     log "Reloading Minio"
     
+    kill_pid $file
+    sleep 1
     bash main.sh
     
 elif [[ $1 == "start" ]]; then

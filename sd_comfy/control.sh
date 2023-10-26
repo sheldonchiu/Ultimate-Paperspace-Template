@@ -13,6 +13,8 @@ file="/tmp/sd_comfy.pid"
 if [[ $1 == "reload" ]]; then
     log "Reloading Stable Diffusion Comfy"
     
+    kill_pid $file
+    sleep 1
     bash main.sh
     
 elif [[ $1 == "start" ]]; then

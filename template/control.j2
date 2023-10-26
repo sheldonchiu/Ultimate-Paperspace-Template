@@ -15,6 +15,8 @@ if [[ $1 == "reload" ]]; then
     {% if custom_reload %}
     {{ custom_reload | indent(4) }}
     {% else %}
+    kill_pid $file
+    sleep 1
     bash main.sh
     {% endif %}
 elif [[ $1 == "start" ]]; then
