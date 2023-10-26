@@ -13,6 +13,8 @@ file="/tmp/sd_swarm.pid"
 if [[ $1 == "reload" ]]; then
     log "Reloading Stable Diffusion Swarm"
     
+    kill_pid $file
+    sleep 1
     bash main.sh
     
 elif [[ $1 == "start" ]]; then

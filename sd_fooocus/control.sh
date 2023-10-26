@@ -13,6 +13,8 @@ file="/tmp/sd_fooocus.pid"
 if [[ $1 == "reload" ]]; then
     log "Reloading Stable Diffusion Fooocus"
     
+    kill_pid $file
+    sleep 1
     bash main.sh
     
 elif [[ $1 == "start" ]]; then

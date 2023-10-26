@@ -24,7 +24,7 @@ class Base(BaseModel):
     cfg_scale: float = 7.0
     mimick_cfg: float = 7.0
     
-    image_styles: list[str] = ["Fooocus V2", "Default (Slightly Cinematic)"]
+    image_styles: list[str] = ["Fooocus Sharp", "Fooocus Enhance", "Fooocus V2"]
     
     performance: str = "Speed"
     resolution: str = "1024×1024"

@@ -13,6 +13,8 @@ file="/tmp/huggingface.pid"
 if [[ $1 == "reload" ]]; then
     log "Reloading HuggingFace Hub"
     
+    kill_pid $file
+    sleep 1
     bash main.sh
     
 elif [[ $1 == "start" ]]; then
