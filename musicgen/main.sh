@@ -11,13 +11,15 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Musicgen ###"
 log "Setting up Musicgen"
-TARGET_REPO_DIR=$REPO_DIR \
-TARGET_REPO_BRANCH="main" \
-TARGET_REPO_URL="https://github.com/facebookresearch/audiocraft.git" \
-UPDATE_REPO=$MUSICGEN_UPDATE_REPO \
-UPDATE_REPO_COMMIT=$MUSICGEN_UPDATE_REPO_COMMIT \
-bash $current_dir/../utils/prepare_repo.sh
-if ! [[ -e "/tmp/musicgen.prepared" ]]; then
+if [[ "$REINSTALL_MUSICGEN" || ! -f "/tmp/musicgen.prepared" ]]; then
+
+    TARGET_REPO_DIR=$REPO_DIR \
+    TARGET_REPO_BRANCH="main" \
+    TARGET_REPO_URL="https://github.com/facebookresearch/audiocraft.git" \
+    UPDATE_REPO=$MUSICGEN_UPDATE_REPO \
+    UPDATE_REPO_COMMIT=$MUSICGEN_UPDATE_REPO_COMMIT \
+    prepare_repo
+    rm -rf $VENV_DIR/musicgen-env
     
     
     python3.10 -m venv $VENV_DIR/musicgen-env
@@ -48,7 +50,7 @@ fi
 echo "### Starting Musicgen ###"
 log "Starting Musicgen"
 cd $REPO_DIR
-PYTHONUNBUFFERED=1 nohup python demos/musicgen_app.py --server_port $MUSICGEN_PORT  ${EXTRA_MUSICGEN_ARGS} > $LOG_DIR/musicgen.log 2>&1 &
+PYTHONUNBUFFERED=1 service_loop "python demos/musicgen_app.py --server_port $MUSICGEN_PORT  ${EXTRA_MUSICGEN_ARGS}" > $LOG_DIR/musicgen.log 2>&1 &
 echo $! > /tmp/musicgen.pid
 
 if env | grep -q "PAPERSPACE"; then

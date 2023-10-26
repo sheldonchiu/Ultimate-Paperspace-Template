@@ -9,7 +9,7 @@ prepare_repo: |-
   TARGET_REPO_DIR=$REPO_DIR \
   UPDATE_REPO="auto" \
   TARGET_REPO_BRANCH="main" \
-  bash $current_dir/../utils/prepare_repo.sh
+  prepare_repo
 
 prepare_env: |-
   cd $REPO_DIR
@@ -32,7 +32,7 @@ start: |-
   else
       cd $REPO_DIR
   fi
-  PYTHONUNBUFFERED=1 nohup python $REPO_DIR/app.py --port=$IMAGE_BROWSER_PORT ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 service_loop "python $REPO_DIR/app.py --port {{ port }}" > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: |-
@@ -40,7 +40,7 @@ export_required_env: |-
 
 other_commands: |-
   export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$ROOT_REPO_DIR/sd-webui-infinite-image-browsing"}
-  export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-"7002"}
+  export {{ name|upper }}_PORT="{{ port }}"
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}"
 

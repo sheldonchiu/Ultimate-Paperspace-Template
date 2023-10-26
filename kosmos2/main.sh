@@ -11,19 +11,21 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Kosmos2 ###"
 log "Setting up Kosmos2"
-TARGET_REPO_DIR=$REPO_DIR \
-TARGET_REPO_BRANCH="master" \
-TARGET_REPO_URL="https://github.com/sheldonchiu/unilm.git" \
-UPDATE_REPO="auto" \
-bash $current_dir/../utils/prepare_repo.sh
+if [[ "$REINSTALL_KOSMOS2" || ! -f "/tmp/kosmos2.prepared" ]]; then
 
-TARGET_REPO_DIR=/tmp/apex \
-TARGET_REPO_BRANCH="master" \
-TARGET_REPO_URL="https://github.com/NVIDIA/apex.git" \
-UPDATE_REPO="commit" \
-UPDATE_REPO_COMMIT="7b2e71b0d4013f8e2f9f1c8dd21980ff1d76f1b6" \
-bash $current_dir/../utils/prepare_repo.sh  
-if ! [[ -e "/tmp/kosmos2.prepared" ]]; then
+    TARGET_REPO_DIR=$REPO_DIR \
+    TARGET_REPO_BRANCH="master" \
+    TARGET_REPO_URL="https://github.com/sheldonchiu/unilm.git" \
+    UPDATE_REPO="auto" \
+    prepare_repo
+
+    TARGET_REPO_DIR=/tmp/apex \
+    TARGET_REPO_BRANCH="master" \
+    TARGET_REPO_URL="https://github.com/NVIDIA/apex.git" \
+    UPDATE_REPO="commit" \
+    UPDATE_REPO_COMMIT="7b2e71b0d4013f8e2f9f1c8dd21980ff1d76f1b6" \
+    prepare_repo  
+    rm -rf $VENV_DIR/kosmos2-env
     
     
     python3 -m venv /tmp/kosmos2-env
@@ -107,13 +109,12 @@ fi
 
 echo "### Starting Kosmos2 ###"
 log "Starting Kosmos2"
-
 cd $REPO_DIR/kosmos-2
 model_path=$MODEL_DIR/kosmos-2.pt
 
 master_port=$((RANDOM%1000+20000))
 
-CUDA_LAUNCH_BLOCKING=1 CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --master_port=$master_port --nproc_per_node=1 demo/gradio_app.py None \
+CUDA_LAUNCH_BLOCKING=1 CUDA_VISIBLE_DEVICES=0 service_loop "python -m torch.distributed.launch --master_port=$master_port --nproc_per_node=1 demo/gradio_app.py None \
     --task generation_obj \
     --path $model_path \
     --model-overrides "{'visual_pretrained': '',
@@ -130,13 +131,9 @@ CUDA_LAUNCH_BLOCKING=1 CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch
     --batch-size 1 \
     --nbest 1 \
     --no-repeat-ngram-size 3 \
-    --location-bin-size 32 > $LOG_DIR/kosmos2.log 2>&1 &
+    --location-bin-size 32" > $LOG_DIR/kosmos2.log 2>&1 &
 
 echo $! > /tmp/kosmos2.pid
-
-# if env | grep -q "PAPERSPACE"; then
-#   sed -i "s/demo.launch(root_path='\\/kosmos2')/demo.launch()/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
-# fi
 
 send_to_discord "Kosmos2 Started"
 

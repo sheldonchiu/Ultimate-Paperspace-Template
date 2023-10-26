@@ -11,13 +11,15 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Kohya SD Trainer ###"
 log "Setting up Kohya SD Trainer"
-TARGET_REPO_DIR=$REPO_DIR \
-TARGET_REPO_BRANCH="master" \
-TARGET_REPO_URL="https://github.com/bmaltais/kohya_ss.git" \
-UPDATE_REPO=$KOHYA_SS_UPDATE_REPO \
-UPDATE_REPO_COMMIT=$KOHYA_SS_UPDATE_REPO_COMMIT \
-bash $current_dir/../utils/prepare_repo.sh
-if ! [[ -e "/tmp/kohya_ss.prepared" ]]; then
+if [[ "$REINSTALL_KOHYA_SS" || ! -f "/tmp/kohya_ss.prepared" ]]; then
+
+    TARGET_REPO_DIR=$REPO_DIR \
+    TARGET_REPO_BRANCH="master" \
+    TARGET_REPO_URL="https://github.com/bmaltais/kohya_ss.git" \
+    UPDATE_REPO=$KOHYA_SS_UPDATE_REPO \
+    UPDATE_REPO_COMMIT=$KOHYA_SS_UPDATE_REPO_COMMIT \
+    prepare_repo
+    rm -rf $VENV_DIR/kohya_ss-env
     
     
     python3 -m venv /tmp/kohya_ss-env
@@ -53,7 +55,7 @@ auth=""
 if [[ -n "${KOHYA_USERNAME}" ]] && [[ -n "${KOHYA_PASSWORD}" ]]; then
   auth="--username=$KOHYA_USERNAME --password=$KOHYA_PASSWORD"
 fi
-PYTHONUNBUFFERED=1 nohup python kohya_gui.py --headless --server_port=$KOHYA_SS_PORT $auth ${EXTRA_KOHYA_SS_ARGS} > $LOG_DIR/kohya_ss.log 2>&1 &
+PYTHONUNBUFFERED=1 service_loop "python kohya_gui.py --headless --server_port=$KOHYA_SS_PORT $auth ${EXTRA_KOHYA_SS_ARGS}" > $LOG_DIR/kohya_ss.log 2>&1 &
 echo $! > /tmp/kohya_ss.pid
 
 send_to_discord "Kohya SD Trainer Started"

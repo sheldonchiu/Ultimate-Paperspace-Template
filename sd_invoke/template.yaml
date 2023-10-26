@@ -19,7 +19,7 @@ prepare_repo: |-
     "$MODEL_DIR/vae:$LINK_VAE_TO"
     "$DATA_DIR/sd_invoke_models:$INVOKEAI_ROOT/models"
   )
-  bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
+  prepare_link "${symlinks[@]}"
 
 prepare_env: |-
   apt-get install -qq build-essential -y > /dev/null
@@ -36,12 +36,12 @@ action_before_start: ""
 
 start: |-
   cd "$REPO_DIR"
-  PYTHONUNBUFFERED=1 nohup invokeai-web --port ${{ name|upper }}_PORT \
+  PYTHONUNBUFFERED=1 service_loop "invokeai-web --port ${{ name|upper }}_PORT \
   --autoimport_dir $REPO_DIR/autoimport/main \
   --lora_dir $REPO_DIR/autoimport/lora \
   --embedding_dir $REPO_DIR/autoimport/embedding \
   --controlnet_dir $REPO_DIR/autoimport/controlnet \
-  ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+  ${EXTRA_{{ name|upper }}_ARGS}" > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""

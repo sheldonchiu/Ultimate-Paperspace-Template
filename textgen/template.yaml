@@ -14,7 +14,7 @@ prepare_repo: |-
   TARGET_REPO_URL="https://github.com/oobabooga/text-generation-webui" \
   UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
   UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
-  bash $current_dir/../utils/prepare_repo.sh
+  prepare_repo
 
 prepare_env: |-
   cd $REPO_DIR
@@ -26,7 +26,7 @@ prepare_env: |-
   TARGET_REPO_DIR=$REPO_DIR/repositories/GPTQ-for-LLaMa \
   TARGET_REPO_BRANCH="cuda" \
   TARGET_REPO_URL="https://github.com/qwopqwop200/GPTQ-for-LLaMa.git" \
-  bash $current_dir/../utils/prepare_repo.sh
+  prepare_repo
   
   cd GPTQ-for-LLaMa
   python setup_cuda.py install
@@ -52,7 +52,7 @@ download_model: |-
   fi
 
 
-  bash $current_dir/../utils/llm_model_download.sh
+  llm_model_download
 
 action_before_start: |-
   if env | grep -q "PAPERSPACE"; then
@@ -70,9 +70,9 @@ start: |-
     if echo "${{ name|upper }}_OPENAI_MODEL" | grep -q "LongChat"; then
       loader_arg+=" --max_seq_len 8192 --compress_pos_emb 4"
     fi
-    PYTHONUNBUFFERED=1 OPENEDAI_PORT=7013 nohup python server.py --model ${{ name|upper }}_OPENAI_MODEL $loader_arg --extensions openai $share_args > $LOG_DIR/{{ name }}.log 2>&1 &
+    PYTHONUNBUFFERED=1 OPENEDAI_PORT=7013 service_loop "python server.py --model ${{ name|upper }}_OPENAI_MODEL $loader_arg --extensions openai $share_args" > $LOG_DIR/{{ name }}.log 2>&1 &
   else
-    PYTHONUNBUFFERED=1 nohup python server.py  $share_args > $LOG_DIR/{{ name }}.log 2>&1 &
+    PYTHONUNBUFFERED=1 service_loop "python server.py  $share_args" > $LOG_DIR/{{ name }}.log 2>&1 &
   fi
   echo $! > /tmp/{{ name }}.pid
   
@@ -80,17 +80,18 @@ start: |-
   if env | grep -q "PAPERSPACE"; then
     sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/g" $REPO_DIR/server.py
   fi
-  
+
 custom_start: ""
 custom_reload: ""
 custom_stop: ""
 
 export_required_env: ""
 other_commands: |-
+  export GRADIO_ROOT_PATH=/textgen
   export MODEL_DIR=${{ '{' ~ name|upper }}_MODEL_DIR:-"$DATA_DIR/llm-models"}
   export REPO_DIR=${{ '{' ~ name|upper }}_REPO_DIR:-"$ROOT_REPO_DIR/text-generation-webui"}
 
-  export {{ name|upper }}_PORT=${{ '{' ~ name|upper }}_PORT:-7009}
+  export {{ name|upper }}_PORT= {{ port }}
   export {{ name|upper }}_OPENAI_API_PORT=${{ '{' ~ name|upper }}_OPENAI_API_PORT:-7013}
   export EXPOSE_PORTS="$EXPOSE_PORTS:${{ name|upper }}_PORT:${{ name|upper }}_OPENAI_API_PORT"
   export PORT_MAPPING="$PORT_MAPPING:{{ name }}:{{ name }}_openai_api"

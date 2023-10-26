@@ -11,7 +11,7 @@ prepare_repo: |-
   TARGET_REPO_BRANCH=main \
   UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
   UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
-  bash $current_dir/../utils/prepare_repo.sh
+  prepare_repo
 
   symlinks=(
     "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-volta"
@@ -19,7 +19,7 @@ prepare_repo: |-
     "$MODEL_DIR/sd:$LINK_MODEL_TO"
     "$MODEL_DIR/lora:$LINK_LORA_TO"
   )
-  bash $current_dir/../utils/prepare_link.sh "${symlinks[@]}"
+  prepare_link "${symlinks[@]}"
 
 prepare_env: |-
   cd $REPO_DIR
@@ -34,7 +34,7 @@ action_before_start: ""
 
 start: |-
   cd "$REPO_DIR"
-  PYTHONUNBUFFERED=1 nohup python main.py --port {{ name|upper }}_PORT ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 service_loop "python main.py --port {{ name|upper }}_PORT ${EXTRA_{{ name|upper }}_ARGS}" > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""

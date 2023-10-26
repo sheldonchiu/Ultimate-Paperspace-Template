@@ -24,6 +24,8 @@ def wait_for_server_ready(url):
 
 def process():
     logging.info("Start background process")
+    # Assume only one process task, so restart all job on restart
+    Task.update(status="Pending").where(Task.status == "Running").execute()
     while True:
         task = None
         with db.transaction():
@@ -44,7 +46,10 @@ def process():
                     logging.info("Server is ready")
                     fooocus_process(task)
                 except:
-                    logging.error("Encountered error during fooocus inference")
+                    #TODO retry
+                    logging.exception("Encountered error during fooocus inference")
+                    task.status = "Error"
+                    task.save()
                 
         time.sleep(1)
 

@@ -11,8 +11,10 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Flowise ###"
 log "Setting up Flowise"
+if [[ "$REINSTALL_FLOWISE" || ! -f "/tmp/flowise.prepared" ]]; then
 
-if ! [[ -e "/tmp/flowise.prepared" ]]; then
+    
+    rm -rf $VENV_DIR/flowise-env
     
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - &&\
     apt-get install -y nodejs
@@ -31,7 +33,7 @@ log "Finished Preparing Environment for Flowise"
 
 echo "### Starting Flowise ###"
 log "Starting Flowise"
-PORT=$FLOWISE_PORT nohup npx flowise start > $LOG_DIR/flowise.log 2>&1 &
+PORT=$FLOWISE_PORT service_loop "npx flowise start" > $LOG_DIR/flowise.log 2>&1 &
 echo $! > /tmp/flowise.pid
 
 send_to_discord "Flowise Started"

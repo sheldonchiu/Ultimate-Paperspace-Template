@@ -10,7 +10,7 @@ prepare_repo: |-
   TARGET_REPO_URL="https://github.com/bmaltais/kohya_ss.git" \
   UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
   UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
-  bash $current_dir/../utils/prepare_repo.sh
+  prepare_repo
 
 prepare_env: |-
   cd $REPO_DIR
@@ -30,7 +30,7 @@ start: |-
   if [[ -n "${KOHYA_USERNAME}" ]] && [[ -n "${KOHYA_PASSWORD}" ]]; then
     auth="--username=$KOHYA_USERNAME --password=$KOHYA_PASSWORD"
   fi
-  PYTHONUNBUFFERED=1 nohup python kohya_gui.py --headless --server_port=${{ name|upper }}_PORT $auth ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 service_loop "python kohya_gui.py --headless --server_port=${{ name|upper }}_PORT $auth ${EXTRA_{{ name|upper }}_ARGS}" > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: |-

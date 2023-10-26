@@ -11,12 +11,14 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Image Browser ###"
 log "Setting up Image Browser"
-TARGET_REPO_URL="https://github.com/zanllp/sd-webui-infinite-image-browsing.git" \
-TARGET_REPO_DIR=$REPO_DIR \
-UPDATE_REPO="auto" \
-TARGET_REPO_BRANCH="main" \
-bash $current_dir/../utils/prepare_repo.sh
-if ! [[ -e "/tmp/image_browser.prepared" ]]; then
+if [[ "$REINSTALL_IMAGE_BROWSER" || ! -f "/tmp/image_browser.prepared" ]]; then
+
+    TARGET_REPO_URL="https://github.com/zanllp/sd-webui-infinite-image-browsing.git" \
+    TARGET_REPO_DIR=$REPO_DIR \
+    UPDATE_REPO="auto" \
+    TARGET_REPO_BRANCH="main" \
+    prepare_repo
+    rm -rf $VENV_DIR/image_browser-env
     
     
     python3 -m venv /tmp/image_browser-env
@@ -56,7 +58,7 @@ if [ -n IMAGE_OUTPUTS_DIR ]; then
 else
     cd $REPO_DIR
 fi
-PYTHONUNBUFFERED=1 nohup python $REPO_DIR/app.py --port=$IMAGE_BROWSER_PORT ${EXTRA_IMAGE_BROWSER_ARGS} > $LOG_DIR/image_browser.log 2>&1 &
+PYTHONUNBUFFERED=1 service_loop "python $REPO_DIR/app.py --port 7002" > $LOG_DIR/image_browser.log 2>&1 &
 echo $! > /tmp/image_browser.pid
 
 send_to_discord "Image Browser Started"

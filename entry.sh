@@ -33,13 +33,18 @@ mkdir -p $ROOT_REPO_DIR
 mkdir -p $VENV_DIR
 mkdir -p $LOG_DIR
 
+echo "Installing common dependencies"
+apt-get update -qq
+apt-get install -qq -y curl jq git-lfs ninja-build \
+    aria2 zip python3-venv python3-dev python3.10 \
+    python3.10-venv python3.10-dev python3.10-tk  > /dev/null
+
 if env | grep -q "PAPERSPACE"; then
   # Add alias to check the status of the web app
   chmod +x /notebooks/status_check.py
   echo "alias status='watch -n 1 /notebooks/status_check.py'" >> ~/.bashrc
   
   # Use Nginx to expose web app in Paperspace
-  apt-get update -qq
   apt-get install -qq -y nginx > /dev/null
   cp /notebooks/nginx/default /etc/nginx/sites-available/default
   cp /notebooks/nginx/nginx.conf /etc/nginx/nginx.conf
@@ -51,10 +56,6 @@ run_script="$RUN_SCRIPT"
 
 # Separate the variable by commas
 IFS=',' read -ra scripts <<< "$run_script"
-
-echo "Installing common dependencies"
-apt-get update -qq
-apt-get install -qq -y curl jq git-lfs ninja-build aria2 zip python3-venv python3-dev python3.10 python3.10-venv python3.10-dev python3.10-tk > /dev/null
 
 # Prepare required path
 mkdir -p $IMAGE_OUTPUTS_DIR

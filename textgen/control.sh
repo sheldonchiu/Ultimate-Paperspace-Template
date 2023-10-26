@@ -13,9 +13,6 @@ file="/tmp/textgen.pid"
 if [[ $1 == "reload" ]]; then
     log "Reloading Text generation Webui"
     
-    kill_pid $file
-    # Wait for 1s to avoid unexpected behavior
-    sleep 1
     bash main.sh
     
 elif [[ $1 == "start" ]]; then

@@ -11,8 +11,10 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Langflow ###"
 log "Setting up Langflow"
+if [[ "$REINSTALL_LANGFLOW" || ! -f "/tmp/langflow.prepared" ]]; then
 
-if ! [[ -e "/tmp/langflow.prepared" ]]; then
+    
+    rm -rf $VENV_DIR/langflow-env
     
     
     python3.10 -m venv $VENV_DIR/langflow-env
@@ -38,7 +40,7 @@ echo "### Starting Langflow ###"
 log "Starting Langflow"
 mkdir -p $REPO_DIR
 cd $REPO_DIR
-PYTHONUNBUFFERED=1 nohup python -m langflow --port $LANGFLOW_PORT ${EXTRA_LANGFLOW_ARGS} > $LOG_DIR/langflow.log 2>&1 &
+PYTHONUNBUFFERED=1 service_loop "python -m langflow --port $LANGFLOW_PORT ${EXTRA_LANGFLOW_ARGS}" > $LOG_DIR/langflow.log 2>&1 &
 echo $! > /tmp/langflow.pid
 
 send_to_discord "Langflow Started"

@@ -11,16 +11,18 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Text generation Webui ###"
 log "Setting up Text generation Webui"
-# Remove stale symlink to avoid pull conflicts
-rm -rf $LINK_MODEL_TO
+if [[ "$REINSTALL_TEXTGEN" || ! -f "/tmp/textgen.prepared" ]]; then
 
-TARGET_REPO_DIR=$REPO_DIR \
-TARGET_REPO_BRANCH="main" \
-TARGET_REPO_URL="https://github.com/oobabooga/text-generation-webui" \
-UPDATE_REPO=$TEXTGEN_UPDATE_REPO \
-UPDATE_REPO_COMMIT=$TEXTGEN_UPDATE_REPO_COMMIT \
-bash $current_dir/../utils/prepare_repo.sh
-if ! [[ -e "/tmp/textgen.prepared" ]]; then
+    # Remove stale symlink to avoid pull conflicts
+    rm -rf $LINK_MODEL_TO
+
+    TARGET_REPO_DIR=$REPO_DIR \
+    TARGET_REPO_BRANCH="main" \
+    TARGET_REPO_URL="https://github.com/oobabooga/text-generation-webui" \
+    UPDATE_REPO=$TEXTGEN_UPDATE_REPO \
+    UPDATE_REPO_COMMIT=$TEXTGEN_UPDATE_REPO_COMMIT \
+    prepare_repo
+    rm -rf $VENV_DIR/textgen-env
     
     
     python3.10 -m venv $VENV_DIR/textgen-env
@@ -39,7 +41,7 @@ if ! [[ -e "/tmp/textgen.prepared" ]]; then
     TARGET_REPO_DIR=$REPO_DIR/repositories/GPTQ-for-LLaMa \
     TARGET_REPO_BRANCH="cuda" \
     TARGET_REPO_URL="https://github.com/qwopqwop200/GPTQ-for-LLaMa.git" \
-    bash $current_dir/../utils/prepare_repo.sh
+    prepare_repo
 
     cd GPTQ-for-LLaMa
     python setup_cuda.py install
@@ -76,7 +78,7 @@ if [[ -z "$SKIP_MODEL_DOWNLOAD" ]]; then
   fi
 
 
-  bash $current_dir/../utils/llm_model_download.sh
+  llm_model_download
   log "Finished Downloading Models for Text generation Webui"
 else
   log "Skipping Model Download for Text generation Webui"
@@ -99,9 +101,9 @@ if [ -v TEXTGEN_ENABLE_OPENAI_API ] && [ ! -z "$TEXTGEN_ENABLE_OPENAI_API" ];the
   if echo "$TEXTGEN_OPENAI_MODEL" | grep -q "LongChat"; then
     loader_arg+=" --max_seq_len 8192 --compress_pos_emb 4"
   fi
-  PYTHONUNBUFFERED=1 OPENEDAI_PORT=7013 nohup python server.py --model $TEXTGEN_OPENAI_MODEL $loader_arg --extensions openai $share_args > $LOG_DIR/textgen.log 2>&1 &
+  PYTHONUNBUFFERED=1 OPENEDAI_PORT=7013 service_loop "python server.py --model $TEXTGEN_OPENAI_MODEL $loader_arg --extensions openai $share_args" > $LOG_DIR/textgen.log 2>&1 &
 else
-  PYTHONUNBUFFERED=1 nohup python server.py  $share_args > $LOG_DIR/textgen.log 2>&1 &
+  PYTHONUNBUFFERED=1 service_loop "python server.py  $share_args" > $LOG_DIR/textgen.log 2>&1 &
 fi
 echo $! > /tmp/textgen.pid
 

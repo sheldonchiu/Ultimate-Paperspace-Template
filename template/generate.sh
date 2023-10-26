@@ -13,3 +13,6 @@ for folder in */; do
         cd ..
     fi
 done
+
+cd $current_dir
+python3 nginx.py

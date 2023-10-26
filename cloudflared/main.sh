@@ -11,8 +11,10 @@ trap 'error_exit "### ERROR ###"' ERR
 
 echo "### Setting up Cloudflare Tunnel ###"
 log "Setting up Cloudflare Tunnel"
+if [[ "$REINSTALL_CLOUDFLARED" || ! -f "/tmp/cloudflared.prepared" ]]; then
 
-if ! [[ -e "/tmp/cloudflared.prepared" ]]; then
+    
+    rm -rf $VENV_DIR/cloudflared-env
     
     if env | grep -q "PAPERSPACE"; then
       echo "Tunnel is not allowed in Paperspace, skipping..."
@@ -58,9 +60,11 @@ if [[ $CF_TOKEN == "quick" ]]; then
             log "Visit https://$(cat $hostfile) for $name"
             continue
         fi
+        
         log "Starting cloudflared tunnel for $name"
         # Start cloudflared tunnel in the background
-        nohup cloudflared tunnel --url http://localhost:${port} --metrics localhost:${metrics_port} --pidfile "$pidfile" > "$logfile" 2>&1 &
+        service_loop "cloudflared tunnel --url http://localhost:${port} --metrics localhost:${metrics_port}" > "$logfile" 2>&1 &
+        echo $! > $pidfile
 
         # Wait for the tunnel to become available
         retries=0
