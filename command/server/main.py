@@ -39,7 +39,7 @@ def get_info(authenticated: bool = Depends(authenticate)):
     gpu_info = get_gpu_info()
     return gpu_info
 
-@app.get("/task/{task_id}")
+@app.get("/tasks/{task_id}")
 def get_task(task_id: int, authenticated: bool = Depends(authenticate)):
     task = Task.get(Task.id==task_id)
     return model_to_dict(task)
@@ -49,7 +49,7 @@ def get_tasks(task_ids: Annotated[list[int], Body()], authenticated: bool = Depe
     tasks = Task.select().where(Task.id << task_ids)
     return [model_to_dict(task) for task in tasks]
 
-@app.post("/task/image/{task_id}")
+@app.post("/tasks/image/{task_id}")
 def post_task_image(task_id: int, file: UploadFile, authenticated: bool = Depends(authenticate)):
     folder = os.path.join(temp_image_folder, str(task_id))
     save_path = os.path.join(folder, file.filename)
