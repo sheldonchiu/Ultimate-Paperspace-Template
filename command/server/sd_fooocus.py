@@ -1,3 +1,4 @@
+from typing import Optional
 from share import *
 from db import Task
 from auth import authenticate
@@ -7,6 +8,8 @@ from playhouse.shortcuts import model_to_dict
 from fastapi import Depends, APIRouter
 from fastapi.responses import FileResponse
 
+from utils import download_image_as_base64
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -14,13 +17,15 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+image_fields = ['upscale_image']
+
 
 class Base(BaseModel):
-    prompt: str
+    prompt: str = ""
     negative_prompt: str = "low quality, bad hands, bad eyes, cropped, missing fingers, extra digit"
     positive_prompt_strength: float = 1.5
     negative_prompt_strength: float = 0.8
-    guidance_end_at_step: int = 0.3
+    guidance_end_at_step: float = 0.3
     cfg_scale: float = 7.0
     mimick_cfg: float = 7.0
     
@@ -72,24 +77,24 @@ class Base(BaseModel):
     enhance_image: bool = False
     tab: str = "uov"
     variation_or_upscale: str = "Disabled"
-    upscale_image: str = None
+    upscale_image: Optional[str] = None
 
-    outpaint_image: str = None
+    outpaint_image: Optional[str] = None
     outpaint_mode: list[str] = []
     
-    image_prompt_1: str = None
+    image_prompt_1: Optional[str] = None
     image_prompt_type_1: str = "Image Prompt"
     image_prompt_stop_at_1: float = 0.5
     image_prompt_weight_1: float = 0.6
-    image_prompt_2: str = None
+    image_prompt_2: Optional[str] = None
     image_prompt_type_2: str = "Image Prompt"
     image_prompt_stop_at_2: float = 0.5
     image_prompt_weight_2: float = 0.6
-    image_prompt_3: str = None
+    image_prompt_3: Optional[str] = None
     image_prompt_type_3: str = "Image Prompt"
     image_prompt_stop_at_3: float = 0.5
     image_prompt_weight_3: float = 0.6
-    image_prompt_4: str = None
+    image_prompt_4: Optional[str] = None
     image_prompt_type_4: str = "Image Prompt"
     image_prompt_stop_at_4: float = 0.5
     image_prompt_weight_4: float = 0.6
@@ -123,7 +128,19 @@ def process_t2i(task: Task):
         task.save()
     else:
         seed = config['seed']
-    
+        
+        
+    image_dict = {}
+    for field in image_fields:
+        url = config[field]
+        if url:
+            if url.startswith("http"):
+                image_dict[field] = download_image_as_base64(url)
+            else:
+                image_dict[field] = url
+        else:
+            image_dict[field] = None
+
     client.predict(
         config['positive_prompt_strength'],
         config['negative_prompt_strength'],
@@ -177,7 +194,7 @@ def process_t2i(task: Task):
         config['enhance_image'],
         config["tab"],
         config["variation_or_upscale"],
-        config['upscale_image'],
+        image_dict['upscale_image'],
         config['outpaint_mode'],
         config['outpaint_image'],
         config['image_prompt_1'],

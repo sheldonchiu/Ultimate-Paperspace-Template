@@ -11,6 +11,7 @@ logging.basicConfig(
 
 
 def wait_for_server_ready(url):
+    # TODO: is timeout needed?
     while True:
         try:
             response = requests.get(url)
