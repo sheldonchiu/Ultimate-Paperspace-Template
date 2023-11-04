@@ -128,10 +128,14 @@ def process_t2i(task: Task):
     else:
         seed = config['seed']
         
+        
+    image_dict = {}
     for field in image_fields:
         url = config[field]
         if url:
-            config[field] = download_image_as_base64(url)
+            image_dict[field] = download_image_as_base64(url)
+        else:
+            image_dict[field] = None
 
     client.predict(
         config['positive_prompt_strength'],
@@ -186,7 +190,7 @@ def process_t2i(task: Task):
         config['enhance_image'],
         config["tab"],
         config["variation_or_upscale"],
-        config['upscale_image'],
+        image_dict['upscale_image'],
         config['outpaint_mode'],
         config['outpaint_image'],
         config['image_prompt_1'],
