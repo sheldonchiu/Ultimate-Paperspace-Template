@@ -1,4 +1,5 @@
-from fastapi import Body, FastAPI, Depends
+import shutil
+from fastapi import Body, FastAPI, Depends, UploadFile, File
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
 from playhouse.shortcuts import model_to_dict
@@ -13,6 +14,8 @@ from auth import authenticate
 import logging
 logging.basicConfig(level=logging.INFO)
 
+temp_image_folder = os.path.join(os.getcwd(),"temp_image_folder")
+os.makedirs(temp_image_folder, exist_ok=True)
 app = FastAPI(docs_url=None, redoc_url=None)
 
 # Allow CORS from all origins
@@ -36,7 +39,7 @@ def get_info(authenticated: bool = Depends(authenticate)):
     gpu_info = get_gpu_info()
     return gpu_info
 
-@app.get("/tasks/{task_id}")
+@app.get("/task/{task_id}")
 def get_task(task_id: int, authenticated: bool = Depends(authenticate)):
     task = Task.get(Task.id==task_id)
     return model_to_dict(task)
@@ -45,3 +48,14 @@ def get_task(task_id: int, authenticated: bool = Depends(authenticate)):
 def get_tasks(task_ids: Annotated[list[int], Body()], authenticated: bool = Depends(authenticate)):
     tasks = Task.select().where(Task.id << task_ids)
     return [model_to_dict(task) for task in tasks]
+
+@app.post("/task/image/{task_id}")
+def post_task_image(task_id: int, file: UploadFile, authenticated: bool = Depends(authenticate)):
+    folder = os.path.join(temp_image_folder, str(task_id))
+    save_path = os.path.join(folder, file.filename)
+    
+    os.makedirs(folder, exist_ok=True)
+    with open(save_path, "wb") as buf:
+        shutil.copyfileobj(file.file, buf)
+    file.file.close()
+    return {"file_path": save_path}
