@@ -7,6 +7,8 @@ from playhouse.shortcuts import model_to_dict
 from fastapi import Depends, APIRouter
 from fastapi.responses import FileResponse
 
+from utils import download_image_as_base64
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -14,9 +16,11 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
+image_fields = ['upscale_image']
+
 
 class Base(BaseModel):
-    prompt: str
+    prompt: str = ""
     negative_prompt: str = "low quality, bad hands, bad eyes, cropped, missing fingers, extra digit"
     positive_prompt_strength: float = 1.5
     negative_prompt_strength: float = 0.8
@@ -123,7 +127,12 @@ def process_t2i(task: Task):
         task.save()
     else:
         seed = config['seed']
-    
+        
+    for field in image_fields:
+        url = config[field]
+        if url:
+            config[field] = download_image_as_base64(url)
+
     client.predict(
         config['positive_prompt_strength'],
         config['negative_prompt_strength'],
