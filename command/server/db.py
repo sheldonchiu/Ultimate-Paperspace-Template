@@ -7,7 +7,6 @@ db.connect()
 class Task(Model):
     task_type = CharField()
     config = JSONField()
-    input_images = JSONField(default={})
     status = CharField(default="Pending")
     result = JSONField(default={})
 

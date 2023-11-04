@@ -169,7 +169,7 @@ def process_t2i(task: Task):
         config["skip_scale_f_2"],
         fn_index=22,
     )
-    client.submit(
+    job = client.submit(
         config["prompt"],
         config["negative_prompt"],
         config["image_styles"],
@@ -217,6 +217,8 @@ def process_t2i(task: Task):
         result_callbacks=[lambda *result: save_result(task, *result)],
     )
     logger.info(f"Task {task.id} submitted")
+    
+    return job
 
 
 @router.post("/fooocus/t2i")
