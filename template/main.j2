@@ -48,12 +48,15 @@ else
   log "Skipping Model Download for {{ title }}"
 fi
 {% endif %}
-{% if action_before_start %}
-{{ action_before_start }}
-{% endif%}
-echo "### Starting {{ title }} ###"
-log "Starting {{ title }}"
-{% if start %}{{ start }}{% endif %}
+{% if action_before_start %}{{ action_before_start }}{% endif%}
+
+{% if start %}
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting {{ title }} ###"
+  log "Starting {{ title }}"
+  {{ start | indent(2) }}
+fi
+{% endif %}
 
 send_to_discord "{{ title }} Started"
 {% if expose %}

@@ -71,18 +71,21 @@ else
   log "Skipping Model Download for Stable Diffusion Fooocus"
 fi
 
-
 if env | grep -q "PAPERSPACE"; then
   if ! grep -q "root_path" $REPO_DIR/webui.py; then
     sed -i "s|share=args_manager.args.share|share=args_manager.args.share,root_path='/sd-fooocus'|g" $REPO_DIR/webui.py
   fi
 fi
 
-echo "### Starting Stable Diffusion Fooocus ###"
-log "Starting Stable Diffusion Fooocus"
-cd $REPO_DIR
-service_loop "python launch.py --port 7015" > $LOG_DIR/sd_fooocus.log 2>&1 &
-echo $! > /tmp/sd_fooocus.pid
+
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting Stable Diffusion Fooocus ###"
+  log "Starting Stable Diffusion Fooocus"
+  cd $REPO_DIR
+  service_loop "python launch.py --port 7015" > $LOG_DIR/sd_fooocus.log 2>&1 &
+  echo $! > /tmp/sd_fooocus.pid
+fi
+
 
 send_to_discord "Stable Diffusion Fooocus Started"
 

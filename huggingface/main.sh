@@ -36,9 +36,14 @@ log "Finished Preparing Environment for HuggingFace Hub"
 
 
 
-echo "### Starting HuggingFace Hub ###"
-log "Starting HuggingFace Hub"
-python $current_dir/upload.py
+
+
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting HuggingFace Hub ###"
+  log "Starting HuggingFace Hub"
+  python $current_dir/upload.py
+fi
+
 
 send_to_discord "HuggingFace Hub Started"
 

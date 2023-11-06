@@ -33,17 +33,20 @@ fi
 log "Finished Preparing Environment for Minio"
 
 
-
 /tmp/minio-binaries/mc alias set dst $S3_HOST_URL $S3_ACCESS_KEY $S3_SECRET_KEY
 
-echo "### Starting Minio ###"
-log "Starting Minio"
-if [[ -z $S3_MIRROR_PATH || -z $S3_MIRROR_TO_BUCKET ]]; then
-    log "ENV S3_MIRROR_PATH or S3_MIRROR_TO_BUCKET not provided, skipping minio mirror"
-else
-    mkdir -p $S3_MIRROR_PATH
-    minio_sync
+
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting Minio ###"
+  log "Starting Minio"
+  if [[ -z $S3_MIRROR_PATH || -z $S3_MIRROR_TO_BUCKET ]]; then
+      log "ENV S3_MIRROR_PATH or S3_MIRROR_TO_BUCKET not provided, skipping minio mirror"
+  else
+      mkdir -p $S3_MIRROR_PATH
+      minio_sync
+  fi
 fi
+
 
 send_to_discord "Minio Started"
 

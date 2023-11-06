@@ -102,38 +102,41 @@ else
   log "Skipping Model Download for Kosmos2"
 fi
 
-
 if env | grep -q "PAPERSPACE"; then
   sed -i "s/demo.launch()/demo.launch(root_path='\\/kosmos2')/g" $REPO_DIR/kosmos-2/demo/gradio_app.py
 fi
 
-echo "### Starting Kosmos2 ###"
-log "Starting Kosmos2"
-cd $REPO_DIR/kosmos-2
-model_path=$MODEL_DIR/kosmos-2.pt
 
-master_port=$((RANDOM%1000+20000))
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting Kosmos2 ###"
+  log "Starting Kosmos2"
+  cd $REPO_DIR/kosmos-2
+  model_path=$MODEL_DIR/kosmos-2.pt
 
-CUDA_LAUNCH_BLOCKING=1 CUDA_VISIBLE_DEVICES=0 service_loop "python -m torch.distributed.launch --master_port=$master_port --nproc_per_node=1 demo/gradio_app.py None \
-    --task generation_obj \
-    --path $model_path \
-    --model-overrides "{'visual_pretrained': '',
-            'dict_path':'data/dict.txt'}" \
-    --dict-path 'data/dict.txt' \
-    --required-batch-size-multiple 1 \
-    --remove-bpe=sentencepiece \
-    --max-len-b 500 \
-    --add-bos-token \
-    --beam 1 \
-    --buffer-size 1 \
-    --image-feature-length 64 \
-    --locate-special-token 1 \
-    --batch-size 1 \
-    --nbest 1 \
-    --no-repeat-ngram-size 3 \
-    --location-bin-size 32" > $LOG_DIR/kosmos2.log 2>&1 &
+  master_port=$((RANDOM%1000+20000))
 
-echo $! > /tmp/kosmos2.pid
+  CUDA_LAUNCH_BLOCKING=1 CUDA_VISIBLE_DEVICES=0 service_loop "python -m torch.distributed.launch --master_port=$master_port --nproc_per_node=1 demo/gradio_app.py None \
+      --task generation_obj \
+      --path $model_path \
+      --model-overrides "{'visual_pretrained': '',
+              'dict_path':'data/dict.txt'}" \
+      --dict-path 'data/dict.txt' \
+      --required-batch-size-multiple 1 \
+      --remove-bpe=sentencepiece \
+      --max-len-b 500 \
+      --add-bos-token \
+      --beam 1 \
+      --buffer-size 1 \
+      --image-feature-length 64 \
+      --locate-special-token 1 \
+      --batch-size 1 \
+      --nbest 1 \
+      --no-repeat-ngram-size 3 \
+      --location-bin-size 32" > $LOG_DIR/kosmos2.log 2>&1 &
+
+  echo $! > /tmp/kosmos2.pid
+fi
+
 
 send_to_discord "Kosmos2 Started"
 

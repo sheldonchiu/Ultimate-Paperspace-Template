@@ -63,16 +63,21 @@ else
 fi
 
 
-echo "### Starting Stable Diffusion InvokeAI ###"
-log "Starting Stable Diffusion InvokeAI"
-cd "$REPO_DIR"
-PYTHONUNBUFFERED=1 service_loop "invokeai-web --port $SD_INVOKE_PORT \
---autoimport_dir $REPO_DIR/autoimport/main \
---lora_dir $REPO_DIR/autoimport/lora \
---embedding_dir $REPO_DIR/autoimport/embedding \
---controlnet_dir $REPO_DIR/autoimport/controlnet \
-${EXTRA_SD_INVOKE_ARGS}" > $LOG_DIR/sd_invoke.log 2>&1 &
-echo $! > /tmp/sd_invoke.pid
+
+
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting Stable Diffusion InvokeAI ###"
+  log "Starting Stable Diffusion InvokeAI"
+  cd "$REPO_DIR"
+  PYTHONUNBUFFERED=1 service_loop "invokeai-web --port $SD_INVOKE_PORT \
+  --autoimport_dir $REPO_DIR/autoimport/main \
+  --lora_dir $REPO_DIR/autoimport/lora \
+  --embedding_dir $REPO_DIR/autoimport/embedding \
+  --controlnet_dir $REPO_DIR/autoimport/controlnet \
+  ${EXTRA_SD_INVOKE_ARGS}" > $LOG_DIR/sd_invoke.log 2>&1 &
+  echo $! > /tmp/sd_invoke.pid
+fi
+
 
 send_to_discord "Stable Diffusion InvokeAI Started"
 

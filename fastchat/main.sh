@@ -83,65 +83,70 @@ else
 fi
 
 
-echo "### Starting FastChat ###"
-log "Starting FastChat"
-if [[ -n $1 ]]; then
-    case $1 in
-        "controller")
-            service_loop "python3 -m fastchat.serve.controller --host 127.0.0.1" > $LOG_DIR/fastchat_controller.log 2>&1 &
-            echo $! > /tmp/fastchat_controller.pid
-            ;;
-        "worker")
-            port=21001
-            model_args_id=0
-            IFS=',' read -ra models <<< "$model_paths"
-            for model in "${models[@]}"
-            do
-                if [ -n "$model" ]; then
-                    (( port++ ))
-                    service_loop "python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model ${model_args[$model_args_id]}" > $LOG_DIR/fastchat_worker_$port.log 2>&1 &
-                    echo $! > /tmp/fastchat_worker_$port.pid
-                    (( model_args_id++ ))
-                fi
-            done
-            ;;
-        "server")
-            service_loop "python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT" > $LOG_DIR/fastchat_server.log 2>&1 &
-            echo $! > /tmp/fastchat_server.pid
-            ;;
-        *)
-            echo "Invalid argument. Usage: bash main.sh [controller|worker|server]"
-            ;;
-    esac
-else
-    service_loop "python3 -m fastchat.serve.controller --host 127.0.0.1" > $LOG_DIR/fastchat_controller.log 2>&1 &
-    echo $! > /tmp/fastchat_controller.pid
-    
-    port=21001
-    model_args_id=0
-    IFS=',' read -ra models <<< "$model_paths"
-    for model in "${models[@]}"
-    do
-    if [ -n "$model" ]; then
-        (( port++ ))
-        service_loop "python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model ${model_args[$model_args_id]}" > $LOG_DIR/fastchat_worker_$port.log 2>&1 &
-        echo $! > /tmp/fastchat_worker_$port.pid
-        (( model_args_id++ ))
-    fi
-    done
-    
-    while true; do
-        sleep 5
-        response=$(curl -X POST http://localhost:21002/worker_get_status || true )
-        if [[ $? -eq 0 ]] && [[ "$(echo "$response" | jq -r '.model_names')" != "" ]]; then
-            break
-        fi
-    done
 
-    service_loop "python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT" > $LOG_DIR/fastchat_server.log 2>&1 &
-    echo $! > /tmp/fastchat_server.pid
-    
+
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting FastChat ###"
+  log "Starting FastChat"
+  if [[ -n $1 ]]; then
+      case $1 in
+          "controller")
+              service_loop "python3 -m fastchat.serve.controller --host 127.0.0.1" > $LOG_DIR/fastchat_controller.log 2>&1 &
+              echo $! > /tmp/fastchat_controller.pid
+              ;;
+          "worker")
+              port=21001
+              model_args_id=0
+              IFS=',' read -ra models <<< "$model_paths"
+              for model in "${models[@]}"
+              do
+                  if [ -n "$model" ]; then
+                      (( port++ ))
+                      service_loop "python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model ${model_args[$model_args_id]}" > $LOG_DIR/fastchat_worker_$port.log 2>&1 &
+                      echo $! > /tmp/fastchat_worker_$port.pid
+                      (( model_args_id++ ))
+                  fi
+              done
+              ;;
+          "server")
+              service_loop "python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT" > $LOG_DIR/fastchat_server.log 2>&1 &
+              echo $! > /tmp/fastchat_server.pid
+              ;;
+          *)
+              echo "Invalid argument. Usage: bash main.sh [controller|worker|server]"
+              ;;
+      esac
+  else
+      service_loop "python3 -m fastchat.serve.controller --host 127.0.0.1" > $LOG_DIR/fastchat_controller.log 2>&1 &
+      echo $! > /tmp/fastchat_controller.pid
+      
+      port=21001
+      model_args_id=0
+      IFS=',' read -ra models <<< "$model_paths"
+      for model in "${models[@]}"
+      do
+      if [ -n "$model" ]; then
+          (( port++ ))
+          service_loop "python3 -m fastchat.serve.model_worker --host 127.0.0.1 --port $port --model-path $model ${model_args[$model_args_id]}" > $LOG_DIR/fastchat_worker_$port.log 2>&1 &
+          echo $! > /tmp/fastchat_worker_$port.pid
+          (( model_args_id++ ))
+      fi
+      done
+      
+      while true; do
+          sleep 5
+          response=$(curl -X POST http://localhost:21002/worker_get_status || true )
+          if [[ $? -eq 0 ]] && [[ "$(echo "$response" | jq -r '.model_names')" != "" ]]; then
+              break
+          fi
+      done
+
+      service_loop "python3 -m fastchat.serve.gradio_web_server --model-list-mode once --port $FASTCHAT_PORT" > $LOG_DIR/fastchat_server.log 2>&1 &
+      echo $! > /tmp/fastchat_server.pid
+      
+  fi
 fi
+
 
 send_to_discord "FastChat Started"
 

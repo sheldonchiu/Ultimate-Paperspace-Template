@@ -42,20 +42,23 @@ fi
 log "Finished Preparing Environment for Musicgen"
 
 
-
 if env | grep -q "PAPERSPACE"; then
   sed -i "s|launch_kwargs = {}|launch_kwargs = {'root_path': '/musicgen'}|g" $REPO_DIR/demos/musicgen_app.py
 fi
 
-echo "### Starting Musicgen ###"
-log "Starting Musicgen"
-cd $REPO_DIR
-PYTHONUNBUFFERED=1 service_loop "python demos/musicgen_app.py --server_port $MUSICGEN_PORT  ${EXTRA_MUSICGEN_ARGS}" > $LOG_DIR/musicgen.log 2>&1 &
-echo $! > /tmp/musicgen.pid
 
-if env | grep -q "PAPERSPACE"; then
-  sed -i "s|launch_kwargs = {'root_path': '/musicgen'}|launch_kwargs = {}|g" $REPO_DIR/demos/musicgen_app.py
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting Musicgen ###"
+  log "Starting Musicgen"
+  cd $REPO_DIR
+  PYTHONUNBUFFERED=1 service_loop "python demos/musicgen_app.py --server_port $MUSICGEN_PORT  ${EXTRA_MUSICGEN_ARGS}" > $LOG_DIR/musicgen.log 2>&1 &
+  echo $! > /tmp/musicgen.pid
+
+  if env | grep -q "PAPERSPACE"; then
+    sed -i "s|launch_kwargs = {'root_path': '/musicgen'}|launch_kwargs = {}|g" $REPO_DIR/demos/musicgen_app.py
+  fi
 fi
+
 
 send_to_discord "Musicgen Started"
 

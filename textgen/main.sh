@@ -84,33 +84,36 @@ else
   log "Skipping Model Download for Text generation Webui"
 fi
 
-
 if env | grep -q "PAPERSPACE"; then
   sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/g" $REPO_DIR/server.py
 fi
 
-echo "### Starting Text generation Webui ###"
-log "Starting Text generation Webui"
-cd $REPO_DIR
-share_args="--chat --listen-port $TEXTGEN_PORT --xformers ${EXTRA_TEXTGEN_ARGS}"
-if [ -v TEXTGEN_ENABLE_OPENAI_API ] && [ ! -z "$TEXTGEN_ENABLE_OPENAI_API" ];then
-  loader_arg=""
-  if echo "$TEXTGEN_OPENAI_MODEL" | grep -q "GPTQ"; then
-    loader_arg="--loader exllama"
-  fi
-  if echo "$TEXTGEN_OPENAI_MODEL" | grep -q "LongChat"; then
-    loader_arg+=" --max_seq_len 8192 --compress_pos_emb 4"
-  fi
-  PYTHONUNBUFFERED=1 OPENEDAI_PORT=7013 service_loop "python server.py --model $TEXTGEN_OPENAI_MODEL $loader_arg --extensions openai $share_args" > $LOG_DIR/textgen.log 2>&1 &
-else
-  PYTHONUNBUFFERED=1 service_loop "python server.py  $share_args" > $LOG_DIR/textgen.log 2>&1 &
-fi
-echo $! > /tmp/textgen.pid
 
-# undo the change for git pull to work
-if env | grep -q "PAPERSPACE"; then
-  sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/g" $REPO_DIR/server.py
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting Text generation Webui ###"
+  log "Starting Text generation Webui"
+  cd $REPO_DIR
+  share_args="--chat --listen-port $TEXTGEN_PORT --xformers ${EXTRA_TEXTGEN_ARGS}"
+  if [ -v TEXTGEN_ENABLE_OPENAI_API ] && [ ! -z "$TEXTGEN_ENABLE_OPENAI_API" ];then
+    loader_arg=""
+    if echo "$TEXTGEN_OPENAI_MODEL" | grep -q "GPTQ"; then
+      loader_arg="--loader exllama"
+    fi
+    if echo "$TEXTGEN_OPENAI_MODEL" | grep -q "LongChat"; then
+      loader_arg+=" --max_seq_len 8192 --compress_pos_emb 4"
+    fi
+    PYTHONUNBUFFERED=1 OPENEDAI_PORT=7013 service_loop "python server.py --model $TEXTGEN_OPENAI_MODEL $loader_arg --extensions openai $share_args" > $LOG_DIR/textgen.log 2>&1 &
+  else
+    PYTHONUNBUFFERED=1 service_loop "python server.py  $share_args" > $LOG_DIR/textgen.log 2>&1 &
+  fi
+  echo $! > /tmp/textgen.pid
+
+  # undo the change for git pull to work
+  if env | grep -q "PAPERSPACE"; then
+    sed -i "s/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth, root_path='\\/textgen')/server_port=shared.args.listen_port, inbrowser=shared.args.auto_launch, auth=auth)/g" $REPO_DIR/server.py
+  fi
 fi
+
 
 send_to_discord "Text generation Webui Started"
 
