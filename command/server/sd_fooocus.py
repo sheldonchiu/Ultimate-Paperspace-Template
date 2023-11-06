@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-image_fields = ['upscale_image']
+image_fields = ['upscale_image', 'image_prompt_1', 'image_prompt_2', 'image_prompt_3', 'image_prompt_4']
 
 
 class Base(BaseModel):
@@ -197,19 +197,19 @@ def process_t2i(task: Task):
         image_dict['upscale_image'],
         config['outpaint_mode'],
         config['outpaint_image'],
-        config['image_prompt_1'],
+        image_dict['image_prompt_1'],
         config['image_prompt_stop_at_1'],
         config['image_prompt_weight_1'],
         config['image_prompt_type_1'],
-        config['image_prompt_2'],
+        image_dict['image_prompt_2'],
         config['image_prompt_stop_at_2'],
         config['image_prompt_weight_2'],
         config['image_prompt_type_2'],
-        config['image_prompt_3'],
+        image_dict['image_prompt_3'],
         config['image_prompt_stop_at_3'],
         config['image_prompt_weight_3'],
         config['image_prompt_type_3'],
-        config['image_prompt_4'],
+        image_dict['image_prompt_4'],
         config['image_prompt_stop_at_4'],
         config['image_prompt_weight_4'],
         config['image_prompt_type_4'],
