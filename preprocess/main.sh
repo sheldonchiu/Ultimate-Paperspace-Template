@@ -59,16 +59,19 @@ else
   log "Skipping Model Download for preprocess"
 fi
 
-
 cd $current_dir/../kosmos2
 bash control.sh stop
 
-echo "### Starting preprocess ###"
-log "Starting preprocess"
-cd $PREPROCESS_REPO_DIR/preprocess
 
-python main.py > $LOG_DIR/preprocess.log 2>&1 &
-echo $! > /tmp/preprocess.pid
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting preprocess ###"
+  log "Starting preprocess"
+  cd $PREPROCESS_REPO_DIR/preprocess
+
+  python main.py > $LOG_DIR/preprocess.log 2>&1 &
+  echo $! > /tmp/preprocess.pid
+fi
+
 
 send_to_discord "preprocess Started"
 

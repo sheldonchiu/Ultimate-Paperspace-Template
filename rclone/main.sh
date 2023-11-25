@@ -29,10 +29,15 @@ log "Finished Preparing Environment for Rclone"
 
 
 
-echo "### Starting Rclone ###"
-log "Starting Rclone"
-rclone serve $RCLONE_SERVE_PROTOCOL --addr :$RCLONE_PORT --copy-links --user $RCLONE_USERNAME --pass $RCLONE_PASSWORD $RCLONE_SERVE_PATH ${EXTRA_RCLONE_ARGS} > $LOG_DIR/rclone_serve.log 2>&1 &
-echo $! > /tmp/rclone.pid
+
+
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting Rclone ###"
+  log "Starting Rclone"
+  rclone serve $RCLONE_SERVE_PROTOCOL --addr :$RCLONE_PORT --copy-links --user $RCLONE_USERNAME --pass $RCLONE_PASSWORD $RCLONE_SERVE_PATH ${EXTRA_RCLONE_ARGS} > $LOG_DIR/rclone_serve.log 2>&1 &
+  echo $! > /tmp/rclone.pid
+fi
+
 
 send_to_discord "Rclone Started"
 

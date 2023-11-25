@@ -40,7 +40,6 @@ fi
 log "Finished Preparing Environment for Image Browser"
 
 
-
 if [[ -n "${IMAGE_BROWSER_KEY}" ]]; then
 cat > $REPO_DIR/.env << EOF
 IIB_SECRET_KEY=$IMAGE_BROWSER_KEY
@@ -51,15 +50,19 @@ IIB_SERVER_LANG=auto
 EOF
 fi
 
-echo "### Starting Image Browser ###"
-log "Starting Image Browser"
-if [ -n IMAGE_OUTPUTS_DIR ]; then
-    cd $IMAGE_OUTPUTS_DIR
-else
-    cd $REPO_DIR
+
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting Image Browser ###"
+  log "Starting Image Browser"
+  if [ -n IMAGE_OUTPUTS_DIR ]; then
+      cd $IMAGE_OUTPUTS_DIR
+  else
+      cd $REPO_DIR
+  fi
+  PYTHONUNBUFFERED=1 service_loop "python $REPO_DIR/app.py --port 7002" > $LOG_DIR/image_browser.log 2>&1 &
+  echo $! > /tmp/image_browser.pid
 fi
-PYTHONUNBUFFERED=1 service_loop "python $REPO_DIR/app.py --port 7002" > $LOG_DIR/image_browser.log 2>&1 &
-echo $! > /tmp/image_browser.pid
+
 
 send_to_discord "Image Browser Started"
 

@@ -31,10 +31,15 @@ log "Finished Preparing Environment for Flowise"
 
 
 
-echo "### Starting Flowise ###"
-log "Starting Flowise"
-PORT=$FLOWISE_PORT service_loop "npx flowise start" > $LOG_DIR/flowise.log 2>&1 &
-echo $! > /tmp/flowise.pid
+
+
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting Flowise ###"
+  log "Starting Flowise"
+  PORT=$FLOWISE_PORT service_loop "npx flowise start" > $LOG_DIR/flowise.log 2>&1 &
+  echo $! > /tmp/flowise.pid
+fi
+
 
 send_to_discord "Flowise Started"
 

@@ -69,11 +69,16 @@ else
 fi
 
 
-echo "### Starting Stable Diffusion Swarm ###"
-log "Starting Stable Diffusion Swarm"
-cd $REPO_DIR
-service_loop "bash launch-linux.sh --port 7016 --launch_mode none ${EXTRA_SD_SWARM_ARGS}" > $LOG_DIR/sd_swarm.log 2>&1 &
-echo $! > /tmp/sd_swarm.pid
+
+
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting Stable Diffusion Swarm ###"
+  log "Starting Stable Diffusion Swarm"
+  cd $REPO_DIR
+  service_loop "bash launch-linux.sh --port 7016 --launch_mode none ${EXTRA_SD_SWARM_ARGS}" > $LOG_DIR/sd_swarm.log 2>&1 &
+  echo $! > /tmp/sd_swarm.pid
+fi
+
 
 send_to_discord "Stable Diffusion Swarm Started"
 

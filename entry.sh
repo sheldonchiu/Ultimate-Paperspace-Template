@@ -41,13 +41,13 @@ apt-get install -qq -y curl jq git-lfs ninja-build \
 
 if env | grep -q "PAPERSPACE"; then
   # Add alias to check the status of the web app
-  chmod +x /notebooks/status_check.py
-  echo "alias status='watch -n 1 /notebooks/status_check.py'" >> ~/.bashrc
+  chmod +x $WORKING_DIR/status_check.py
+  echo "alias status='watch -n 1 /$WORKING_DIR/status_check.py'" >> ~/.bashrc
   
   # Use Nginx to expose web app in Paperspace
   apt-get install -qq -y nginx > /dev/null
-  cp /notebooks/nginx/default /etc/nginx/sites-available/default
-  cp /notebooks/nginx/nginx.conf /etc/nginx/nginx.conf
+  cp /$WORKING_DIR/nginx/default /etc/nginx/sites-available/default
+  cp /$WORKING_DIR/nginx/nginx.conf /etc/nginx/nginx.conf
   /usr/sbin/nginx
 fi
 

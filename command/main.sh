@@ -36,18 +36,23 @@ log "Finished Preparing Environment for Command Server"
 
 
 
-echo "### Starting Command Server ###"
-log "Starting Command Server"
-cd $current_dir/server
-PYTHONUNBUFFERED=1 service_loop "python -m uvicorn main:app --host 0.0.0.0 --port 7000" > $LOG_DIR/command.log 2>&1 &
-echo $! > /tmp/command.pid
 
-if [[ -n "${DISCORD_BOT}" ]]; then
-  PYTHONUNBUFFERED=1 service_loop "python process.py" > $LOG_DIR/command_process.log 2>&1 &
-  echo $! > /tmp/command_process.pid
+
+if [[ -z "$INSTALL_ONLY" ]]; then
+  echo "### Starting Command Server ###"
+  log "Starting Command Server"
+  cd $current_dir/server
+  PYTHONUNBUFFERED=1 service_loop "python -m uvicorn main:app --host 0.0.0.0 --port 7000" > $LOG_DIR/command.log 2>&1 &
+  echo $! > /tmp/command.pid
+
+  if [[ -n "${DISCORD_BOT}" ]]; then
+    PYTHONUNBUFFERED=1 service_loop "python process.py" > $LOG_DIR/command_process.log 2>&1 &
+    echo $! > /tmp/command_process.pid
+  fi
+
+  cd ..
 fi
 
-cd ..
 
 send_to_discord "Command Server Started"
 
