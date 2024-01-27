@@ -70,18 +70,14 @@ else
   log "Skipping Model Download for Stable Diffusion SimpleSDXL"
 fi
 
-if env | grep -q "PAPERSPACE"; then
-  if ! grep -q "root_path" $REPO_DIR/webui.py; then
-    sed -i "s|share=args_manager.args.share|share=args_manager.args.share,root_path='/sd-fooocus'|g" $REPO_DIR/webui.py
-  fi
-fi
+
 
 
 if [[ -z "$INSTALL_ONLY" ]]; then
   echo "### Starting Stable Diffusion SimpleSDXL ###"
   log "Starting Stable Diffusion SimpleSDXL"
   cd $REPO_DIR
-  PYTHONUNBUFFERED=1 service_loop "python launch.py --port 7017" > $LOG_DIR/sd_simplesdxl.log 2>&1 &
+  PYTHONUNBUFFERED=1 service_loop "python launch.py --port 7017" --webroot /sd-fooocus > $LOG_DIR/sd_simplesdxl.log 2>&1 &
   echo $! > /tmp/sd_simplesdxl.pid
 fi
 

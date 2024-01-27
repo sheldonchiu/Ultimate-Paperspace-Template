@@ -40,16 +40,11 @@ prepare_env: |-
 download_model: |-
   bash $current_dir/../utils/sd_model_download/main.sh
 
-action_before_start: |-
-  if env | grep -q "PAPERSPACE"; then
-    if ! grep -q "root_path" $REPO_DIR/webui.py; then
-      sed -i "s|share=args_manager.args.share|share=args_manager.args.share,root_path='/sd-fooocus'|g" $REPO_DIR/webui.py
-    fi
-  fi
+# action_before_start:
 
 start: |-
   cd $REPO_DIR
-  PYTHONUNBUFFERED=1 service_loop "python launch.py --port {{ port }}" > $LOG_DIR/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 service_loop "python launch.py --port {{ port }}" --webroot /sd-fooocus > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
