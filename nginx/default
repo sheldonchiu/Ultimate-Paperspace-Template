@@ -78,6 +78,11 @@ server {
             proxy_pass http://localhost:7006;
         }
     
+        if ($first_subpath ~* sd-simplesdxl) {
+            rewrite ^/sd-simplesdxl/(.*)$ /$1 break;
+            proxy_pass http://localhost:7017;
+        }
+    
         if ($first_subpath ~* sd-swarm) {
             rewrite ^/sd-swarm/(.*)$ /$1 break;
             proxy_pass http://localhost:7016;
@@ -212,6 +217,15 @@ server {
         
         rewrite ^/sd-invoke/(.*) /$1 break;
         proxy_pass http://localhost:7006;
+        
+    }
+    
+
+    # sd_simplesdxl
+    location ~* ^/sd-simplesdxl/(.*)$ {
+        
+        rewrite ^/sd-simplesdxl/(.*) /$1 break;
+        proxy_pass http://localhost:7017;
         
     }
     

@@ -9,24 +9,24 @@ source .env
 trap 'error_exit "### ERROR ###"' ERR
 
 
-echo "### Setting up Stable Diffusion Fooocus ###"
-log "Setting up Stable Diffusion Fooocus"
-if [[ "$REINSTALL_SD_FOOOCUS" || ! -f "/tmp/sd_fooocus.prepared" ]]; then
+echo "### Setting up Stable Diffusion SimpleSDXL ###"
+log "Setting up Stable Diffusion SimpleSDXL"
+if [[ "$REINSTALL_SD_SIMPLESDXL" || ! -f "/tmp/sd_simplesdxl.prepared" ]]; then
 
     
     if env | grep -q "PAPERSPACE" && [ -f $REPO_DIR/webui.py ]; then
       sed -i "s|share=args_manager.args.share,root_path='/sd-fooocus'|share=args_manager.args.share|g" $REPO_DIR/webui.py
     fi
 
-    TARGET_REPO_URL="https://github.com/lllyasviel/Fooocus.git" \
+    TARGET_REPO_URL="https://github.com/metercai/SimpleSDXL.git" \
     TARGET_REPO_DIR=$REPO_DIR \
     TARGET_REPO_BRANCH="main" \
-    UPDATE_REPO=$SD_FOOOCUS_UPDATE_REPO \
-    UPDATE_REPO_COMMIT=$SD_FOOOCUS_UPDATE_REPO_COMMIT \
+    UPDATE_REPO=$SD_SIMPLESDXL_UPDATE_REPO \
+    UPDATE_REPO_COMMIT=$SD_SIMPLESDXL_UPDATE_REPO_COMMIT \
     prepare_repo 
 
     symlinks=(
-        "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-fooocus"
+        # "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-fooocus"
         "$MODEL_DIR:$WORKING_DIR/models"
         "$MODEL_DIR/sd:$LINK_MODEL_TO"
         "$MODEL_DIR/lora:$LINK_LORA_TO"
@@ -36,12 +36,12 @@ if [[ "$REINSTALL_SD_FOOOCUS" || ! -f "/tmp/sd_fooocus.prepared" ]]; then
         "$MODEL_DIR/embedding:$LINK_EMBEDDING_TO"
     )
     prepare_link  "${symlinks[@]}"
-    rm -rf $VENV_DIR/sd_fooocus-env
+    rm -rf $VENV_DIR/sd_simplesdxl-env
     
     
-    python3.10 -m venv $VENV_DIR/sd_fooocus-env
+    python3.10 -m venv $VENV_DIR/sd_simplesdxl-env
     
-    source $VENV_DIR/sd_fooocus-env/bin/activate
+    source $VENV_DIR/sd_simplesdxl-env/bin/activate
 
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
@@ -52,22 +52,22 @@ if [[ "$REINSTALL_SD_FOOOCUS" || ! -f "/tmp/sd_fooocus.prepared" ]]; then
     pip install torch==2.1.0 torchvision==0.16.0 --extra-index-url https://download.pytorch.org/whl/cu121
     pip install -r requirements_versions.txt
     
-    touch /tmp/sd_fooocus.prepared
+    touch /tmp/sd_simplesdxl.prepared
 else
     
-    source $VENV_DIR/sd_fooocus-env/bin/activate
+    source $VENV_DIR/sd_simplesdxl-env/bin/activate
     
 fi
-log "Finished Preparing Environment for Stable Diffusion Fooocus"
+log "Finished Preparing Environment for Stable Diffusion SimpleSDXL"
 
 
 if [[ -z "$SKIP_MODEL_DOWNLOAD" ]]; then
-  echo "### Downloading Model for Stable Diffusion Fooocus ###"
-  log "Downloading Model for Stable Diffusion Fooocus"
+  echo "### Downloading Model for Stable Diffusion SimpleSDXL ###"
+  log "Downloading Model for Stable Diffusion SimpleSDXL"
   bash $current_dir/../utils/sd_model_download/main.sh
-  log "Finished Downloading Models for Stable Diffusion Fooocus"
+  log "Finished Downloading Models for Stable Diffusion SimpleSDXL"
 else
-  log "Skipping Model Download for Stable Diffusion Fooocus"
+  log "Skipping Model Download for Stable Diffusion SimpleSDXL"
 fi
 
 if env | grep -q "PAPERSPACE"; then
@@ -78,24 +78,24 @@ fi
 
 
 if [[ -z "$INSTALL_ONLY" ]]; then
-  echo "### Starting Stable Diffusion Fooocus ###"
-  log "Starting Stable Diffusion Fooocus"
+  echo "### Starting Stable Diffusion SimpleSDXL ###"
+  log "Starting Stable Diffusion SimpleSDXL"
   cd $REPO_DIR
-  PYTHONUNBUFFERED=1 service_loop "python launch.py --port 7015" > $LOG_DIR/sd_fooocus.log 2>&1 &
-  echo $! > /tmp/sd_fooocus.pid
+  PYTHONUNBUFFERED=1 service_loop "python launch.py --port 7017" > $LOG_DIR/sd_simplesdxl.log 2>&1 &
+  echo $! > /tmp/sd_simplesdxl.pid
 fi
 
 
-send_to_discord "Stable Diffusion Fooocus Started"
+send_to_discord "Stable Diffusion SimpleSDXL Started"
 
 if env | grep -q "PAPERSPACE"; then
-  send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-fooocus/"
+  send_to_discord "Link: https://$PAPERSPACE_FQDN/sd-simplesdxl/"
 fi
 
 
 if [[ -n "${CF_TOKEN}" ]]; then
-  if [[ "$RUN_SCRIPT" != *"sd_fooocus"* ]]; then
-    export RUN_SCRIPT="$RUN_SCRIPT,sd_fooocus"
+  if [[ "$RUN_SCRIPT" != *"sd_simplesdxl"* ]]; then
+    export RUN_SCRIPT="$RUN_SCRIPT,sd_simplesdxl"
   fi
   bash $current_dir/../cloudflare_reload.sh
 fi
