@@ -46,7 +46,7 @@ start: |-
   cd $REPO_DIR
   # tmp fix
   rm .token_user.pem
-  PYTHONUNBUFFERED=1 service_loop "python launch.py --port {{ port }}" --webroot /sd-fooocus > $LOG_DIR/{{ name }}.log 2>&1 &
+  PYTHONUNBUFFERED=1 service_loop "python launch.py --port {{ port }} --webroot /sd-simplesdxl" > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""

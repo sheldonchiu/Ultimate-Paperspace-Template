@@ -79,7 +79,7 @@ if [[ -z "$INSTALL_ONLY" ]]; then
   cd $REPO_DIR
   # tmp fix
   rm .token_user.pem
-  PYTHONUNBUFFERED=1 service_loop "python launch.py --port 7017" --webroot /sd-fooocus > $LOG_DIR/sd_simplesdxl.log 2>&1 &
+  PYTHONUNBUFFERED=1 service_loop "python launch.py --port 7017 --webroot /sd-simplesdxl" > $LOG_DIR/sd_simplesdxl.log 2>&1 &
   echo $! > /tmp/sd_simplesdxl.pid
 fi
 
