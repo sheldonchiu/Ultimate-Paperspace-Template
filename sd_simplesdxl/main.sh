@@ -14,10 +14,6 @@ log "Setting up Stable Diffusion SimpleSDXL"
 if [[ "$REINSTALL_SD_SIMPLESDXL" || ! -f "/tmp/sd_simplesdxl.prepared" ]]; then
 
     
-    if env | grep -q "PAPERSPACE" && [ -f $REPO_DIR/webui.py ]; then
-      sed -i "s|share=args_manager.args.share,root_path='/sd-fooocus'|share=args_manager.args.share|g" $REPO_DIR/webui.py
-    fi
-
     TARGET_REPO_URL="https://github.com/metercai/SimpleSDXL.git" \
     TARGET_REPO_DIR=$REPO_DIR \
     TARGET_REPO_BRANCH="main" \
@@ -79,7 +75,7 @@ if [[ -z "$INSTALL_ONLY" ]]; then
   cd $REPO_DIR
   # tmp fix
   rm .token_user.pem
-  PYTHONUNBUFFERED=1 service_loop "python launch.py --port 7017 --webroot /sd-simplesdxl" > $LOG_DIR/sd_simplesdxl.log 2>&1 &
+  PYTHONUNBUFFERED=1 service_loop "python launch.py --listen 127.0.0.1 --port 7017 --webroot /sd-simplesdxl" > $LOG_DIR/sd_simplesdxl.log 2>&1 &
   echo $! > /tmp/sd_simplesdxl.pid
 fi
 
