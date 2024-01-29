@@ -77,6 +77,8 @@ if [[ -z "$INSTALL_ONLY" ]]; then
   echo "### Starting Stable Diffusion SimpleSDXL ###"
   log "Starting Stable Diffusion SimpleSDXL"
   cd $REPO_DIR
+  # tmp fix
+  rm .token_user.pem
   PYTHONUNBUFFERED=1 service_loop "python launch.py --port 7017" --webroot /sd-fooocus > $LOG_DIR/sd_simplesdxl.log 2>&1 &
   echo $! > /tmp/sd_simplesdxl.pid
 fi
