@@ -74,8 +74,10 @@ if [[ -z "$INSTALL_ONLY" ]]; then
   log "Starting Stable Diffusion SimpleSDXL"
   cd $REPO_DIR
   # tmp fix
-  rm .token_user.pem
-  PYTHONUNBUFFERED=1 service_loop "python launch.py --listen 127.0.0.1 --port 7017 --webroot /sd-simplesdxl" > $LOG_DIR/sd_simplesdxl.log 2>&1 &
+  if [ -f .token_user.pem ]; then
+    rm .token_user.pem
+  fi
+  PYTHONUNBUFFERED=1 service_loop "python entry_with_update.py --listen 127.0.0.1 --port 7017 --webroot /sd-simplesdxl" > $LOG_DIR/sd_simplesdxl.log 2>&1 &
   echo $! > /tmp/sd_simplesdxl.pid
 fi
 
