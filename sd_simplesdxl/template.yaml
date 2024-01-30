@@ -9,7 +9,7 @@ prepare_repo: |-
 
   TARGET_REPO_URL="https://github.com/metercai/SimpleSDXL.git" \
   TARGET_REPO_DIR=$REPO_DIR \
-  TARGET_REPO_BRANCH="main" \
+  TARGET_REPO_BRANCH="SimpleSDXL" \
   UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
   UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
   prepare_repo 
@@ -41,8 +41,10 @@ download_model: |-
 start: |-
   cd $REPO_DIR
   # tmp fix
-  rm .token_user.pem
-  PYTHONUNBUFFERED=1 service_loop "python launch.py --listen 127.0.0.1 --port {{ port }} --webroot /sd-simplesdxl" > $LOG_DIR/{{ name }}.log 2>&1 &
+  if [ -f .token_user.pem ]; then
+    rm .token_user.pem
+  fi
+  PYTHONUNBUFFERED=1 service_loop "python entry_with_update.py --listen 127.0.0.1 --port {{ port }} --webroot /sd-simplesdxl" > $LOG_DIR/{{ name }}.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: ""
