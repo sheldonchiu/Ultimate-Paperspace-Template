@@ -16,7 +16,7 @@ if [[ "$REINSTALL_SD_SIMPLESDXL" || ! -f "/tmp/sd_simplesdxl.prepared" ]]; then
     
     TARGET_REPO_URL="https://github.com/metercai/SimpleSDXL.git" \
     TARGET_REPO_DIR=$REPO_DIR \
-    TARGET_REPO_BRANCH="main" \
+    TARGET_REPO_BRANCH="SimpleSDXL" \
     UPDATE_REPO=$SD_SIMPLESDXL_UPDATE_REPO \
     UPDATE_REPO_COMMIT=$SD_SIMPLESDXL_UPDATE_REPO_COMMIT \
     prepare_repo 
