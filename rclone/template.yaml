@@ -14,7 +14,7 @@ download_model: ""
 action_before_start: ""
 
 start: |-
-  rclone serve $RCLONE_SERVE_PROTOCOL --addr :${{ name|upper }}_PORT --copy-links --user $RCLONE_USERNAME --pass $RCLONE_PASSWORD $RCLONE_SERVE_PATH ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}_serve.log 2>&1 &
+  rclone serve $RCLONE_SERVE_PROTOCOL --dir-cache-time 10 --addr :${{ name|upper }}_PORT --copy-links --user $RCLONE_USERNAME --pass $RCLONE_PASSWORD $RCLONE_SERVE_PATH ${EXTRA_{{ name|upper }}_ARGS} > $LOG_DIR/{{ name }}_serve.log 2>&1 &
   echo $! > /tmp/{{ name }}.pid
 
 export_required_env: |-
