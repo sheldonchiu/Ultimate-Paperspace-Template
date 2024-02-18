@@ -15,6 +15,7 @@ if [[ "$REINSTALL_SD_FORGE" || ! -f "/tmp/sd_forge.prepared" ]]; then
 
     TARGET_REPO_URL="https://github.com/lllyasviel/stable-diffusion-webui-forge.git" \
     TARGET_REPO_DIR=$REPO_DIR \
+    TARGET_REPO_BRANCH="main" \
     UPDATE_REPO=$SD_FORGE_UPDATE_REPO \
     UPDATE_REPO_COMMIT=$SD_FORGE_UPDATE_REPO_COMMIT \
     prepare_repo 

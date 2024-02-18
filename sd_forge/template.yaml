@@ -8,6 +8,7 @@ port: 7008
 prepare_repo: |-
   TARGET_REPO_URL="https://github.com/lllyasviel/stable-diffusion-webui-forge.git" \
   TARGET_REPO_DIR=$REPO_DIR \
+  TARGET_REPO_BRANCH="main" \
   UPDATE_REPO=${{ name|upper }}_UPDATE_REPO \
   UPDATE_REPO_COMMIT=${{ name|upper }}_UPDATE_REPO_COMMIT \
   prepare_repo 
