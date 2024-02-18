@@ -75,7 +75,7 @@ server {
     
         if ($first_subpath ~* sd-forge) {
             rewrite ^/sd-forge/(.*)$ /$1 break;
-            proxy_pass http://localhost:7008;
+            proxy_pass http://localhost:7018;
         }
     
         if ($first_subpath ~* sd-invoke) {
@@ -221,7 +221,7 @@ server {
     location ~* ^/sd-forge/(.*)$ {
         
         rewrite ^/sd-forge/(.*) /$1 break;
-        proxy_pass http://localhost:7008;
+        proxy_pass http://localhost:7018;
         
     }
     

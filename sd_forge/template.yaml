@@ -3,7 +3,7 @@ name: sd_forge
 use_python: true
 python_version: 10
 expose: true
-port: 7008
+port: 7018
 
 prepare_repo: |-
   TARGET_REPO_URL="https://github.com/lllyasviel/stable-diffusion-webui-forge.git" \
