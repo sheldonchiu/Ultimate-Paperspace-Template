@@ -21,7 +21,7 @@ if [[ "$REINSTALL_SD_FORGE" || ! -f "/tmp/sd_forge.prepared" ]]; then
     prepare_repo 
 
     symlinks=(
-        "$REPO_DIR/outputs:$IMAGE_OUTPUTS_DIR/stable-diffusion-forge"
+        "$REPO_DIR/output:$IMAGE_OUTPUTS_DIR/stable-diffusion-forge"
         "$MODEL_DIR:$WORKING_DIR/models"
         "$MODEL_DIR/sd:$LINK_MODEL_TO"
         "$MODEL_DIR/lora:$LINK_LORA_TO"
