@@ -41,7 +41,7 @@ if [[ "$REINSTALL_SD_FORGE" || ! -f "/tmp/sd_forge.prepared" ]]; then
     pip install --upgrade pip
     pip install --upgrade wheel setuptools
     
-    pip install torch==2.0 torchvision torchaudio protobuf lxml
+    pip install torch==2.1.2 torchvision torchaudio protobuf lxml
 
     export PYTHONPATH="$PYTHONPATH:$REPO_DIR"
     # must run inside webui dir since env['PYTHONPATH'] = os.path.abspath(".") existing in launch.py
@@ -49,7 +49,7 @@ if [[ "$REINSTALL_SD_FORGE" || ! -f "/tmp/sd_forge.prepared" ]]; then
     python $current_dir/preinstall.py
     cd $current_dir
 
-    pip install xformers==0.0.18
+    pip install xformers==0.0.23.post1
     
     touch /tmp/sd_forge.prepared
 else
