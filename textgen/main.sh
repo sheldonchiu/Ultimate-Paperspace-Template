@@ -29,7 +29,7 @@ if [[ "$REINSTALL_TEXTGEN" || ! -f "/tmp/textgen.prepared" ]]; then
     
     source $VENV_DIR/textgen-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     cd $REPO_DIR

@@ -19,6 +19,15 @@ def is_process_running(pid):
     except OSError:
         return False
     
+def get_base_url():
+    base_url = os.environ.get('PAPERSPACE_FQDN', "")
+    if base_url == "":
+        base_url = os.environ.get("PUBLIC_IPADDR", "")
+        base_url += ":" +os.environ.get("VAST_TCP_PORT_8888", "")
+    
+    return base_url
+        
+    
 def print_nvidia_smi_output():
     result = subprocess.run(['nvidia-smi'], capture_output=True, text=True)
     output = result.stdout
@@ -49,7 +58,7 @@ for proc in all_processes:
 table.add_row(["Start script", running, ""])
 
 # Process each pid file
-base_url = os.environ.get('PAPERSPACE_FQDN', "")
+base_url = get_base_url()
 for pid_file in pid_files:
     # Read the PID from the file
     with open(os.path.join('/tmp', pid_file), 'r') as f:

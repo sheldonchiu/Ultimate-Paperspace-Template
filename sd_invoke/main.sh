@@ -34,7 +34,7 @@ if [[ "$REINSTALL_SD_INVOKE" || ! -f "/tmp/sd_invoke.prepared" ]]; then
     
     source $VENV_DIR/sd_invoke-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     apt-get install -qq build-essential -y > /dev/null

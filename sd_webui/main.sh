@@ -49,7 +49,7 @@ if [[ "$REINSTALL_SD_WEBUI" || ! -f "/tmp/sd_webui.prepared" ]]; then
     
     source $VENV_DIR/sd_webui-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     # fix install issue with pycairo, which is needed by sd-webui-controlnet

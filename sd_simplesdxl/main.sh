@@ -39,7 +39,7 @@ if [[ "$REINSTALL_SD_SIMPLESDXL" || ! -f "/tmp/sd_simplesdxl.prepared" ]]; then
     
     source $VENV_DIR/sd_simplesdxl-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     pip install pygit2 packaging

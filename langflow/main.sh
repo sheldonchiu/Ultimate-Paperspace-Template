@@ -21,7 +21,7 @@ if [[ "$REINSTALL_LANGFLOW" || ! -f "/tmp/langflow.prepared" ]]; then
     
     source $VENV_DIR/langflow-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     pip install langflow

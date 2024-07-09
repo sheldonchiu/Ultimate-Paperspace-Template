@@ -25,7 +25,7 @@ if [[ "$REINSTALL_IMAGE_BROWSER" || ! -f "/tmp/image_browser.prepared" ]]; then
     
     source $VENV_DIR/image_browser-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     cd $REPO_DIR

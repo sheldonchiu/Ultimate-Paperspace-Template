@@ -38,7 +38,7 @@ if [[ "$REINSTALL_SD_FORGE" || ! -f "/tmp/sd_forge.prepared" ]]; then
     
     source $VENV_DIR/sd_forge-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     pip install torch==2.1.2 torchvision torchaudio protobuf lxml

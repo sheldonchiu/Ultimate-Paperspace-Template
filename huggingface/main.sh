@@ -21,7 +21,7 @@ if [[ "$REINSTALL_HUGGINGFACE" || ! -f "/tmp/huggingface.prepared" ]]; then
     
     source $VENV_DIR/huggingface-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     pip install --upgrade huggingface_hub

@@ -30,7 +30,7 @@ if [[ "$REINSTALL_PREPROCESS" || ! -f "/tmp/preprocess.prepared" ]]; then
     
     source $VENV_DIR/preprocess-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     cd $PREPROCESS_REPO_DIR/preprocess
