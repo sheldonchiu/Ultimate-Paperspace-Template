@@ -32,7 +32,7 @@ if [[ "$REINSTALL_KOSMOS2" || ! -f "/tmp/kosmos2.prepared" ]]; then
     
     source $VENV_DIR/kosmos2-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     cd $REPO_DIR/kosmos-2

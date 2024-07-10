@@ -7,7 +7,7 @@ port: 7015
 
 prepare_repo: |-
 
-  if env | grep -q "PAPERSPACE" && [ -f $REPO_DIR/webui.py ]; then
+  if [ -f $REPO_DIR/webui.py ]; then
     sed -i "s|share=args_manager.args.share,root_path='/sd-fooocus'|share=args_manager.args.share|g" $REPO_DIR/webui.py
   fi
 
@@ -41,10 +41,8 @@ download_model: |-
   bash $current_dir/../utils/sd_model_download/main.sh
 
 action_before_start: |-
-  if env | grep -q "PAPERSPACE"; then
-    if ! grep -q "root_path" $REPO_DIR/webui.py; then
-      sed -i "s|share=args_manager.args.share|share=args_manager.args.share,root_path='/sd-fooocus'|g" $REPO_DIR/webui.py
-    fi
+  if ! grep -q "root_path" $REPO_DIR/webui.py; then
+    sed -i "s|share=args_manager.args.share|share=args_manager.args.share,root_path='/sd-fooocus'|g" $REPO_DIR/webui.py
   fi
 
 start: |-

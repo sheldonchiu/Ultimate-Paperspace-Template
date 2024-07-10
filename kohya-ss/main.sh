@@ -26,7 +26,7 @@ if [[ "$REINSTALL_KOHYA_SS" || ! -f "/tmp/kohya_ss.prepared" ]]; then
     
     source $VENV_DIR/kohya_ss-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     cd $REPO_DIR

@@ -21,7 +21,7 @@ if [[ "$REINSTALL_FASTCHAT" || ! -f "/tmp/fastchat.prepared" ]]; then
     
     source $VENV_DIR/fastchat-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     pip3 install fschat bitsandbytes==0.38.0 safetensors==0.3.1

@@ -14,7 +14,7 @@ log "Setting up Stable Diffusion Fooocus"
 if [[ "$REINSTALL_SD_FOOOCUS" || ! -f "/tmp/sd_fooocus.prepared" ]]; then
 
     
-    if env | grep -q "PAPERSPACE" && [ -f $REPO_DIR/webui.py ]; then
+    if [ -f $REPO_DIR/webui.py ]; then
       sed -i "s|share=args_manager.args.share,root_path='/sd-fooocus'|share=args_manager.args.share|g" $REPO_DIR/webui.py
     fi
 
@@ -43,7 +43,7 @@ if [[ "$REINSTALL_SD_FOOOCUS" || ! -f "/tmp/sd_fooocus.prepared" ]]; then
     
     source $VENV_DIR/sd_fooocus-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     pip install pygit2 packaging
@@ -70,10 +70,8 @@ else
   log "Skipping Model Download for Stable Diffusion Fooocus"
 fi
 
-if env | grep -q "PAPERSPACE"; then
-  if ! grep -q "root_path" $REPO_DIR/webui.py; then
-    sed -i "s|share=args_manager.args.share|share=args_manager.args.share,root_path='/sd-fooocus'|g" $REPO_DIR/webui.py
-  fi
+if ! grep -q "root_path" $REPO_DIR/webui.py; then
+  sed -i "s|share=args_manager.args.share|share=args_manager.args.share,root_path='/sd-fooocus'|g" $REPO_DIR/webui.py
 fi
 
 

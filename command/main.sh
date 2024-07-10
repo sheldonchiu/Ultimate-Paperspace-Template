@@ -21,7 +21,7 @@ if [[ "$REINSTALL_COMMAND" || ! -f "/tmp/command.prepared" ]]; then
     
     source $VENV_DIR/command-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     pip install -r requirements.txt

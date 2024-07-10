@@ -40,7 +40,7 @@ if [[ "$REINSTALL_SD_SWARM" || ! -f "/tmp/sd_swarm.prepared" ]]; then
     
     source $VENV_DIR/sd_swarm-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb

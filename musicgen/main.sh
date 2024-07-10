@@ -26,7 +26,7 @@ if [[ "$REINSTALL_MUSICGEN" || ! -f "/tmp/musicgen.prepared" ]]; then
     
     source $VENV_DIR/musicgen-env/bin/activate
 
-    pip install --upgrade pip
+    pip install pip==24.0
     pip install --upgrade wheel setuptools
     
     cd $REPO_DIR
